@@ -1,0 +1,1479 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Versegraph</title><meta name="description" content="Explore 341,282 cross-references between the 31,102 verses of the King James Bible: arc diagrams, a daily verse ladder, myths checked against the text, maps of disputed sites, Enoch, Thomas and Mary, papal history and an honest test of Bible codes."><link rel="canonical" href="https://versegraph.noblerworks.com/"><meta property="og:title" content="Versegraph"><meta property="og:description" content="Explore 341,282 cross-references between the 31,102 verses of the King James Bible: arc diagrams, a daily verse ladder, myths checked against the text, maps of disputed sites, Enoch, Thomas and Mary, papal history and an honest test of Bible codes."><meta property="og:url" content="https://versegraph.noblerworks.com/"><meta property="og:type" content="website"></head><body><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap">
+<style>
+/* Layout: one reading column with a full-width instrument (the arc canvas) on top; tabs switch the instrument below a rubricated masthead. */
+:root {
+  --bg: #eef1f5;
+  --surface: #ffffff;
+  --ink: #141a2a;
+  --muted: #5b6478;
+  --rule: #d5dae3;
+  --gold: #8a6a12;
+  --rubric: #b23a24;
+  --violet: #4b3f9e;
+  --hit: #f6dd8f;
+  --ok: #2f6b4f;
+  --sea: #d3dfec;
+  --land: #fbfbfc;
+  --river: #7d9cc0;
+  --display: "IM Fell English SC", "Iowan Old Style", Georgia, serif;
+  --scripture: "Literata", Georgia, "Times New Roman", serif;
+  --ui: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1220; --surface: #151c2e; --ink: #e7e4da; --muted: #9097a8; --rule: #263049;
+    --gold: #d9b45a; --rubric: #e0664c; --violet: #8f86e8; --hit: #5a4a17; color-scheme: dark;
+    --ok: #6cc39a; --sea: #0a1120; --land: #1b2338; --river: #35537d;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1220; --surface: #151c2e; --ink: #e7e4da; --muted: #9097a8; --rule: #263049;
+  --gold: #d9b45a; --rubric: #e0664c; --violet: #8f86e8; --hit: #5a4a17; color-scheme: dark;
+  --ok: #6cc39a; --sea: #0a1120; --land: #1b2338; --river: #35537d;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--ui); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header.mast { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; border-bottom: 1px solid var(--rule); padding-bottom: 14px; }
+.mark { font-family: var(--display); font-size: 40px; line-height: 1; margin: 0; letter-spacing: .01em; }
+.mark span { color: var(--rubric); }
+.tagline { color: var(--muted); margin: 6px 0 0; max-width: 60ch; }
+nav.tabs { display: flex; flex-wrap: wrap; gap: 4px; margin: 18px 0 22px; }
+nav.tabs a { font-family: var(--ui); font-weight: 500; color: var(--muted); text-decoration: none; padding: 7px 14px; border-radius: 999px; border: 1px solid transparent; }
+nav.tabs a:hover { color: var(--ink); border-color: var(--rule); }
+nav.tabs a[aria-current="page"] { color: var(--ink); background: var(--surface); border-color: var(--rule); }
+nav.tabs a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+h2 { font-family: var(--display); font-weight: 400; font-size: 26px; margin: 0 0 4px; text-wrap: balance; }
+h3 { font-family: var(--ui); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 10px; font-weight: 600; }
+p.lede { color: var(--muted); max-width: 68ch; margin: 0 0 18px; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: end; margin-bottom: 14px; }
+label.f { display: grid; gap: 4px; font-size: 12px; color: var(--muted); font-weight: 500; }
+input[type=text], select { font: inherit; font-size: 15px; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 7px 10px; min-width: 0; }
+input[type=range] { accent-color: var(--gold); width: 180px; max-width: 100%; }
+button { font: inherit; font-weight: 600; color: var(--bg); background: var(--ink); border: 0; border-radius: 6px; padding: 8px 16px; cursor: pointer; }
+button.ghost { background: transparent; color: var(--ink); border: 1px solid var(--rule); font-weight: 500; }
+button:disabled { opacity: .5; cursor: wait; }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.status { font-size: 13px; color: var(--muted); }
+.canvasbox { position: relative; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+canvas { display: block; width: 100%; }
+.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bg); font-size: 12px; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--muted); margin-top: 8px; align-items: center; }
+.ramp { width: 140px; height: 8px; border-radius: 4px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; margin-top: 28px; }
+.grid2 > * { min-width: 0; }
+ol.rank { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+ol.rank li { display: grid; grid-template-columns: 1.6em minmax(0, 1fr) auto; gap: 10px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--rule); }
+ol.rank .i { color: var(--rubric); font-family: var(--mono); font-size: 12px; }
+ol.rank .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+a.ref, button.ref { font: inherit; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; font-weight: 600; }
+a.ref:hover, button.ref:hover { text-decoration-color: var(--gold); }
+.snip { color: var(--muted); font-family: var(--scripture); font-size: 14px; }
+.verse-hero { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 22px 24px; margin-bottom: 22px; }
+.verse-hero .r { font-family: var(--display); font-size: 22px; color: var(--rubric); }
+.verse-hero blockquote { font-family: var(--scripture); font-size: 21px; line-height: 1.55; margin: 8px 0 10px; max-width: 62ch; }
+.verse-hero blockquote::first-letter { font-family: var(--display); color: var(--rubric); font-size: 2.6em; float: left; line-height: .85; padding: 4px 8px 0 0; }
+.meta { font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 16px; }
+ul.xr { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; }
+ul.xr li { display: grid; grid-template-columns: 9.5em minmax(0, 1fr) 64px; gap: 12px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--rule); }
+ul.xr .votes { display: grid; gap: 2px; justify-items: end; font-size: 12px; color: var(--muted); }
+.bar { height: 4px; background: var(--gold); border-radius: 2px; }
+@media (max-width: 560px) { ul.xr li { grid-template-columns: minmax(0, 1fr) 54px; } ul.xr li .snip { grid-column: 1 / -1; grid-row: 2; } }
+.chain { display: grid; gap: 0; margin-top: 8px; }
+.link { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; }
+.link .rail { display: flex; flex-direction: column; align-items: center; }
+.link .dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--rubric); background: var(--surface); margin-top: 18px; flex: none; }
+.link .line { flex: 1; width: 2px; background: var(--rule); }
+.link:last-child .line { display: none; }
+.link .card { padding: 12px 0 14px; border-bottom: 1px dashed var(--rule); }
+.link .card p { font-family: var(--scripture); margin: 4px 0 0; max-width: 70ch; }
+.edge { font-size: 12px; color: var(--muted); margin-left: 8px; }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
+td.n, th.n { text-align: right; }
+.pill { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--rule); }
+.pill.ok { color: var(--gold); border-color: var(--gold); }
+.verdict { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--rubric); border-radius: 6px; padding: 14px 16px; margin: 16px 0; max-width: 78ch; }
+.matrixwrap { overflow-x: auto; margin-top: 10px; }
+.matrix { font-family: var(--mono); font-size: 14px; line-height: 1.25; display: inline-grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+.matrix span { display: block; width: 1.5em; text-align: center; background: var(--surface); color: var(--muted); }
+.matrix span.on { background: var(--hit); color: var(--ink); font-weight: 600; }
+ul.hits { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+ul.hits button { font-weight: 500; font-size: 13px; padding: 4px 10px; }
+ul.hits button[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); }
+.progress { height: 3px; background: var(--rule); border-radius: 2px; overflow: hidden; margin: 8px 0; max-width: 420px; }
+.progress div { height: 100%; width: 0; background: var(--gold); transition: width .15s; }
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--muted); }
+footer a { color: inherit; }
+.loading { padding: 60px 0; text-align: center; color: var(--muted); font-family: var(--scripture); font-style: italic; }
+.goal { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 6px 0 18px; }
+.goal > div { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; min-width: 0; }
+.goal .r { font-family: var(--display); font-size: 19px; color: var(--rubric); }
+.goal p { font-family: var(--scripture); margin: 4px 0 0; }
+.choices { display: grid; gap: 6px; margin-top: 10px; }
+.choices button { display: grid; grid-template-columns: 9.5em minmax(0, 1fr) auto; gap: 12px; text-align: left; font-weight: 400; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); align-items: baseline; }
+.choices button:hover { border-color: var(--gold); }
+.choices button.hint { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold) inset; }
+.choices b { font-weight: 600; }
+.choices .snip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 560px) { .choices button { grid-template-columns: minmax(0, 1fr) auto; } .choices button .snip { grid-column: 1 / -1; grid-row: 2; white-space: normal; } }
+.win { border: 1px solid var(--gold); background: var(--surface); border-radius: 10px; padding: 14px 16px; margin: 12px 0; display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; margin-top: 14px; }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.card h4 { font-family: var(--scripture); font-size: 17px; font-weight: 600; margin: 0; text-wrap: balance; }
+.card p { margin: 0; }
+.card .q { font-family: var(--scripture); font-size: 14px; border-left: 2px solid var(--rule); padding-left: 10px; color: var(--ink); }
+.card .q b { color: var(--rubric); font-weight: 600; font-family: var(--ui); font-size: 12px; }
+.card .ev { font-size: 12px; color: var(--muted); }
+.card ul { margin: 0; padding-left: 18px; }
+.v-myth { color: var(--rubric); border-color: var(--rubric); }
+.v-part { color: var(--gold); border-color: var(--gold); }
+.v-true { color: var(--ok); border-color: var(--ok); }
+.checker { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; margin: 6px 0 10px; }
+.checker form { display: flex; flex-wrap: wrap; gap: 10px; }
+.checker input { flex: 1 1 260px; }
+.checker .ans { font-family: var(--display); font-size: 20px; margin: 12px 0 4px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; margin-top: 10px; }
+.facts div { background: var(--surface); padding: 12px 14px; display: grid; gap: 2px; min-width: 0; }
+.facts .k { font-size: 12px; color: var(--muted); }
+.facts .val { font-family: var(--display); font-size: 22px; line-height: 1.15; }
+.facts .s { font-size: 13px; color: var(--muted); font-family: var(--scripture); }
+section h2.sub { margin-top: 36px; }
+.chart { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 12px; overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 560px; height: auto; }
+.stack { display: grid; gap: 14px; margin-top: 10px; }
+.stack .row { display: grid; gap: 6px; }
+.stack .bars { display: flex; height: 22px; border-radius: 4px; overflow: hidden; background: var(--rule); }
+.stack .bars span { display: block; height: 100%; }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.mapgrid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 16px; align-items: start; }
+@media (max-width: 860px) { .mapgrid { grid-template-columns: 1fr; } }
+.mapbox { position: relative; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; touch-action: none; cursor: grab; }
+.mapbox canvas { height: 520px; }
+.zoom { position: absolute; top: 10px; right: 10px; display: grid; gap: 4px; }
+.zoom button { width: 32px; height: 32px; padding: 0; background: var(--surface); color: var(--ink); border: 1px solid var(--rule); font-size: 18px; line-height: 1; }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; min-width: 0; }
+.panel h4 { font-family: var(--display); font-weight: 400; font-size: 22px; margin: 0; }
+.panel ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; font-size: 14px; }
+.cand { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; }
+.cand .bar { grid-column: 1 / -1; background: var(--rubric); }
+.cand button.ref { justify-self: start; text-align: left; }
+mark { background: var(--hit); color: var(--ink); border-radius: 2px; padding: 0 1px; }
+table.gen td.same { color: var(--gold); font-weight: 600; }
+table.gen td { font-family: var(--scripture); }
+.trv { display: grid; grid-template-columns: 7em minmax(0, 1fr); gap: 4px 14px; padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.trv b { font-size: 12px; color: var(--muted); padding-top: 3px; }
+.trv span { font-family: var(--scripture); font-size: 16px; }
+.fam { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.fam .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.fam .chips button { font-weight: 500; font-size: 13px; padding: 3px 10px; }
+.heb { font-size: 22px; font-family: "Frank Ruhl Libre", "Times New Roman", serif; direction: rtl; }
+.reader { display: grid; gap: 0; max-width: 820px; }
+.passage { display: grid; grid-template-columns: 3.4em minmax(0, 1fr); gap: 4px 12px; padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.passage .pn { font-family: var(--mono); font-size: 12px; color: var(--rubric); padding-top: 4px; text-align: right; }
+.passage .pt { font-family: var(--scripture); font-size: 16px; line-height: 1.6; white-space: pre-line; }
+.passage .pt h4 { font-family: var(--display); font-weight: 400; font-size: 19px; margin: 0 0 2px; }
+.passage .gap { color: var(--muted); font-style: italic; }
+.passage button.sim { grid-column: 2; justify-self: start; font-size: 12px; padding: 3px 10px; }
+.passage .simout { grid-column: 2; }
+.passage .simout ul { margin: 4px 0 0; padding-left: 18px; display: grid; gap: 4px; font-size: 14px; }
+@media (max-width: 480px) { .mark { font-size: 32px; } .verse-hero blockquote { font-size: 18px; } }
+@media (prefers-reduced-motion: reduce) { .progress div { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div>
+      <h1 class="mark">Verse<span>graph</span></h1>
+      <p class="tagline">Explore 341,282 cross-references between the 31,102 verses of the King James Bible, then test the "Bible code" claims against a whale novel.</p>
+    </div>
+  </header>
+  <nav class="tabs" aria-label="Views">
+    <a href="#arcs" data-view="arcs">Arcs</a>
+    <a href="#verse" data-view="verse">Verse</a>
+    <a href="#path" data-view="path">Path</a>
+    <a href="#ladder" data-view="ladder">Ladder</a>
+    <a href="#myths" data-view="myths">Myths</a>
+    <a href="#theories" data-view="theories">Theories</a>
+    <a href="#map" data-view="map">Map</a>
+    <a href="#canon" data-view="canon">Beyond the Canon</a>
+    <a href="#history" data-view="history">History</a>
+    <a href="#people" data-view="people">People</a>
+    <a href="#translations" data-view="translations">Translations</a>
+    <a href="#numbers" data-view="numbers">Numbers</a>
+    <a href="#codes" data-view="codes">Code Breaker</a>
+  </nav>
+
+  <div id="loading" class="loading">Loading 31,102 verses and 341,282 cross-references…</div>
+
+  <section id="v-arcs" hidden>
+    <h2>Every cross-reference, Genesis to Revelation</h2>
+    <p class="lede">Each arc joins two verses that readers have voted as cross-references. The bar along the bottom is the Bible in canonical order, one segment per book. Arc color shows how far the reference travels. Click a book on the bar to isolate its links.</p>
+    <div class="controls">
+      <label class="f">Minimum votes <span><input type="range" id="arc-votes" min="2" max="100" value="15"> <span class="num" id="arc-votes-v">15</span></span></label>
+      <label class="f">Book <select id="arc-book"><option value="-1">All books</option></select></label>
+      <span class="status num" id="arc-count"></span>
+    </div>
+    <div class="canvasbox"><canvas id="arcs" aria-label="Arc diagram of Bible cross-references"></canvas><div class="tip" id="arc-tip" hidden></div></div>
+    <div class="legend"><span>Short reach</span><canvas class="ramp" id="ramp" width="140" height="8"></canvas><span>Spans the whole Bible</span></div>
+    <div class="grid2">
+      <div><h3>Most cited verses</h3><p class="status">Total votes on references pointing at the verse.</p><ol class="rank" id="top-verses"></ol></div>
+      <div><h3>Strongest links between books</h3><p class="status">Total votes on references between two different books.</p><ol class="rank" id="top-pairs"></ol></div>
+    </div>
+  </section>
+
+  <section id="v-verse" hidden>
+    <form class="controls" id="verse-form">
+      <label class="f">Reference <input type="text" id="verse-in" value="John 1:1" autocomplete="off" spellcheck="false" placeholder="e.g. Romans 8:28"></label>
+      <button type="submit">Look up</button>
+      <button type="button" class="ghost" id="verse-rand">Random verse</button>
+      <span class="status" id="verse-err" role="status"></span>
+    </form>
+    <div id="verse-out"></div>
+  </section>
+
+  <section id="v-path" hidden>
+    <h2>Shortest path between two verses</h2>
+    <p class="lede">The fewest cross-reference hops from one verse to another. Links with fewer votes than the minimum are ignored. At each hop the strongest link wins a tie.</p>
+    <form class="controls" id="path-form">
+      <label class="f">From <input type="text" id="path-a" value="Genesis 3:15" autocomplete="off" spellcheck="false"></label>
+      <label class="f">To <input type="text" id="path-b" value="Revelation 12:9" autocomplete="off" spellcheck="false"></label>
+      <label class="f">Minimum votes <select id="path-votes"><option>2</option><option selected>5</option><option>10</option><option>20</option></select></label>
+      <button type="submit">Find path</button>
+      <span class="status" id="path-err" role="status"></span>
+    </form>
+    <div id="path-out"></div>
+  </section>
+
+  <section id="v-ladder" hidden>
+    <h2>Verse Ladder</h2>
+    <p class="lede">Climb from the start verse to the goal using only cross-references with 5 or more votes. Today's ladder is the same for everyone. Par is the shortest possible route.</p>
+    <div class="controls">
+      <span class="status" id="lad-label"></span>
+      <button type="button" class="ghost" id="lad-today">Today's ladder</button>
+      <button type="button" class="ghost" id="lad-new">Random ladder</button>
+      <button type="button" class="ghost" id="lad-hint">Hint</button>
+      <button type="button" class="ghost" id="lad-undo">Undo</button>
+    </div>
+    <div class="goal" id="lad-goal"></div>
+    <div id="lad-win"></div>
+    <h3>Your route</h3>
+    <div class="chain" id="lad-trail"></div>
+    <h3 style="margin-top:18px">Next rung</h3>
+    <div class="choices" id="lad-choices"></div>
+  </section>
+
+  <section id="v-myths" hidden>
+    <h2>Myths and misconceptions</h2>
+    <p class="lede">Popular beliefs about what the Bible says, checked against the King James text. The counts on each card are computed live from the text on this page.</p>
+    <div class="checker">
+      <h3>Is that in the Bible?</h3>
+      <form id="chk-form"><input type="text" id="chk-in" value="God helps those who help themselves" autocomplete="off" aria-label="Phrase to check"><button type="submit">Check</button></form>
+      <div id="chk-out"></div>
+    </div>
+    <div class="cards" id="myth-cards"></div>
+    <h2 class="sub">By the numbers</h2>
+    <p class="lede">Computed from the 1769 King James text used throughout this page.</p>
+    <div class="facts" id="facts"></div>
+    <h2 class="sub">Where words live</h2>
+    <p class="lede">Each tick is a verse containing the word, laid out from Genesis to Revelation.</p>
+    <form class="controls" id="disp-form"><label class="f">Words, comma separated <input type="text" id="disp-in" value="lamb, love, grace, faith, king, temple, sea" autocomplete="off" style="width:min(420px,80vw)"></label><button type="submit">Plot</button></form>
+    <div class="canvasbox"><canvas id="disp" aria-label="Word dispersion plot"></canvas></div>
+  </section>
+
+  <section id="v-theories" hidden>
+    <h2>Two divine names in Genesis</h2>
+    <p class="lede">Hebrew Genesis uses two main names for God: YHWH and Elohim. The American Standard Version (1901) keeps them apart as "Jehovah" and "God". Chapter 1 never uses YHWH, and chapter 2 switches to "Jehovah God". In the 1700s and 1800s, shifts like this led scholars to propose that the first five books combine older sources. The best-known form, the documentary hypothesis, was set out by Julius Wellhausen in 1878.</p>
+    <div class="chart" id="names-chart"></div>
+    <p class="status">The pattern is real. Whether it shows separate written sources is still debated, and many scholars today prefer other models of how the books were composed. Counts of whole words in the ASV; "Lord" (Adonai) is not counted.</p>
+    <h2 class="sub">The synoptic problem</h2>
+    <p class="lede">Matthew, Mark and Luke share a great deal of material, often word for word. The most common explanation is that Mark was written first and Matthew and Luke both used it. Matthew and Luke also share material that is not in Mark, which scholars attribute to a lost source called "Q".</p>
+    <div class="stack" id="syn"></div>
+    <p class="status" id="syn-note"></p>
+    <h2 class="sub">"That it might be fulfilled"</h2>
+    <p class="lede">Matthew repeatedly says an event happened to fulfil a prophecy. Here is each of those passages next to the Old Testament verse it draws on, using the highest-voted cross-reference. Some fit cleanly; for others the source or the reading is debated, and the note says how.</p>
+    <div class="cards" id="fulfil"></div>
+    <h2 class="sub">The mood of each book</h2>
+    <p class="lede">Average emotional tone per word, scored with the VADER sentiment word list. Bars above the line are more positive, bars below more negative. Click a bar to see that book chapter by chapter.</p>
+    <div class="chart" id="mood-chart"></div>
+    <div class="chart" id="mood-book" style="margin-top:10px"></div>
+    <p class="status">VADER was built for modern English and misses archaic words, so treat this as a rough sketch. Short books swing furthest because they have fewer words to average.</p>
+  </section>
+
+  <section id="v-people" hidden>
+    <h2>How long they lived</h2>
+    <p class="lede">Lifespans as the text states them, parsed from the number words in each verse. They fall from the patriarchs before the flood to the “threescore years and ten” of Psalm 90.</p>
+    <div class="chart" id="life-chart"></div>
+    <h2 class="sub">Two genealogies of Jesus</h2>
+    <p class="lede">Matthew 1 traces Jesus from Abraham; Luke 3 traces him back to Adam. They agree from Abraham to David, then follow different sons of David and disagree on Joseph's father. Since ancient times readers have proposed explanations, such as one list following Mary's line.</p>
+    <div class="tablewrap"><table id="gen-table"></table></div>
+    <p class="status" id="gen-note"></p>
+    <h2 class="sub">Family explorer</h2>
+    <p class="lede">Every person in the Bible with their family ties, from the Theographic Bible database. Dates are Theographic's estimates.</p>
+    <form class="controls" id="fam-form"><label class="f">Person <input type="text" id="fam-in" list="fam-list" value="David" autocomplete="off"></label><datalist id="fam-list"></datalist><button type="submit">Show</button><span class="status" id="fam-err"></span></form>
+    <div id="fam-out"></div>
+  </section>
+
+  <section id="v-translations" hidden>
+    <h2>Compare translations</h2>
+    <p class="lede">The same verse in six public-domain English Bibles. Words that differ from the King James are highlighted.</p>
+    <form class="controls" id="tr-form"><label class="f">Reference <input type="text" id="tr-in" value="1 John 5:7" autocomplete="off"></label><button type="submit">Compare</button><span class="status" id="tr-err"></span></form>
+    <div id="tr-out"><p class="status">Loading translations…</p></div>
+    <h2 class="sub">Verses the King James has and newer Bibles drop</h2>
+    <p class="lede">The KJV New Testament was translated from Greek printed editions based on late manuscripts. Older manuscripts found later, such as Codex Sinaiticus and Codex Vaticanus, lack these verses, so the American Standard Version (1901) leaves them out, as most modern Bibles do or move them to footnotes.</p>
+    <div id="tr-dropped"></div>
+    <h2 class="sub">How far each translation drifts from the KJV</h2>
+    <div class="stack" id="tr-drift"></div>
+  </section>
+
+  <section id="v-numbers" hidden>
+    <h2>Numbers the Bible favors</h2>
+    <p class="lede">How often each number word appears in the KJV. Seven, ten and twelve stand far above their neighbors. That patterning is real and deliberate: the authors used those numbers symbolically, as in the seven days of creation, the Ten Commandments and the twelve tribes. Forty, often called the Bible's number of testing, turns out no more common than thirty or fifty.</p>
+    <div class="chart" id="num-chart"></div>
+    <h2 class="sub">Gematria coincidence machine</h2>
+    <p class="lede">Gematria gives every letter a number and adds up words. Pick a number and see how many KJV phrases of one to four words add up to it. With hundreds of matches for almost any number, a single match proves nothing.</p>
+    <form class="controls" id="gem-form">
+      <label class="f">Number or phrase <input type="text" id="gem-in" value="666" autocomplete="off"></label>
+      <label class="f">Letter values <select id="gem-sys"><option value="agrippa">Classic (A=1…I=9, J=10…R=90, S=100…Z=800)</option><option value="simple">Simple (A=1 … Z=26)</option><option value="sumerian">Sumerian (A=6 … Z=156)</option></select></label>
+      <button type="submit">Count</button>
+    </form>
+    <div id="gem-out"></div>
+    <h2 class="sub">Real codes in the Bible</h2>
+    <p class="lede">The Bible does contain deliberate wordplay. These two kinds are documented and accepted by scholars.</p>
+    <div class="cards" id="ciphers"></div>
+  </section>
+
+  <section id="v-map" hidden>
+    <h2>Places of the Bible</h2>
+    <p class="lede">Every place the text names, with its most likely modern location. Pick a book to see where it happens, or a disputed site to see every location scholars have proposed for it.</p>
+    <div class="controls">
+      <label class="f">Show <select id="map-mode"><option value="book">Places in a book</option><option value="disputed">A disputed site</option></select></label>
+      <label class="f" id="map-book-f">Book <select id="map-book"></select></label>
+      <label class="f" id="map-trace-f"><span><input type="checkbox" id="map-trace"> Trace in reading order</span></label>
+      <label class="f" id="map-site-f" hidden>Site <select id="map-site"></select></label>
+    </div>
+    <div class="mapgrid">
+      <div class="mapbox"><canvas id="map" aria-label="Map of places"></canvas><div class="tip" id="map-tip" hidden></div>
+        <div class="zoom"><button type="button" id="map-in" aria-label="Zoom in">+</button><button type="button" id="map-out" aria-label="Zoom out">−</button><button type="button" id="map-fit" aria-label="Reset view" style="font-size:12px">⤢</button></div></div>
+      <div class="panel" id="map-panel"></div>
+    </div>
+  </section>
+
+  <section id="v-canon" hidden>
+    <h2>Beyond the Canon</h2>
+    <p class="lede">Many ancient texts about the same figures never made it into most Bibles. Some are quoted inside the Bible itself. Some are genuine ancient writings that attract modern myths, and one famous papyrus is a modern forgery.</p>
+    <div class="cards" id="canon-cards"></div>
+    <h2 class="sub">Where Enoch and the Bible meet</h2>
+    <p class="lede">Passages where 1 Enoch and the Bible tell the same story or use the same image, side by side.</p>
+    <div class="cards" id="enoch-echoes"></div>
+    <h2 class="sub">Read the texts</h2>
+    <p class="lede">Full public-domain translations. Under any passage, "Closest Bible verses" finds the verses that share the most distinctive words with it. That shows shared vocabulary, not proof of borrowing, and the modern translations of Thomas and Mary share fewer words with the 1769 KJV than Charles's older English does.</p>
+    <div class="controls">
+      <label class="f">Text <select id="x-text"><option value="enoch">1 Enoch (R. H. Charles, 1917)</option><option value="thomas">Gospel of Thomas (Mark M. Mattison)</option><option value="mary">Gospel of Mary (Mark M. Mattison)</option></select></label>
+      <label class="f" id="x-ch-f">Chapter <select id="x-ch"></select></label>
+    </div>
+    <div class="reader" id="x-out"></div>
+  </section>
+
+  <section id="v-history" hidden>
+    <h2>The line of popes</h2>
+    <p class="lede">Every entry in the official list of popes, from Peter to Leo XIV, one row per century. Each bar is one reign; click one for details. Red bars under a row are antipopes, rival claimants the Church does not recognize; the cluster in the 1300s and 1400s is the Western Schism, when up to three men claimed the title at once. White gaps are vacancies between popes. Dates come from Wikidata, and those before about AD 200 are traditional rather than recorded.</p>
+    <div class="canvasbox"><canvas id="popes" aria-label="Timeline of papal reigns by century"></canvas><div class="tip" id="pope-tip" hidden></div></div>
+    <div class="legend"><span><span class="swatch" style="background:var(--gold)"></span><span class="swatch" style="background:var(--violet)"></span>Reigns, alternating colors</span><span><span class="swatch" style="background:var(--rubric)"></span>Antipopes before 1500</span></div>
+    <div class="panel" id="pope-panel" style="margin-top:14px"></div>
+    <div class="grid2">
+      <div><h3>Longest reigns</h3><ol class="rank" id="pope-long"></ol></div>
+      <div><h3>Most-used papal names</h3><ol class="rank" id="pope-names"></ol><p class="status" id="pope-names-note"></p></div>
+    </div>
+    <h2 class="sub">Relics, orders and legends</h2>
+    <p class="lede">The stories that grew up around the Church, sorted into what the evidence supports and what it does not.</p>
+    <div class="cards" id="legend-cards"></div>
+  </section>
+
+  <section id="v-codes" hidden>
+    <h2>Code Breaker</h2>
+    <p class="lede">"Bible codes" are equidistant letter sequences (ELS). Strip out spaces and punctuation, then read every <em>n</em>th letter, forward or backward. Search a word below. The same search also runs on <em>Moby Dick</em> and on the Bible's own letters shuffled at random, and each count sits next to the number expected by pure chance from letter frequencies.</p>
+    <form class="controls" id="code-form">
+      <label class="f">Word <input type="text" id="code-word" value="MESSIAH" maxlength="14" autocomplete="off" spellcheck="false"></label>
+      <label class="f">Largest skip <select id="code-skip"><option>100</option><option>500</option><option selected>1000</option><option>3000</option></select></label>
+      <button type="submit" id="code-go">Search</button>
+      <span class="status" id="code-err" role="status"></span>
+    </form>
+    <div class="progress" aria-hidden="true"><div id="code-prog"></div></div>
+    <div id="code-out"></div>
+    <div class="verdict">
+      <strong>Background.</strong> In 1994 Witztum, Rips and Rosenberg reported ELS patterns in the Hebrew text of Genesis in <em>Statistical Science</em>. In 1999 McKay, Bar-Natan, Bar-Hillel and Kalai showed in the same journal that the result came from choices made during the experiment, and found matching "codes" in a Hebrew <em>War and Peace</em>. When Michael Drosnin said critics should find assassinations encoded in <em>Moby Dick</em>, McKay found several. Searches like this one find what letter frequencies predict, in any long text.
+    </div>
+  </section>
+
+  <footer>
+    Cross-references from <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY), based on the <em>Treasury of Scripture Knowledge</em> with reader votes. Place identifications from <a href="https://github.com/openbibleinfo/Bible-Geocoding-Data" target="_blank" rel="noopener">OpenBible.info Bible Geocoding Data</a> (CC BY 4.0). Map shapes from <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>. Popes from <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a> (CC0). 1 Enoch in R. H. Charles's 1917 translation (public domain) via <a href="https://en.wikisource.org/wiki/The_Book_of_Enoch_(Charles)" target="_blank" rel="noopener">Wikisource</a>. Gospels of Thomas and Mary in Mark M. Mattison's public-domain translations from <a href="https://www.gospels.net/" target="_blank" rel="noopener">gospels.net</a>. The King James Version, American Standard Version and <em>Moby Dick</em> (Project Gutenberg) are in the public domain. Built by Nobler Works.
+  </footer>
+</div>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => n.toLocaleString("en-US");
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+let D = null; // loaded data and indexes
+
+// ---------- data ----------
+async function load() {
+  const getJSON = (f) => fetch("data/" + f).then((r) => { if (!r.ok) throw new Error(f + " " + r.status); return r.json(); });
+  const [places, land, theories, popes, extra, more] = await Promise.all(["places.json", "land.json", "theories.json", "popes.json", "extra.json", "more.json"].map(getJSON));
+  const [bible, xr, moby] = await Promise.all([
+    fetch("data/bible.json").then((r) => { if (!r.ok) throw new Error("bible.json " + r.status); return r.json(); }),
+    fetch("data/xrefs.json").then((r) => { if (!r.ok) throw new Error("xrefs.json " + r.status); return r.json(); }),
+    fetch("data/moby.txt").then((r) => { if (!r.ok) throw new Error("moby.txt " + r.status); return r.text(); }),
+  ]);
+  const N = bible.text.length;
+  const bookOf = new Uint8Array(N), chOf = new Uint16Array(N), vOf = new Uint16Array(N);
+  const bookStart = [], chapStart = [];
+  let i = 0;
+  bible.books.forEach(([, , counts], b) => {
+    bookStart.push(i); chapStart.push([]);
+    counts.forEach((c, ci) => { chapStart[b].push(i); for (let v = 1; v <= c; v++, i++) { bookOf[i] = b; chOf[i] = ci + 1; vOf[i] = v; } });
+  });
+  bookStart.push(N);
+  const E = xr.length / 4;
+  const from = new Int32Array(E), to = new Int32Array(E), span = new Int32Array(E), votes = new Int32Array(E);
+  for (let e = 0; e < E; e++) { from[e] = xr[4 * e]; to[e] = xr[4 * e + 1]; span[e] = xr[4 * e + 2]; votes[e] = xr[4 * e + 3]; }
+  // outgoing CSR, sorted by votes
+  const outOff = new Int32Array(N + 1);
+  for (let e = 0; e < E; e++) outOff[from[e] + 1]++;
+  for (let v = 0; v < N; v++) outOff[v + 1] += outOff[v];
+  const outEdge = new Int32Array(E), fill = outOff.slice(0, N);
+  for (let e = 0; e < E; e++) outEdge[fill[from[e]]++] = e;
+  for (let v = 0; v < N; v++) outEdge.subarray(outOff[v], outOff[v + 1]).sort((a, b) => votes[b] - votes[a]);
+  const inVotes = new Float64Array(N), inCount = new Int32Array(N);
+  for (let e = 0; e < E; e++) { inVotes[to[e]] += votes[e]; inCount[to[e]]++; }
+  D = { books: bible.books, text: bible.text, N, E, bookOf, chOf, vOf, bookStart, chapStart, from, to, span, votes, outOff, outEdge, inVotes, inCount, moby, places, land, theories, popes, extra, more };
+}
+
+const ref = (i) => `${D.books[D.bookOf[i]][1]} ${D.chOf[i]}:${D.vOf[i]}`;
+const refRange = (i, len) => len ? `${ref(i)}–${D.chOf[i + len] === D.chOf[i] ? D.vOf[i + len] : D.chOf[i + len] + ":" + D.vOf[i + len]}` : ref(i);
+
+function parseRef(s) {
+  const m = s.trim().match(/^(.+?)\s*(\d+)\s*[:.]\s*(\d+)$/) || s.trim().match(/^(.+?)\s+(\d+)$/);
+  if (!m) return null;
+  const key = m[1].replace(/^(I{1,3})\s+/i, (r, n) => String(n.length)).toLowerCase().replace(/[\s.]/g, "").replace(/^psalm$/, "psalms");
+  let b = D.books.findIndex(([osis, name]) => name.toLowerCase().replace(/\s/g, "") === key || osis.toLowerCase() === key);
+  if (b < 0) b = D.books.findIndex(([, name]) => name.toLowerCase().replace(/\s/g, "").startsWith(key));
+  if (b < 0) return null;
+  const ch = +m[2], v = m[3] ? +m[3] : 1;
+  const cs = D.chapStart[b];
+  if (ch < 1 || ch > cs.length) return null;
+  const count = D.books[b][2][ch - 1];
+  if (v < 1 || v > count) return null;
+  return cs[ch - 1] + v - 1;
+}
+
+// ---------- routing ----------
+const VIEWS = ["arcs", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "people", "translations", "numbers", "codes"];
+const rendered = {};
+function route() {
+  const name = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "arcs";
+  document.querySelectorAll("nav.tabs a").forEach((a) => { if (a.dataset.view === name) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+  if (!D) return;
+  VIEWS.forEach((v) => { $("v-" + v).hidden = v !== name; });
+  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes })[name](); }
+  else if (name === "arcs") drawArcs();
+  else if (name === "history") drawPopes();
+  else if (name === "map") drawMap();
+}
+window.addEventListener("hashchange", route);
+function go(view) { if (location.hash !== "#" + view) location.hash = view; else route(); }
+
+// ---------- arcs ----------
+let arcBook = -1, arcGeom = null;
+const token = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function isDark() { return token("--bg").toLowerCase() === "#0d1220"; }
+function rampColors() { return [token("--gold"), token("--rubric"), token("--violet")]; }
+function mix(a, b, t) {
+  const p = (h) => [1, 3, 5].map((k) => parseInt(h.slice(k, k + 2), 16));
+  const x = p(a), y = p(b);
+  return `rgb(${x.map((v, k) => Math.round(v + (y[k] - v) * t)).join(",")})`;
+}
+function rampAt(t) { const [a, b, c] = rampColors(); return t < 0.5 ? mix(a, b, t * 2) : mix(b, c, (t - 0.5) * 2); }
+
+function initArcs() {
+  const sel = $("arc-book");
+  D.books.forEach(([, name], b) => sel.add(new Option(name, b)));
+  sel.onchange = () => { arcBook = +sel.value; drawArcs(); };
+  $("arc-votes").oninput = (e) => { $("arc-votes-v").textContent = e.target.value; drawArcs(); };
+  const cv = $("arcs"), tip = $("arc-tip");
+  const bookAt = (ev) => {
+    if (!arcGeom) return -1;
+    const r = cv.getBoundingClientRect(), x = ev.clientX - r.left;
+    const i = Math.floor((x - arcGeom.pad) / arcGeom.w * D.N);
+    return i >= 0 && i < D.N ? D.bookOf[i] : -1;
+  };
+  cv.onmousemove = (ev) => {
+    const b = bookAt(ev), r = cv.getBoundingClientRect();
+    if (b < 0) { tip.hidden = true; return; }
+    tip.textContent = D.books[b][1]; tip.hidden = false;
+    tip.style.left = Math.min(ev.clientX - r.left + 12, r.width - tip.offsetWidth - 4) + "px";
+    tip.style.top = (ev.clientY - r.top - 28) + "px";
+  };
+  cv.onmouseleave = () => { tip.hidden = true; };
+  cv.onclick = (ev) => { const b = bookAt(ev); arcBook = b === arcBook ? -1 : b; sel.value = arcBook; drawArcs(); };
+  let t; window.addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => { if (!$("v-arcs").hidden) drawArcs(); }, 150); });
+  const rerender = () => { if (!$("v-arcs").hidden) drawArcs(); };
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rerender);
+  new MutationObserver(rerender).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  drawArcs();
+  renderRanks();
+}
+
+function drawArcs() {
+  const cv = $("arcs"), dpr = window.devicePixelRatio || 1;
+  const W = cv.parentElement.clientWidth, pad = 10, w = W - 2 * pad, barH = 14, H = Math.round(w / 2) + barH + 26;
+  cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + "px";
+  const ctx = cv.getContext("2d"); ctx.scale(dpr, dpr);
+  ctx.fillStyle = token("--surface"); ctx.fillRect(0, 0, W, H);
+  arcGeom = { pad, w };
+  const base = H - barH - 22, minV = +$("arc-votes").value, X = (i) => pad + (i + 0.5) / D.N * w;
+  const BUCKETS = 8, paths = Array.from({ length: BUCKETS }, () => new Path2D());
+  let n = 0;
+  for (let e = 0; e < D.E; e++) {
+    if (D.votes[e] < minV) continue;
+    const a = D.from[e], b = D.to[e];
+    if (arcBook >= 0 && D.bookOf[a] !== arcBook && D.bookOf[b] !== arcBook) continue;
+    const x1 = X(Math.min(a, b)), x2 = X(Math.max(a, b)), r = (x2 - x1) / 2;
+    if (r < 0.2) continue;
+    const k = Math.min(BUCKETS - 1, Math.floor(Math.sqrt((x2 - x1) / w) * BUCKETS));
+    paths[k].moveTo(x1, base); paths[k].arc(x1 + r, base, r, Math.PI, 2 * Math.PI);
+    n++;
+  }
+  const dark = isDark();
+  ctx.globalCompositeOperation = dark ? "lighter" : "source-over";
+  ctx.lineWidth = 0.6;
+  ctx.globalAlpha = Math.max(0.05, Math.min(0.5, 1800 / Math.max(n, 1))) * (dark ? 0.9 : 1.1);
+  paths.forEach((p, k) => { ctx.strokeStyle = rampAt(k / (BUCKETS - 1)); ctx.stroke(p); });
+  ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
+  // book bar
+  const ink = token("--ink"), muted = token("--muted"), rule = token("--rule");
+  D.books.forEach(([osis], b) => {
+    const x1 = pad + D.bookStart[b] / D.N * w, x2 = pad + D.bookStart[b + 1] / D.N * w;
+    ctx.fillStyle = b === arcBook ? token("--rubric") : (b % 2 ? muted : rule);
+    ctx.fillRect(x1, base + 4, Math.max(1, x2 - x1 - 0.5), barH);
+  });
+  ctx.fillStyle = muted; ctx.font = "11px 'IBM Plex Sans', system-ui, sans-serif"; ctx.textBaseline = "top";
+  const ntX = pad + D.bookStart[39] / D.N * w;
+  ctx.textAlign = "left"; ctx.fillText("Genesis", pad, base + barH + 8);
+  ctx.textAlign = "center"; ctx.fillText("Old Testament | New Testament", ntX, base + barH + 8);
+  ctx.textAlign = "right"; ctx.fillText("Revelation", pad + w, base + barH + 8);
+  if (arcBook >= 0) { ctx.fillStyle = ink; ctx.textAlign = "left"; ctx.font = "16px 'IM Fell English SC', Georgia, serif"; ctx.fillText(D.books[arcBook][1], pad + 4, 10); }
+  $("arc-count").textContent = `${fmt(n)} arcs`;
+  const rc = $("ramp").getContext("2d");
+  for (let x = 0; x < 140; x++) { rc.fillStyle = rampAt(x / 139); rc.fillRect(x, 0, 1, 8); }
+}
+
+function renderRanks() {
+  const idx = Array.from({ length: D.N }, (_, i) => i).sort((a, b) => D.inVotes[b] - D.inVotes[a]).slice(0, 10);
+  $("top-verses").innerHTML = idx.map((v, k) => `<li><span class="i">${k + 1}</span><span class="t"><button class="ref" data-v="${v}">${ref(v)}</button> <span class="snip">${esc(D.text[v])}</span></span><span class="num status">${fmt(D.inVotes[v])}</span></li>`).join("");
+  const pair = new Map();
+  for (let e = 0; e < D.E; e++) {
+    let a = D.bookOf[D.from[e]], b = D.bookOf[D.to[e]];
+    if (a === b) continue;
+    if (a > b) [a, b] = [b, a];
+    const k = a * 100 + b; pair.set(k, (pair.get(k) || 0) + D.votes[e]);
+  }
+  const top = [...pair].sort((x, y) => y[1] - x[1]).slice(0, 10);
+  $("top-pairs").innerHTML = top.map(([k, v], i) => `<li><span class="i">${i + 1}</span><span class="t">${D.books[Math.floor(k / 100)][1]} ↔ ${D.books[k % 100][1]}</span><span class="num status">${fmt(v)}</span></li>`).join("");
+}
+
+document.addEventListener("click", (ev) => {
+  const b = ev.target.closest("button.ref[data-v]");
+  if (!b) return;
+  const v = +b.dataset.v;
+  $("verse-in").value = ref(v); rendered.verse = true; showVerse(v); go("verse"); window.scrollTo({ top: 0 });
+});
+
+// ---------- verse ----------
+function showVerse(v) {
+  $("verse-err").textContent = "";
+  if (v == null) { $("verse-err").textContent = "Couldn't read that reference. Try a form like Romans 8:28."; return; }
+  const o0 = D.outOff[v], o1 = D.outOff[v + 1], out = D.outEdge.subarray(o0, o1);
+  const maxV = out.length ? D.votes[out[0]] : 1;
+  const rows = Array.from(out.slice(0, 60), (e) => `<li><button class="ref" data-v="${D.to[e]}">${refRange(D.to[e], D.span[e])}</button><span class="snip">${esc(D.text[D.to[e]])}${D.span[e] ? " …" : ""}</span><span class="votes"><span class="num">${fmt(D.votes[e])}</span><span class="bar" style="width:${Math.max(4, D.votes[e] / maxV * 60)}px"></span></span></li>`).join("");
+  $("verse-out").innerHTML = `
+    <div class="verse-hero"><div class="r">${ref(v)}</div><blockquote>${esc(D.text[v])}</blockquote>
+      <div class="meta"><span><span class="num">${fmt(out.length)}</span> outgoing references</span><span>cited by <span class="num">${fmt(D.inCount[v])}</span> verses</span><span><span class="num">${fmt(D.inVotes[v])}</span> votes received</span></div></div>
+    <h3>Cross-references, strongest first${out.length > 60 ? " (top 60)" : ""}</h3>
+    ${out.length ? `<ul class="xr">${rows}</ul>` : `<p class="status">No outgoing cross-references for this verse.</p>`}`;
+}
+$("verse-form").onsubmit = (ev) => { ev.preventDefault(); showVerse(parseRef($("verse-in").value)); };
+$("verse-rand").onclick = () => { const v = Math.floor(Math.random() * D.N); $("verse-in").value = ref(v); showVerse(v); };
+
+// ---------- path ----------
+const graphs = {};
+const getGraph = (minV) => graphs[minV] || (graphs[minV] = buildUndirected(minV));
+function buildUndirected(minV) {
+  const N = D.N, off = new Int32Array(N + 1);
+  for (let e = 0; e < D.E; e++) if (D.votes[e] >= minV) { off[D.from[e] + 1]++; off[D.to[e] + 1]++; }
+  for (let v = 0; v < N; v++) off[v + 1] += off[v];
+  const nb = new Int32Array(off[N]), ev = new Int32Array(off[N]), f = off.slice(0, N);
+  for (let e = 0; e < D.E; e++) if (D.votes[e] >= minV) { const a = D.from[e], b = D.to[e]; nb[f[a]] = b; ev[f[a]++] = e; nb[f[b]] = a; ev[f[b]++] = e; }
+  for (let v = 0; v < N; v++) {
+    const s = off[v], t = off[v + 1];
+    if (t - s < 2) continue;
+    const ord = Array.from({ length: t - s }, (_, k) => s + k).sort((x, y) => D.votes[ev[y]] - D.votes[ev[x]]);
+    const n2 = ord.map((k) => nb[k]), e2 = ord.map((k) => ev[k]);
+    nb.set(n2, s); ev.set(e2, s);
+  }
+  return { minV, off, nb, ev };
+}
+function runPath() {
+  const a = parseRef($("path-a").value), b = parseRef($("path-b").value), minV = +$("path-votes").value;
+  $("path-err").textContent = "";
+  if (a == null || b == null) { $("path-err").textContent = `Couldn't read the ${a == null ? "From" : "To"} reference.`; return; }
+  const { off, nb, ev } = getGraph(minV), prev = new Int32Array(D.N).fill(-1), via = new Int32Array(D.N);
+  prev[a] = a; const q = [a];
+  for (let h = 0; h < q.length && prev[b] < 0; h++) {
+    const u = q[h];
+    for (let k = off[u]; k < off[u + 1]; k++) { const w = nb[k]; if (prev[w] < 0) { prev[w] = u; via[w] = ev[k]; q.push(w); } }
+  }
+  if (prev[b] < 0) { $("path-out").innerHTML = `<p class="status">No path at ${minV}+ votes. Lower the minimum and try again.</p>`; return; }
+  const chain = [b]; while (chain[chain.length - 1] !== a) chain.push(prev[chain[chain.length - 1]]);
+  chain.reverse();
+  $("path-out").innerHTML = `<p class="status"><span class="num">${chain.length - 1}</span> hops, searched <span class="num">${fmt(q.length)}</span> verses.</p><div class="chain">` +
+    chain.map((v, k) => `<div class="link"><div class="rail"><span class="dot"></span><span class="line"></span></div><div class="card"><button class="ref" data-v="${v}">${ref(v)}</button>${k ? `<span class="edge num">${fmt(D.votes[via[v]])} votes</span>` : ""}<p>${esc(D.text[v])}</p></div></div>`).join("") + "</div>";
+}
+$("path-form").onsubmit = (ev) => { ev.preventDefault(); runPath(); };
+
+// ---------- code breaker ----------
+function letters(str) {
+  const out = new Uint8Array(str.length); let n = 0;
+  for (let i = 0; i < str.length; i++) { let c = str.charCodeAt(i); if (c >= 97 && c <= 122) c -= 32; if (c >= 65 && c <= 90) out[n++] = c - 65; }
+  return out.slice(0, n);
+}
+let corpora = null, worker = null;
+function buildCorpora() {
+  const verseLetterStart = new Int32Array(D.N + 1); let total = 0;
+  const parts = D.text.map((t, i) => { verseLetterStart[i] = total; const l = letters(t); total += l.length; return l; });
+  verseLetterStart[D.N] = total;
+  const kjv = new Uint8Array(total); let p = 0; parts.forEach((l) => { kjv.set(l, p); p += l.length; });
+  const shuf = kjv.slice(); let s = 20261101;
+  const rnd = () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  for (let i = shuf.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); const x = shuf[i]; shuf[i] = shuf[j]; shuf[j] = x; }
+  corpora = [
+    { key: "kjv", name: "King James Bible", data: kjv },
+    { key: "moby", name: "Moby Dick", data: letters(D.moby) },
+    { key: "shuf", name: "Bible letters, shuffled", data: shuf },
+  ];
+  corpora.forEach((c) => { const f = new Float64Array(26); c.data.forEach((x) => f[x]++); c.freq = f.map((x) => x / c.data.length); });
+  corpora.verseLetterStart = verseLetterStart;
+  const src = `onmessage = (m) => {
+    const { data, word, maxSkip, id } = m.data, L = word.length, N = data.length, hits = []; let count = 0;
+    const dirs = [word]; const rev = word.slice().reverse();
+    if (rev.join() !== word.join()) dirs.push(rev);
+    dirs.forEach((w, di) => {
+      const c0 = w[0];
+      for (let i = 0; i < N; i++) {
+        if ((i & 0x3ffff) === 0) postMessage({ id, progress: (di + i / N) / dirs.length });
+        if (data[i] !== c0) continue;
+        const dMax = Math.min(maxSkip, Math.floor((N - 1 - i) / (L - 1)));
+        for (let d = 2; d <= dMax; d++) {
+          let k = 1; while (k < L && data[i + k * d] === w[k]) k++;
+          if (k === L) { count++; if (hits.length < 400) hits.push(di ? [i + (L - 1) * d, -d] : [i, d]); }
+        }
+      }
+    });
+    postMessage({ id, done: true, count, hits, dirs: dirs.length });
+  };`;
+  worker = new Worker(URL.createObjectURL(new Blob([src], { type: "text/javascript" })));
+}
+function search(c, word, maxSkip, onProg) {
+  return new Promise((res) => {
+    const id = Math.random();
+    worker.onmessage = (m) => { if (m.data.id !== id) return; if (m.data.done) res(m.data); else onProg(m.data.progress); };
+    worker.postMessage({ data: c.data, word, maxSkip, id });
+  });
+}
+function expected(c, word, maxSkip, dirs) {
+  const N = c.data.length, L = word.length;
+  let p = 1; word.forEach((x) => { p *= c.freq[x]; });
+  let starts = 0; for (let d = 2; d <= maxSkip; d++) starts += Math.max(0, N - (L - 1) * d);
+  return starts * p * dirs;
+}
+const letterVerse = (pos) => { const s = corpora.verseLetterStart; let lo = 0, hi = D.N - 1; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (s[m] <= pos) lo = m; else hi = m - 1; } return lo; };
+
+let codeBusy = false, codeResults = null;
+async function runCodes() {
+  if (codeBusy) return;
+  const raw = $("code-word").value.toUpperCase().replace(/[^A-Z]/g, ""), maxSkip = +$("code-skip").value;
+  $("code-err").textContent = "";
+  if (raw.length < 3) { $("code-err").textContent = "Use a word of at least 3 letters."; return; }
+  if (!corpora) buildCorpora();
+  codeBusy = true; $("code-go").disabled = true;
+  const word = Array.from(raw, (ch) => ch.charCodeAt(0) - 65), results = [];
+  for (let k = 0; k < corpora.length; k++) {
+    const c = corpora[k];
+    const r = await search(c, word, maxSkip, (p) => { $("code-prog").style.width = ((k + p) / corpora.length * 100) + "%"; });
+    results.push({ c, ...r, exp: expected(c, word, maxSkip, r.dirs) });
+  }
+  $("code-prog").style.width = "100%";
+  codeBusy = false; $("code-go").disabled = false;
+  codeResults = { raw, word, maxSkip, results };
+  renderCodes(0, 0);
+}
+function renderCodes(ci, hi) {
+  const { raw, maxSkip, results } = codeResults;
+  const rows = results.map((r) => {
+    const ratio = r.exp > 0 ? r.count / r.exp : 0;
+    return `<tr><td>${r.c.name}</td><td class="n num">${fmt(r.c.data.length)}</td><td class="n num"><strong>${fmt(r.count)}</strong></td><td class="n num">${r.exp < 10 ? r.exp.toFixed(2) : fmt(Math.round(r.exp))}</td><td class="n num">${r.exp > 0 ? ratio.toFixed(2) + "×" : "–"}</td></tr>`;
+  }).join("");
+  const sel = results[ci];
+  const hitBtns = results.map((r, k) => r.hits.length ? `<div><h3>${r.c.name}${r.count > r.hits.length ? ` (first ${r.hits.length})` : ""}</h3><ul class="hits">${r.hits.slice(0, 24).map((h, j) => `<li><button class="ghost" data-ci="${k}" data-hi="${j}" aria-pressed="${k === ci && j === hi}">skip ${h[1]}${k === 0 ? " · " + ref(letterVerse(h[0])) : ""}</button></li>`).join("")}</ul></div>` : `<div><h3>${r.c.name}</h3><p class="status">No hits.</p></div>`).join("");
+  $("code-out").innerHTML = `
+    <div class="tablewrap"><table><thead><tr><th>Text</th><th class="n">Letters</th><th class="n">Hits</th><th class="n">Expected by chance</th><th class="n">Hits ÷ expected</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="status">${raw}, skips 2 to ${fmt(maxSkip)}, forward and backward. "Expected" multiplies each text's letter frequencies over every possible start and skip. A ratio near 1× means the hits are what chance predicts.</p>
+    <div class="grid2" style="margin-top:12px"><div>${hitBtns}</div><div id="code-grid"></div></div>`;
+  $("code-out").querySelectorAll("button[data-ci]").forEach((b) => { b.onclick = () => renderCodes(+b.dataset.ci, +b.dataset.hi); });
+  if (sel.hits.length) renderGrid(sel, sel.hits[Math.min(hi, sel.hits.length - 1)]);
+  else $("code-grid").innerHTML = "";
+}
+function renderGrid(r, [start, d]) {
+  const L = codeResults.word.length, data = r.c.data, step = Math.abs(d);
+  const first = d > 0 ? start : start + (L - 1) * d; // lowest letter position
+  const cols = Math.min(step, 25), half = Math.floor(cols / 2), rows = L + 4;
+  const on = new Set(Array.from({ length: L }, (_, k) => start + k * d));
+  let cells = "";
+  for (let y = -2; y < rows - 2; y++) for (let x = -half; x < cols - half; x++) {
+    const pos = first + y * step + x;
+    const ch = pos >= 0 && pos < data.length ? String.fromCharCode(65 + data[pos]) : " ";
+    cells += `<span class="${on.has(pos) ? "on" : ""}">${ch}</span>`;
+  }
+  const where = r.c.key === "kjv" ? ` starting in ${ref(letterVerse(start))}` : "";
+  $("code-grid").innerHTML = `<h3>${r.c.name}: skip ${d}${where}</h3><p class="status">Rows are ${fmt(step)} letters long, so the word reads straight down.</p><div class="matrixwrap"><div class="matrix" style="grid-template-columns:repeat(${cols},auto)">${cells}</div></div>`;
+}
+$("code-form").onsubmit = (ev) => { ev.preventDefault(); runCodes(); };
+
+// ---------- shared helpers ----------
+const bookIdx = (osis) => D.books.findIndex((b) => b[0] === osis);
+const vi = (osis, ch, v) => D.chapStart[bookIdx(osis)][ch - 1] + v - 1;
+const quote = (osis, ch, v) => { const i = vi(osis, ch, v); return `<div class="q"><button class="ref" data-v="${i}">${ref(i)}</button> ${esc(D.text[i])}</div>`; };
+function countRx(rx, osis, ch) {
+  let s = 0, e = D.N;
+  if (osis) { const b = bookIdx(osis); s = D.bookStart[b]; e = D.bookStart[b + 1]; if (ch) { s = D.chapStart[b][ch - 1]; e = s + D.books[b][2][ch - 1]; } }
+  let n = 0;
+  for (let i = s; i < e; i++) { const m = D.text[i].match(rx); if (m) n += m.length; }
+  return n;
+}
+function mulberry(seed) { let s = seed >>> 0; return () => { s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function hashStr(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+const pill = ([label, cls]) => `<span class="pill v-${cls}" style="justify-self:start">${label}</span>`;
+function card(m) {
+  const body = typeof m.b === "function" ? m.b() : m.b;
+  const ev = m.e ? `<div class="ev">${m.e[0]}: <strong class="num">${fmt(countRx(m.e[1], m.e[2], m.e[3]))}</strong></div>` : "";
+  return `<div class="card">${pill(m.v)}<h4>${m.c}</h4><p>${body}</p>${m.list ? `<ul>${m.list.map((x) => `<li>${x}</li>`).join("")}</ul>` : ""}${(m.r || []).map((r) => quote(...r)).join("")}${ev}</div>`;
+}
+
+// ---------- ladder ----------
+const LAD_MIN = 5;
+let LAD = null, ladPool = null;
+function bfsFrom(g, s) {
+  const dist = new Int32Array(D.N).fill(-1); dist[s] = 0; const q = [s];
+  for (let h = 0; h < q.length; h++) { const u = q[h]; for (let k = g.off[u]; k < g.off[u + 1]; k++) { const w = g.nb[k]; if (dist[w] < 0) { dist[w] = dist[u] + 1; q.push(w); } } }
+  return dist;
+}
+function todayKey() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
+function makeLadder(label, seed) {
+  const g = getGraph(LAD_MIN), rnd = mulberry(seed);
+  if (!ladPool) ladPool = Array.from({ length: D.N }, (_, i) => i).sort((a, b) => D.inVotes[b] - D.inVotes[a]).slice(0, 3000);
+  for (let tries = 0; tries < 200; tries++) {
+    const start = ladPool[Math.floor(rnd() * ladPool.length)], dist = bfsFrom(g, start);
+    const ok = ladPool.filter((v) => dist[v] >= 4 && dist[v] <= 6 && (D.bookOf[v] < 39) !== (D.bookOf[start] < 39));
+    if (!ok.length) continue;
+    const goal = ok[Math.floor(rnd() * ok.length)];
+    LAD = { label, start, goal, trail: [start], toGoal: dist, par: dist[goal], hint: -1, hints: 0, showAll: false };
+    renderLadder(); return;
+  }
+  $("lad-label").textContent = "Couldn't build a ladder. Try a random one.";
+}
+function ladNeighbors(v) {
+  const g = getGraph(LAD_MIN), seen = new Set(), out = [];
+  for (let k = g.off[v]; k < g.off[v + 1]; k++) { const w = g.nb[k]; if (!seen.has(w)) { seen.add(w); out.push([w, D.votes[g.ev[k]]]); } }
+  return out;
+}
+function renderLadder() {
+  const L = LAD, cur = L.trail[L.trail.length - 1], done = cur === L.goal, hops = L.trail.length - 1;
+  $("lad-label").textContent = `${L.label} · par ${L.par}`;
+  const box = (title, v) => `<div><h3>${title}</h3><div class="r">${ref(v)}</div><p>${esc(D.text[v])}</p></div>`;
+  $("lad-goal").innerHTML = box("Start", L.start) + box("Goal", L.goal);
+  $("lad-trail").innerHTML = L.trail.map((v, k) => `<div class="link"><div class="rail"><span class="dot"></span><span class="line"></span></div><div class="card" style="border:0;background:none;padding:10px 0"><button class="ref" data-v="${v}">${ref(v)}</button>${k ? `<span class="edge">rung ${k}</span>` : ""}<p class="snip">${esc(D.text[v])}</p></div></div>`).join("");
+  if (done) {
+    const share = `Versegraph Ladder ${L.label.includes("Today") ? todayKey() : "(random)"}: ${hops} hops, par ${L.par}${L.hints ? `, ${L.hints} hint${L.hints > 1 ? "s" : ""}` : ""}\n${ref(L.start)} → ${ref(L.goal)}`;
+    $("lad-win").innerHTML = `<div class="win"><span class="h2" style="font-family:var(--display);font-size:22px">${hops <= L.par ? "Par! " : ""}Reached in ${hops} hops. Par is ${L.par}.</span><button type="button" id="lad-copy">Copy result</button><span class="status" id="lad-copied" role="status"></span></div>`;
+    $("lad-copy").onclick = () => navigator.clipboard.writeText(share).then(() => { $("lad-copied").textContent = "Copied"; }, () => { $("lad-copied").textContent = share; });
+    $("lad-choices").innerHTML = `<p class="status">Done. Try a random ladder for another round.</p>`;
+    return;
+  }
+  $("lad-win").innerHTML = "";
+  const nbs = ladNeighbors(cur), shown = L.showAll ? nbs : nbs.slice(0, 12);
+  $("lad-choices").innerHTML = shown.map(([w, votes]) => `<button type="button" data-lv="${w}" class="${w === L.hint ? "hint" : ""}"><b>${ref(w)}</b><span class="snip">${esc(D.text[w])}</span><span class="num status">${fmt(votes)}</span></button>`).join("") +
+    (nbs.length > shown.length ? `<button type="button" class="ghost" id="lad-more" style="display:block">Show all ${nbs.length} references</button>` : "");
+  $("lad-choices").querySelectorAll("button[data-lv]").forEach((b) => { b.onclick = () => { L.trail.push(+b.dataset.lv); L.hint = -1; L.showAll = false; renderLadder(); }; });
+  if ($("lad-more")) $("lad-more").onclick = () => { L.showAll = true; renderLadder(); };
+}
+function initLadder() {
+  $("lad-today").onclick = () => makeLadder("Today's ladder", hashStr(todayKey()));
+  $("lad-new").onclick = () => makeLadder("Random ladder", Math.floor(Math.random() * 2 ** 32));
+  $("lad-undo").onclick = () => { if (LAD && LAD.trail.length > 1) { LAD.trail.pop(); LAD.hint = -1; renderLadder(); } };
+  $("lad-hint").onclick = () => {
+    if (!LAD) return;
+    const cur = LAD.trail[LAD.trail.length - 1];
+    if (cur === LAD.goal) return;
+    const nbs = ladNeighbors(cur), k = nbs.findIndex(([w]) => LAD.toGoal[w] === LAD.toGoal[cur] - 1);
+    if (k < 0) return;
+    LAD.hint = nbs[k][0]; LAD.hints++; if (k >= 12) LAD.showAll = true; renderLadder();
+  };
+  makeLadder("Today's ladder", hashStr(todayKey()));
+}
+
+// ---------- myths ----------
+const MYTHS = [
+  { c: "Eve ate an apple", v: ["Myth", "myth"], b: "Genesis 3 only says “the fruit of the tree”. The apple came later in Western art, probably helped by a Latin pun: <em>malum</em> means both “evil” and “apple”.", r: [["Gen", 3, 6]], e: ["“apple” in Genesis", /\bapples?\b/gi, "Gen"] },
+  { c: "Three wise men visited Jesus at the manger", v: ["Myth", "myth"], b: "Matthew counts the gifts, not the visitors, and the wise men find the child in a house. The number three comes from the three gifts.", r: [["Matt", 2, 11]], e: ["“three” in Matthew 2", /\bthree\b/gi, "Matt", 2] },
+  { c: "Noah took two of every animal", v: ["Partly true", "part"], b: "Genesis 6 says two of every sort. Genesis 7 then says seven pairs of every clean beast and of the birds.", r: [["Gen", 6, 19], ["Gen", 7, 2]], e: ["“by sevens” in Genesis 7", /by sevens/gi, "Gen", 7] },
+  { c: "“Money is the root of all evil”", v: ["Misquote", "part"], b: "The verse says the <em>love</em> of money.", r: [["1Tim", 6, 10]], e: ["“love of money” in the Bible", /love of money/gi] },
+  { c: "Jonah was swallowed by a whale", v: ["Depends on the verse", "part"], b: "The book of Jonah says “a great fish”. Jesus' retelling in the KJV says “whale”, translating the Greek <em>kētos</em>, a sea monster.", r: [["Jonah", 1, 17], ["Matt", 12, 40]], e: ["“whale” in the book of Jonah", /\bwhale/gi, "Jonah"] },
+  { c: "Mary Magdalene was a prostitute", v: ["Myth", "myth"], b: "No verse says so. The idea comes from a sermon by Pope Gregory I in 591 that merged her with the unnamed sinful woman of Luke 7. The Catholic Church dropped that reading from its calendar in 1969.", r: [["Luke", 8, 2]], e: ["Verses naming Magdalene, none calling her a harlot", /Magdalene/g] },
+  { c: "“God helps those who help themselves”", v: ["Not in the Bible", "myth"], b: "It appears in Algernon Sidney's <em>Discourses Concerning Government</em> (published 1698), and Benjamin Franklin made it famous in <em>Poor Richard's Almanack</em> in 1736.", e: ["“help themselves” in the Bible", /help themselves/gi] },
+  { c: "“Cleanliness is next to godliness”", v: ["Not in the Bible", "myth"], b: "John Wesley made it famous in an 18th-century sermon, quoting it as an existing saying.", e: ["“cleanliness” in the Bible", /cleanliness/gi] },
+  { c: "“Spare the rod, spoil the child”", v: ["Misquote", "part"], b: "Proverbs has the idea, not the words. The phrasing comes from Samuel Butler's poem <em>Hudibras</em> (1663).", r: [["Prov", 13, 24]], e: ["“spoil the child” in the Bible", /spoil the child/gi] },
+  { c: "“Pride comes before a fall”", v: ["Misquote", "part"], b: "Close. The verse puts pride before destruction, and a haughty spirit before a fall.", r: [["Prov", 16, 18]], e: ["“pride goeth” in Proverbs", /pride goeth/gi, "Prov"] },
+  { c: "Moses had horns", v: ["Translation slip", "part"], b: "The Hebrew says his face shone, using a verb related to the word for horn. Jerome's Latin Vulgate rendered it <em>cornuta</em>, “horned”, which is why Michelangelo's Moses has horns.", r: [["Exod", 34, 29]], e: ["“horn” in Exodus 34", /\bhorn/gi, "Exod", 34] },
+  { c: "Lucifer is Satan's name", v: ["Later reading", "part"], b: "The word appears once, in a taunt addressed to the king of Babylon. It is Latin for “light-bringer”, the morning star. Later Christian readers applied it to Satan.", r: [["Isa", 14, 12]], e: ["“Lucifer” in the whole Bible", /Lucifer/g] },
+  { c: "There are no unicorns in the Bible", v: ["Myth", "myth"], b: "The KJV mentions unicorns. The Hebrew word <em>re'em</em> most likely means the wild ox.", r: [["Num", 23, 22]], e: ["“unicorn” in the KJV", /unicorns?\b/gi] },
+  { c: "Psalm 118:8 is the exact middle verse", v: ["Myth", "myth"], b: () => { const mid = D.N / 2; return `The KJV has ${fmt(D.N)} verses, an even number, so no single verse is in the middle. The middle falls between ${ref(mid - 1)} and ${ref(mid)}. Psalm 118:8 is verse number ${fmt(vi("Ps", 118, 8) + 1)}.`; }, r: [["Ps", 118, 8]] },
+  { c: "Jesus was born on December 25", v: ["Not in the Bible", "myth"], b: "No gospel gives a date. The earliest record of a December 25 celebration is a Roman calendar from 354.", e: ["“December” in the Bible", /December/gi] },
+];
+const STOPW = new Set("the and of to that in he shall unto for i his a they be is him not them it with all thou thy was which my me but ye their have thee from as are when this out were by upon there then so said on what one into an those who".split(" "));
+let inv = null, normText = null;
+const norm = (s) => s.toLowerCase().replace(/[^a-z' ]+/g, " ").replace(/\s+/g, " ").trim();
+function buildIndex(texts) {
+  const ix = new Map();
+  texts.forEach((t, i) => { for (const w of new Set(norm(t).split(" "))) { let a = ix.get(w); if (!a) ix.set(w, a = []); a.push(i); } });
+  return ix;
+}
+function ensureInv() {
+  if (inv) return;
+  normText = D.text.map(norm); inv = buildIndex(D.text);
+}
+// Verses ranked by the summed rarity (IDF) of the query's content words they contain.
+// ix is a word index over any translation aligned to the KJV verse numbering.
+function rankVerses(nq, k, ix) {
+  ensureInv();
+  const I = ix || inv;
+  const all = [...new Set(nq.split(" "))].filter(Boolean), content = all.filter((w) => !STOPW.has(w)), qw = content.length ? content : all;
+  const score = new Float64Array(D.N); let total = 0;
+  for (const w of qw) { const post = I.get(w); const idf = Math.log((D.N + 1) / ((post ? post.length : 0) + 1)); total += idf; if (post) for (const i of post) score[i] += idf; }
+  const top = [];
+  for (let i = 0; i < D.N; i++) {
+    if (score[i] <= 0) continue;
+    if (top.length < k) { top.push(i); top.sort((a, b) => score[b] - score[a]); }
+    else if (score[i] > score[top[k - 1]]) { top[k - 1] = i; top.sort((a, b) => score[b] - score[a]); }
+  }
+  return { top, score, total };
+}
+function checkPhrase(q) {
+  ensureInv();
+  const nq = norm(q);
+  if (!nq) return "";
+  const exact = [];
+  for (let i = 0; i < D.N && exact.length < 5; i++) if (normText[i].includes(nq)) exact.push(i);
+  const { top, score, total } = rankVerses(nq, 5);
+  const best = top.length ? score[top[0]] / total : 0;
+  const ans = exact.length ? "Yes. It's in the KJV word for word." : best >= 0.8 ? "Close, but not word for word." : "Not in the Bible as written.";
+  const list = (exact.length ? exact : top).map((i) => `<li><button class="ref" data-v="${i}">${ref(i)}</button> <span class="snip">${esc(D.text[i])}</span>${exact.length ? "" : ` <span class="num status">${Math.round(score[i] / total * 100)}% of the key words</span>`}</li>`).join("");
+  return `<div class="ans">${ans}</div>${list ? `<p class="status">${exact.length ? "Found in:" : "Closest verses:"}</p><ul class="cands" style="display:grid;gap:6px;padding-left:18px;margin:0">${list}</ul>` : ""}`;
+}
+function initMyths() {
+  $("myth-cards").innerHTML = MYTHS.map(card).join("");
+  $("chk-form").onsubmit = (ev) => { ev.preventDefault(); $("chk-out").innerHTML = checkPhrase($("chk-in").value); };
+  $("chk-out").innerHTML = checkPhrase($("chk-in").value);
+  // facts
+  const wc = D.text.map((t) => t.split(/\s+/).length), bookWords = D.books.map((_, b) => { let s = 0; for (let i = D.bookStart[b]; i < D.bookStart[b + 1]; i++) s += wc[i]; return s; });
+  const words = bookWords.reduce((a, b) => a + b, 0), byLen = Array.from({ length: D.N }, (_, i) => i).sort((a, b) => D.text[a].length - D.text[b].length);
+  const bw = bookWords.map((w, b) => [w, b]).sort((a, b) => b[0] - a[0]);
+  const names = ["Jesus", "David", "Moses", "Jacob", "Abraham", "Saul", "Aaron", "Solomon", "Joseph", "Peter", "Paul", "Joshua"].map((n) => [n, countRx(new RegExp(`\\b${n}\\b`, "g"))]).sort((a, b) => b[1] - a[1]);
+  const topCited = Array.from({ length: D.N }, (_, i) => i).reduce((a, b) => (D.inVotes[b] > D.inVotes[a] ? b : a), 0);
+  const chapters = D.books.reduce((a, b) => a + b[2].length, 0);
+  const F = [
+    ["Books · chapters", `66 · ${fmt(chapters)}`, ""],
+    ["Verses", fmt(D.N), `${fmt(words)} words`],
+    ["Shortest verse", ref(byLen[0]), D.text[byLen[0]]],
+    ["Longest verse", ref(byLen[D.N - 1]), `${wc[byLen[D.N - 1]]} words`],
+    ["Longest book (words)", D.books[bw[0][1]][1], `${fmt(bw[0][0])} words`],
+    ["Shortest book (words)", D.books[bw[bw.length - 1][1]][1], `${fmt(bw[bw.length - 1][0])} words`],
+    ["Most chapters", "Psalms", `${D.books[bookIdx("Ps")][2].length} chapters`],
+    ["Most-named person", names[0][0], names.slice(0, 4).map(([n, c]) => `${n} ${fmt(c)}`).join(" · ")],
+    ["“God” / “Lord”", `${fmt(countRx(/\bGod\b/g))} / ${fmt(countRx(/\bLord\b/g))}`, "Whole-word occurrences"],
+    ["Middle of the Bible", `${ref(D.N / 2 - 1)}–${D.vOf[D.N / 2]}`, "The two verses either side of the halfway point"],
+    ["Most-cited verse", ref(topCited), `${fmt(D.inVotes[topCited])} cross-reference votes`],
+    ["Cross-references", fmt(D.E), "Reader-voted links between verses"],
+  ];
+  $("facts").innerHTML = F.map(([k, v, s]) => `<div><span class="k">${k}</span><span class="val">${esc(v)}</span>${s ? `<span class="s">${esc(s)}</span>` : ""}</div>`).join("");
+  $("disp-form").onsubmit = (ev) => { ev.preventDefault(); drawDispersion(); };
+  drawDispersion();
+}
+function drawDispersion() {
+  const ws = $("disp-in").value.split(",").map((w) => w.trim().toLowerCase()).filter((w) => /^[a-z' ]+$/.test(w)).slice(0, 12);
+  const cv = $("disp"), dpr = window.devicePixelRatio || 1, W = cv.parentElement.clientWidth, labW = 86, cntW = 56, rowH = 30, H = ws.length * rowH + 30;
+  cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + "px";
+  const ctx = cv.getContext("2d"); ctx.scale(dpr, dpr);
+  ctx.fillStyle = token("--surface"); ctx.fillRect(0, 0, W, H);
+  const x0 = labW, w = W - labW - cntW, X = (i) => x0 + i / D.N * w;
+  D.books.forEach((_, b) => { if (b % 2) { ctx.fillStyle = token("--bg"); ctx.fillRect(X(D.bookStart[b]), 0, X(D.bookStart[b + 1]) - X(D.bookStart[b]), ws.length * rowH); } });
+  ctx.strokeStyle = token("--muted"); ctx.beginPath(); ctx.moveTo(X(D.bookStart[39]), 0); ctx.lineTo(X(D.bookStart[39]), ws.length * rowH); ctx.stroke();
+  ctx.font = "13px 'IBM Plex Sans', system-ui, sans-serif"; ctx.textBaseline = "middle";
+  ws.forEach((word, r) => {
+    const rx = new RegExp(`\\b${word}\\b`, "i"), y = r * rowH;
+    let n = 0; ctx.fillStyle = token("--rubric");
+    for (let i = 0; i < D.N; i++) if (rx.test(D.text[i])) { n++; ctx.fillRect(X(i), y + 6, 1, rowH - 12); }
+    ctx.fillStyle = token("--ink"); ctx.textAlign = "left"; ctx.fillText(word, 4, y + rowH / 2);
+    ctx.fillStyle = token("--muted"); ctx.textAlign = "right"; ctx.fillText(fmt(n), W - 4, y + rowH / 2);
+  });
+  ctx.fillStyle = token("--muted"); ctx.font = "11px 'IBM Plex Sans', system-ui, sans-serif"; ctx.textBaseline = "top";
+  [["Gen", "left"], ["Ps", "center"], ["Matt", "center"], ["Rev", "right"]].forEach(([o, al]) => {
+    const b = bookIdx(o); ctx.textAlign = al; ctx.fillText(D.books[b][1], al === "right" ? X(D.N) : X(D.bookStart[b]), ws.length * rowH + 8);
+  });
+}
+
+// ---------- theories ----------
+function initTheories() {
+  const J = D.theories.genesis.jehovah, G = D.theories.genesis.god, W = 800, H = 290, x0 = 70, cw = (W - x0 - 10) / J.length, base = 140, max = Math.max(...J, ...G), sc = 112 / max;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Jehovah and God per chapter of Genesis">`;
+  s += `<line x1="${x0}" x2="${W - 10}" y1="${base}" y2="${base}" style="stroke:var(--rule)"/>`;
+  J.forEach((j, i) => {
+    const x = x0 + i * cw + 1;
+    if (j) s += `<rect x="${x}" y="${base - j * sc}" width="${cw - 2}" height="${j * sc}" style="fill:var(--gold)"><title>Genesis ${i + 1}: Jehovah ×${j}</title></rect>`;
+    if (G[i]) s += `<rect x="${x}" y="${base + 1}" width="${cw - 2}" height="${G[i] * sc}" style="fill:var(--violet)"><title>Genesis ${i + 1}: God ×${G[i]}</title></rect>`;
+  });
+  [1, 10, 20, 30, 40, 50].forEach((c) => { s += `<text x="${x0 + (c - 0.5) * cw}" y="${H - 6}" text-anchor="middle" font-size="11" style="fill:var(--muted)">${c}</text>`; });
+  s += `<text x="${x0 - 8}" y="${base - 112 + 4}" text-anchor="end" font-size="11" style="fill:var(--muted)">${max}</text><text x="${x0 - 8}" y="${base + 112}" text-anchor="end" font-size="11" style="fill:var(--muted)">${max}</text>`;
+  s += `<text x="4" y="24" font-size="13" font-weight="600" style="fill:var(--gold)">Jehovah</text><text x="4" y="40" font-size="11" style="fill:var(--muted)">(YHWH)</text>`;
+  s += `<text x="4" y="${base + 24}" font-size="13" font-weight="600" style="fill:var(--violet)">God</text><text x="4" y="${base + 40}" font-size="11" style="fill:var(--muted)">(Elohim)</text>`;
+  s += `<text x="${x0 + cw * 1.6}" y="${base + G[0] * sc - 4}" font-size="11" style="fill:var(--ink)">Genesis 1: God ×${G[0]}, Jehovah ×${J[0]}</text>`;
+  s += `<text x="${W / 2}" y="${H - 22}" text-anchor="middle" font-size="11" style="fill:var(--muted)">Chapter of Genesis</text></svg>`;
+  $("names-chart").innerHTML = s;
+  // synoptic
+  const C = D.theories.synoptic.counts, NAME = { Matt: "Matthew", Mark: "Mark", Luke: "Luke" }, COL = { both: "var(--gold)", Matt: "var(--rubric)", Mark: "var(--ok)", Luke: "var(--violet)", none: "var(--rule)" };
+  const pct = (n, t) => Math.round(n / t * 100) + "%";
+  $("syn").innerHTML = ["Mark", "Matt", "Luke"].map((g) => {
+    const c = C[g], others = Object.keys(NAME).filter((o) => o !== g), segs = [["both", c.both], [others[0], c[others[0]]], [others[1], c[others[1]]], ["none", c.none]];
+    const lbl = { both: `both ${NAME[others[0]]} and ${NAME[others[1]]}`, none: `only in ${NAME[g]}` };
+    return `<div class="row"><strong>${NAME[g]} <span class="status num">${fmt(c.total)} verses</span></strong><div class="bars">${segs.map(([k, n]) => `<span style="width:${n / c.total * 100}%;background:${COL[k]}" title="${n} verses"></span>`).join("")}</div>
+      <div class="legend" style="margin:0">${segs.map(([k, n]) => `<span><span class="swatch" style="background:${COL[k]}"></span>${k === "none" ? lbl.none : k === "both" ? "shared with " + lbl.both : "shared with " + NAME[k] + " only"} <span class="num">${pct(n, c.total)}</span></span>`).join("")}</div></div>`;
+  }).join("");
+  const mk = C.Mark;
+  $("syn-note").textContent = `${pct(mk.total - mk.none, mk.total)} of Mark's verses have a parallel in Matthew or Luke. ${fmt(C.Matt.Luke)} verses of Matthew are shared with Luke but not Mark, the "double tradition" scholars assign to Q. Method: a verse counts as a parallel when OpenBible lists a cross-reference to the other gospel and at least 10% of the meaningful words overlap. That is rough, but it lands near published estimates.`;
+  renderFulfil();
+  renderMood();
+}
+
+// ---------- map ----------
+const COSL = Math.cos(32 * Math.PI / 180);
+const MAP = { lon: 35.5, lat: 31.8, k: 60, pts: [], sel: null, drag: null, moved: false, items: null, trace: null };
+const pname = (n) => n.replace(/ \d+$/, "");
+const FEATURED = ["Mount Sinai", "Red Sea 1", "Eden 1", "Sodom", "Gomorrah", "Ophir", "Tarshish 1", "Emmaus", "Golgotha", "Bethsaida 1", "Ai 1", "Kadesh-barnea"];
+function mapSize() { const cv = $("map"); return [cv.parentElement.clientWidth, cv.parentElement.clientHeight || 520]; }
+function fitMap(coords) {
+  const [W, H] = mapSize();
+  if (!coords.length) coords = [[34, 29.5], [37, 33.5]];
+  const lons = coords.map((c) => c[0]), lats = coords.map((c) => c[1]);
+  const lo0 = Math.min(...lons), lo1 = Math.max(...lons), la0 = Math.min(...lats), la1 = Math.max(...lats);
+  MAP.lon = (lo0 + lo1) / 2; MAP.lat = (la0 + la1) / 2;
+  MAP.k = Math.min(W / (Math.max(lo1 - lo0, 1.2) * COSL), H / Math.max(la1 - la0, 1.2)) * 0.82;
+}
+function bookItems(b) {
+  const s = D.bookStart[b], e = D.bookStart[b + 1], items = [], events = [];
+  D.places.forEach((p) => {
+    const vs = p.v.filter((v) => v >= s && v < e);
+    if (!vs.length) return;
+    items.push({ p, n: vs.length, vs });
+    if (["settlement", "island", "campsite"].includes(p.t)) vs.forEach((v) => events.push([v, p]));
+  });
+  events.sort((a, b) => a[0] - b[0]);
+  const trace = [];
+  events.forEach(([, p]) => { if (trace[trace.length - 1] !== p) trace.push(p); });
+  items.sort((a, b) => a.n - b.n);
+  return { items, trace };
+}
+function setMapMode() {
+  const mode = $("map-mode").value;
+  $("map-book-f").hidden = $("map-trace-f").hidden = mode !== "book"; $("map-site-f").hidden = mode !== "disputed";
+  MAP.sel = null;
+  if (mode === "book") { const r = bookItems(+$("map-book").value); MAP.items = r.items; MAP.trace = r.trace; fitMap(r.items.map((it) => [it.p.c[0][1], it.p.c[0][2]])); }
+  else { const p = D.places[+$("map-site").value]; MAP.sel = p; fitMap(p.c.map((c) => [c[1], c[2]])); }
+  drawMap(); renderMapPanel();
+}
+function drawMap() {
+  const cv = $("map"), dpr = window.devicePixelRatio || 1, [W, H] = mapSize();
+  cv.width = W * dpr; cv.height = H * dpr;
+  const ctx = cv.getContext("2d"); ctx.scale(dpr, dpr);
+  const P = (lon, lat) => [(lon - MAP.lon) * MAP.k * COSL + W / 2, (MAP.lat - lat) * MAP.k + H / 2];
+  ctx.fillStyle = token("--sea"); ctx.fillRect(0, 0, W, H);
+  const shape = (rings, close) => { const path = new Path2D(); rings.forEach((r) => { r.forEach(([lon, lat], i) => { const [x, y] = P(lon, lat); i ? path.lineTo(x, y) : path.moveTo(x, y); }); if (close) path.closePath(); }); return path; };
+  const land = shape(D.land.land, true);
+  ctx.fillStyle = token("--land"); ctx.fill(land); ctx.strokeStyle = token("--rule"); ctx.lineWidth = 0.8; ctx.stroke(land);
+  ctx.fillStyle = token("--sea"); ctx.fill(shape(D.land.lakes, true));
+  ctx.strokeStyle = token("--river"); ctx.lineWidth = 1.2; ctx.stroke(shape(D.land.rivers, false));
+  MAP.pts = [];
+  const halo = (text, x, y) => { ctx.lineWidth = 3; ctx.strokeStyle = token("--land"); ctx.strokeText(text, x, y); ctx.fillStyle = token("--ink"); ctx.fillText(text, x, y); };
+  ctx.font = "12px 'IBM Plex Sans', system-ui, sans-serif"; ctx.textBaseline = "middle"; ctx.textAlign = "left";
+  if ($("map-mode").value === "book" && MAP.items) {
+    if ($("map-trace").checked && MAP.trace.length > 1) {
+      ctx.strokeStyle = token("--gold"); ctx.globalAlpha = 0.6; ctx.lineWidth = 1.3; ctx.beginPath();
+      MAP.trace.forEach((p, i) => { const [x, y] = P(p.c[0][1], p.c[0][2]); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+      ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    MAP.items.forEach((it) => {
+      const [x, y] = P(it.p.c[0][1], it.p.c[0][2]), r = 2.5 + Math.sqrt(it.n) * 1.6;
+      ctx.beginPath(); ctx.arc(x, y, r, 0, 2 * Math.PI); ctx.fillStyle = token("--rubric"); ctx.globalAlpha = 0.8; ctx.fill(); ctx.globalAlpha = 1;
+      if (it.p === MAP.sel) { ctx.lineWidth = 2.5; ctx.strokeStyle = token("--gold"); ctx.stroke(); }
+      MAP.pts.push({ x, y, r: Math.max(r, 6), it, label: `${pname(it.p.n)} · ${it.n} verse${it.n > 1 ? "s" : ""}` });
+    });
+    MAP.items.slice(-14).forEach((it) => { const [x, y] = P(it.p.c[0][1], it.p.c[0][2]); halo(pname(it.p.n), x + 4 + Math.sqrt(it.n) * 1.6, y); });
+  } else if (MAP.sel) {
+    const tot = MAP.sel.c.reduce((a, c) => a + Math.max(c[3], 1), 0);
+    MAP.sel.c.slice().reverse().forEach((c) => {
+      const [x, y] = P(c[1], c[2]), share = Math.max(c[3], 1) / tot, r = 4 + 16 * Math.sqrt(share);
+      ctx.beginPath(); ctx.arc(x, y, r, 0, 2 * Math.PI); ctx.fillStyle = token("--rubric"); ctx.globalAlpha = 0.7; ctx.fill(); ctx.globalAlpha = 1;
+      halo(`${c[0]} ${Math.round(share * 100)}%`, x + r + 3, y);
+      MAP.pts.push({ x, y, r: Math.max(r, 6), label: `${c[0]} · ${Math.round(share * 100)}%` });
+    });
+  }
+}
+function renderMapPanel() {
+  const mode = $("map-mode").value, b = +$("map-book").value, verses = (vs, n) => `<ul>${vs.slice(0, n).map((v) => `<li><button class="ref" data-v="${v}">${ref(v)}</button> <span class="snip">${esc(D.text[v].slice(0, 90))}${D.text[v].length > 90 ? "…" : ""}</span></li>`).join("")}</ul>`;
+  if (mode === "disputed") {
+    const p = MAP.sel, tot = p.c.reduce((a, c) => a + Math.max(c[3], 1), 0);
+    $("map-panel").innerHTML = `<h4>${esc(pname(p.n))}</h4><p class="status">${p.c.length} proposed locations, sized by OpenBible's confidence score for each. Named in ${fmt(p.v.length)} verse${p.v.length > 1 ? "s" : ""}.</p>
+      <ul>${p.c.map((c) => `<li class="cand"><span>${esc(c[0])}</span><span class="num status">${Math.round(Math.max(c[3], 1) / tot * 100)}%</span><span class="bar" style="width:${Math.max(2, Math.max(c[3], 1) / tot * 100)}%"></span></li>`).join("")}</ul><h3 style="margin-top:6px">Mentioned in</h3>${verses(p.v, 5)}`;
+    return;
+  }
+  if (!MAP.sel) {
+    const top = MAP.items.slice(-8).reverse(), total = MAP.items.reduce((a, it) => a + it.n, 0);
+    $("map-panel").innerHTML = `<h4>${D.books[b][1]}</h4><p class="status">${fmt(MAP.items.length)} places named ${fmt(total)} times. ${$("map-trace").checked ? "The gold line joins towns in the order the text mentions them." : ""} Click a dot for details.</p><h3>Most named</h3><ul>${top.map((it) => `<li class="cand"><button class="ref" data-pi="${D.places.indexOf(it.p)}">${esc(pname(it.p.n))}</button><span class="num status">${it.n}</span></li>`).join("")}</ul>`;
+  } else {
+    const it = MAP.items.find((x) => x.p === MAP.sel), p = MAP.sel;
+    $("map-panel").innerHTML = `<h4>${esc(pname(p.n))}</h4><p class="status">${esc(p.t)} · usually identified as ${esc(p.c[0][0])}${p.c.length > 1 ? `, one of ${p.c.length} proposed locations` : ""}.</p>
+      ${p.c.length > 1 ? `<button type="button" class="ghost" id="map-dispute" style="justify-self:start">Show all proposed sites</button>` : ""}
+      <h3>In ${D.books[b][1]} (${it ? it.n : 0})</h3>${verses(it ? it.vs : [], 8)}<p class="status">${fmt(p.v.length)} verses in the whole Bible.</p><button type="button" class="ghost" id="map-clear" style="justify-self:start">Back to ${D.books[b][1]}</button>`;
+    if ($("map-dispute")) $("map-dispute").onclick = () => { $("map-mode").value = "disputed"; ensureSiteOption(p); $("map-site").value = D.places.indexOf(p); setMapMode(); };
+    $("map-clear").onclick = () => { MAP.sel = null; drawMap(); renderMapPanel(); };
+  }
+  $("map-panel").querySelectorAll("button[data-pi]").forEach((btn) => { btn.onclick = () => { MAP.sel = D.places[+btn.dataset.pi]; drawMap(); renderMapPanel(); }; });
+}
+function ensureSiteOption(p) {
+  const i = D.places.indexOf(p), sel = $("map-site");
+  if (![...sel.options].some((o) => +o.value === i)) sel.add(new Option(pname(p.n), i));
+}
+function initMap() {
+  D.books.forEach(([, name], b) => $("map-book").add(new Option(name, b)));
+  $("map-book").value = bookIdx("Acts");
+  const sel = $("map-site"), feat = document.createElement("optgroup"), rest = document.createElement("optgroup");
+  feat.label = "Famous"; rest.label = "All places with 3 or more proposed sites";
+  FEATURED.forEach((n) => { const i = D.places.findIndex((p) => p.n === n); if (i >= 0 && D.places[i].c.length > 1) feat.appendChild(new Option(pname(n), i)); });
+  D.places.map((p, i) => [p, i]).filter(([p]) => p.c.length >= 3 && !FEATURED.includes(p.n)).sort((a, b) => a[0].n.localeCompare(b[0].n)).forEach(([p, i]) => rest.appendChild(new Option(pname(p.n), i)));
+  sel.append(feat, rest);
+  $("map-mode").onchange = setMapMode; $("map-book").onchange = setMapMode; $("map-site").onchange = setMapMode;
+  $("map-trace").onchange = () => { drawMap(); renderMapPanel(); };
+  const cv = $("map"), tip = $("map-tip");
+  const hit = (ev) => { const r = cv.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top; let best = null, bd = 1e9; MAP.pts.forEach((p) => { const d = Math.hypot(p.x - x, p.y - y); if (d <= p.r + 3 && d < bd) { bd = d; best = p; } }); return [best, x, y]; };
+  const zoomAt = (f, x, y) => {
+    const [W, H] = mapSize(), lon = MAP.lon + (x - W / 2) / (MAP.k * COSL), lat = MAP.lat - (y - H / 2) / MAP.k;
+    MAP.k = Math.min(4000, Math.max(6, MAP.k * f));
+    MAP.lon = lon - (x - W / 2) / (MAP.k * COSL); MAP.lat = lat + (y - H / 2) / MAP.k; drawMap();
+  };
+  cv.addEventListener("pointerdown", (ev) => { MAP.drag = { x: ev.clientX, y: ev.clientY, lon: MAP.lon, lat: MAP.lat }; MAP.moved = false; cv.setPointerCapture(ev.pointerId); });
+  cv.addEventListener("pointermove", (ev) => {
+    if (MAP.drag) {
+      const dx = ev.clientX - MAP.drag.x, dy = ev.clientY - MAP.drag.y;
+      if (Math.abs(dx) + Math.abs(dy) > 3) MAP.moved = true;
+      if (MAP.moved) { MAP.lon = MAP.drag.lon - dx / (MAP.k * COSL); MAP.lat = MAP.drag.lat + dy / MAP.k; tip.hidden = true; drawMap(); }
+      return;
+    }
+    const [p, x, y] = hit(ev);
+    if (!p) { tip.hidden = true; return; }
+    tip.textContent = p.label; tip.hidden = false;
+    tip.style.left = Math.max(4, Math.min(x + 12, cv.clientWidth - tip.offsetWidth - 4)) + "px"; tip.style.top = Math.max(4, y - 28) + "px";
+  });
+  cv.addEventListener("pointerup", (ev) => {
+    const wasDrag = MAP.moved; MAP.drag = null;
+    if (wasDrag) return;
+    const [p] = hit(ev);
+    if (p && p.it) { MAP.sel = p.it.p; drawMap(); renderMapPanel(); }
+  });
+  cv.addEventListener("pointerleave", () => { tip.hidden = true; });
+  cv.addEventListener("wheel", (ev) => { ev.preventDefault(); const r = cv.getBoundingClientRect(); zoomAt(ev.deltaY < 0 ? 1.25 : 0.8, ev.clientX - r.left, ev.clientY - r.top); }, { passive: false });
+  $("map-in").onclick = () => { const [W, H] = mapSize(); zoomAt(1.5, W / 2, H / 2); };
+  $("map-out").onclick = () => { const [W, H] = mapSize(); zoomAt(1 / 1.5, W / 2, H / 2); };
+  $("map-fit").onclick = setMapMode;
+  let t; window.addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => { if (!$("v-map").hidden) drawMap(); }, 150); });
+  const rerender = () => { if (!$("v-map").hidden) drawMap(); };
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rerender);
+  new MutationObserver(rerender).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  setMapMode();
+}
+
+// ---------- beyond the canon ----------
+const CANON = [
+  { c: "1 Enoch", v: ["Quoted in the Bible", "true"], b: "An ancient Jewish book credited to Enoch, Noah's great-grandfather. Its oldest part, the Book of the Watchers, is usually dated to the 3rd century BC. It expands Genesis 6: angels called Watchers take human wives, father giants and teach forbidden arts. The letter of Jude quotes it almost word for word (1 Enoch 1:9).", r: [["Jude", 1, 14], ["Gen", 6, 4]] },
+  { c: "Was the Book of Enoch banned?", v: ["Myth", "myth"], b: "No council banned it. It never entered the Jewish canon, and most churches stopped copying it after the 4th century. The full text survives only in Ge'ez because the Ethiopian Orthodox Tewahedo Church kept it in its Bible. Aramaic fragments of most of the book turned up among the Dead Sea Scrolls at Qumran. Its fallen angels are echoed in 2 Peter.", r: [["2Pet", 2, 4]] },
+  { c: "The Nag Hammadi library", v: ["Real, ancient", "true"], b: "In December 1945 farmers near Nag Hammadi in Egypt dug up a jar of papyrus books bound in leather, written in Coptic. They hold 52 texts copied in the 4th century, many of them gnostic, teaching that salvation comes through secret knowledge (<em>gnōsis</em>). The books were buried in antiquity, not hidden by a later church." },
+  { c: "The Gospel of Thomas", v: ["Real, ancient", "true"], b: "A list of 114 sayings attributed to Jesus, with no birth story, miracles or crucifixion. About half the sayings have parallels in Matthew, Mark or Luke. The complete text is the Coptic copy from Nag Hammadi; Greek fragments found at Oxyrhynchus date to around 200 AD. When it was first written is debated, from the late 1st to the 2nd century." },
+  { c: "The Gospel of Mary", v: ["Real, ancient", "true"], b: "A genuine early text, but much of what is said about it is wrong. The main copy is a 5th-century Coptic book (Berlin Codex 8502) bought in Cairo in 1896 and published in 1955; two Greek fragments date to the 3rd century. Pages 1–6 and 11–14 are lost, about half the text. In what survives, Mary comforts the disciples and shares a vision; Peter and Andrew doubt her, and Levi defends her.",
+    list: ["<b>Myth:</b> Mary Magdalene wrote it. It is named after her, not written by her, and was probably composed in the 2nd century.", "<b>Myth:</b> It was found at Nag Hammadi. It surfaced 50 years earlier, in a separate find.", "<b>Myth:</b> It says she was Jesus' wife. Peter says the Savior loved her more than other women; nothing says they married."] },
+  { c: "The Gospel of Philip and the kiss", v: ["Contested reading", "part"], b: "This Nag Hammadi text calls Mary Magdalene Jesus' <em>koinōnos</em>, “companion”, and says he kissed her often. The manuscript has a hole exactly where it says where he kissed her. “On the mouth” is a modern guess filling the gap." },
+  { c: "The Gospel of Jesus' Wife", v: ["Forgery", "myth"], b: "A papyrus scrap announced in 2012 with the line “Jesus said to them, ‘My wife…’”. In 2016 journalist Ariel Sabar traced it to a dealer, Walter Fritz, whose story of where it came from fell apart. Karen King, the Harvard scholar who published it, then said the evidence pointed to forgery." },
+  { c: "The Gospel of Judas", v: ["Contested reading", "part"], b: "A real Coptic text from the 3rd or 4th century, published by National Geographic in 2006 as showing Judas as Jesus' most loyal disciple. Other scholars, including April DeConick, argued that the first translation misread key lines and that the text calls Judas a demon (<em>daimōn</em>)." },
+  { c: "The Council of Nicaea chose the books of the Bible", v: ["Myth", "myth"], b: "The council of 325 argued over whether Jesus was fully divine and when to celebrate Easter. It made no list of books. The first surviving list matching today's 27 New Testament books is from Athanasius in 367. Fiction such as <em>The Da Vinci Code</em> spread the myth." },
+];
+const ECHOES = [
+  { t: "Jude quotes Enoch", n: "The clearest case: a New Testament letter quotes 1 Enoch and names it as Enoch's prophecy.", en: [[1, "9"]], bi: [["Jude", 1, 14], ["Jude", 1, 15]] },
+  { t: "Angels take human wives", n: "Genesis gives the story in four verses. Enoch's Book of the Watchers expands it into a full account of fallen angels and their giant children.", en: [[6, "1"], [6, "2"]], bi: [["Gen", 6, 2], ["Gen", 6, 4]] },
+  { t: "Angels bound in darkness until judgement", n: "2 Peter and Jude both describe sinning angels held in chains of darkness for the judgement, as Enoch 10 does. 2 Peter's verb for “cast down to hell” is literally “cast into Tartarus”, a place Enoch names.", en: [[10, "4"], [10, "12"]], bi: [["2Pet", 2, 4], ["Jude", 1, 6]] },
+  { t: "The Son of Man and the Head of Days", n: "Enoch's Parables build on Daniel's vision of the Ancient of Days and “one like the Son of man”.", en: [[46, "1"], [46, "2"]], bi: [["Dan", 7, 9], ["Dan", 7, 13]] },
+  { t: "The Son of Man on the throne of his glory", n: "Matthew's judgement scene uses the same phrase as Enoch's Parables.", en: [[62, "5"], [69, "27"]], bi: [["Matt", 25, 31], ["Matt", 19, 28]] },
+  { t: "Named archangels", n: "Enoch 20 names seven archangels. The Protestant Bible names only two of them, Michael and Gabriel.", en: [[20, "5"], [20, "7"]], bi: [["Jude", 1, 9], ["Luke", 1, 19]] },
+];
+const enochQ = (c, l) => { const v = D.extra.enoch[c - 1].find((x) => x[0] === l); return v ? `<div class="q"><b>1 Enoch ${c}:${l}</b> ${esc(v[1])}</div>` : ""; };
+const ENOCH_PARTS = [["Book of the Watchers", 1, 36], ["Parables (Similitudes)", 37, 71], ["Astronomical Book", 72, 82], ["Dream Visions", 83, 90], ["Epistle of Enoch", 91, 108]];
+function renderReader() {
+  const which = $("x-text").value;
+  $("x-ch-f").hidden = which !== "enoch";
+  let rows = [];
+  if (which === "enoch") {
+    const c = +$("x-ch").value;
+    rows = D.extra.enoch[c - 1].map(([l, t]) => ({ n: `${c}:${l}`, t }));
+  } else if (which === "thomas") {
+    rows = D.extra.thomas.map(([n, title, t]) => ({ n: n ? String(n) : "", h: title, t }));
+  } else {
+    rows = D.extra.mary.map(([h, t]) => (h ? { n: "", h, t } : { n: "", gap: t }));
+  }
+  $("x-out").innerHTML = rows.map((r, i) => r.gap ? `<div class="passage"><span class="pn"></span><div class="pt gap">${esc(r.gap)}</div></div>` :
+    `<div class="passage"><span class="pn">${r.n}</span><div class="pt">${r.h ? `<h4>${esc(r.h)}</h4>` : ""}${esc(r.t)}</div><button type="button" class="ghost sim" data-i="${i}">Closest Bible verses</button><div class="simout" id="sim-${i}"></div></div>`).join("");
+  $("x-out").querySelectorAll("button.sim").forEach((b) => {
+    b.onclick = async () => {
+      // Modern-English texts match against the WEB; Charles's older English matches the KJV.
+      const modern = which !== "enoch", out = $("sim-" + b.dataset.i);
+      b.disabled = true;
+      let ix = null, texts = D.text;
+      if (modern) { try { texts = await loadTr("web"); ix = trIndex("web"); } catch (e) { out.textContent = "Couldn't load the WEB text for matching."; b.disabled = false; return; } }
+      const r = rows[+b.dataset.i], { top, score, total } = rankVerses(norm(r.t), 4, ix);
+      out.innerHTML = top.length ? `<ul>${top.map((v) => `<li><button class="ref" data-v="${v}">${ref(v)}</button> <span class="snip">${esc(texts[v])}</span> <span class="num status">${Math.round(score[v] / total * 100)}%</span></li>`).join("")}</ul>${modern ? `<p class="status">Matched against the World English Bible.</p>` : ""}` : `<p class="status">No shared words.</p>`;
+      b.hidden = true;
+    };
+  });
+}
+function initCanon() {
+  $("canon-cards").innerHTML = CANON.map(card).join("");
+  $("enoch-echoes").innerHTML = ECHOES.map((e) => `<div class="card">${pill(["Parallel", "true"])}<h4>${e.t}</h4><p>${e.n}</p>${e.en.map(([c, l]) => enochQ(c, l)).join("")}${e.bi.map((r) => quote(...r)).join("")}</div>`).join("");
+  const sel = $("x-ch");
+  ENOCH_PARTS.forEach(([name, a, b]) => { const g = document.createElement("optgroup"); g.label = name; for (let c = a; c <= b; c++) g.appendChild(new Option(`Chapter ${c}`, c)); sel.appendChild(g); });
+  $("x-text").onchange = renderReader; sel.onchange = renderReader;
+  renderReader();
+}
+
+// ---------- history ----------
+const LEGENDS = [
+  { c: "The Shroud of Turin", v: ["Dated to 1260–1390", "part"], b: "A linen cloth bearing the faint front and back image of a man. Its first secure record is at Lirey, France, in the 1350s, and in 1389 the local bishop wrote to the Avignon pope that an artist had confessed to painting it. In 1988 labs in Oxford, Arizona and Zurich radiocarbon-dated samples to AD 1260–1390 (published in <em>Nature</em>, 1989). Defenders argue the sample came from a medieval repair; a 2010 re-examination of leftover sample found no evidence of one. How the image was made is still argued over. The Catholic Church has never ruled on its authenticity." },
+  { c: "Eucharistic miracles", v: ["Claimed, not verified", "part"], b: "Reports of consecrated bread or wine visibly turning into flesh or blood. The best known is Lanciano, Italy, an 8th-century story whose relics a professor, Odoardo Linoli, examined in 1970–71 and described as heart tissue and type AB blood. Modern cases include Buenos Aires (1996) and Sokółka, Poland (2008). None has been confirmed by independent, peer-reviewed testing, and Catholics are not required to believe in any of them. The usual skeptical explanation for “bleeding” bread is <em>Serratia marcescens</em>, a red bacterium that grows on starchy food. Tradition ties the 1263 miracle of Bolsena to the feast of Corpus Christi, which Urban IV extended to the whole Church in 1264, though his decree does not mention it." },
+  { c: "The Knights Templar", v: ["Real order", "true"], b: "Founded around 1119 in Jerusalem by Hugues de Payens to protect pilgrims, and approved at the Council of Troyes in 1129. They became bankers to kings. On Friday 13 October 1307, Philip IV of France had every Templar in France arrested, partly to escape his debts to them. Pope Clement V dissolved the order in 1312, and the last Grand Master, Jacques de Molay, was burned in Paris in 1314. In 2001 historian Barbara Frale found the Chinon Parchment in the Vatican archives, showing Clement had privately absolved the order's leaders in 1308." },
+  { c: "Friday the 13th is unlucky because of the Templars", v: ["Myth", "myth"], b: "The arrests did fall on a Friday the 13th, but the superstition about that date only appears in the 19th century, and the Templar link is a 20th-century invention spread by novels such as <em>The Da Vinci Code</em>." },
+  { c: "The Templars guard the Holy Grail and Jesus' bloodline", v: ["Hoax", "myth"], b: "The secret society said to protect the bloodline, the Priory of Sion, was invented by Pierre Plantard, who planted forged documents in France's national library in the 1960s. He admitted under oath in 1993 that he had made it up. The 1982 book <em>The Holy Blood and the Holy Grail</em>, and later <em>The Da Vinci Code</em>, built on his forgeries." },
+  { c: "Pope Joan", v: ["Myth", "myth"], b: "A woman said to have reigned as pope in the 850s, disguised as a man. The story first appears in the 13th century, about 400 years later, and nothing written in the 9th century mentions her. Leo IV died in 855 and Benedict III was elected the same year, leaving no gap for her reign." },
+  { c: "Noah's Ark has been found", v: ["Myth", "myth"], b: "Genesis gives the ark as 300 × 50 × 30 cubits: about 137 × 23 × 14 m at an 18-inch cubit. It comes to rest on “the mountains of Ararat”, a region (ancient Urartu), not a single peak. The best-known claim, the boat-shaped Durupınar formation near Mount Ararat, is a natural rock formation according to geologists, and no expedition has produced verified remains. Kentucky's Ark Encounter (2016) is a replica built 510 feet long using a longer cubit.", r: [["Gen", 6, 15], ["Gen", 8, 4]] },
+  { c: "The Ark of the Covenant", v: ["Lost since 586 BC", "part"], b: "A gold-covered chest, 2½ × 1½ × 1½ cubits (about 1.1 × 0.7 × 0.7 m), that held the tablets of the law. The Bible never says what happened to it after the Babylonians destroyed the Temple in 586 BC, and Jeremiah says it will not be missed. The Ethiopian Orthodox Church says it rests in a chapel at Aksum, guarded by one monk who alone may see it, so the claim cannot be tested. 2 Maccabees, in Catholic and Orthodox Bibles, says Jeremiah hid it in a cave on Mount Nebo.", r: [["Exod", 25, 10], ["Jer", 3, 16]], e: ["“ark of the covenant” in the KJV", /ark of the covenant/gi] },
+];
+const POPE = { segs: [], sel: null, rows: 21, list: null };
+const ydate = (s) => { const [y, m, d] = s.split("-").map(Number); return y + ((m - 1) * 30.44 + (d - 1)) / 365.25; };
+function reignDays(p) { const end = p[3] ? new Date(p[3] + "T00:00:00Z") : new Date(); const st = new Date(p[2].padStart(10, "0") + "T00:00:00Z"); return Math.max(0, Math.round((end - st) / 864e5)); }
+const reignLen = (d) => d < 365 ? `${d} days` : `${(d / 365.25).toFixed(1)} years`;
+const yr = (s) => s ? String(+s.slice(0, 4)) : "present";
+function initHistory() {
+  POPE.list = D.popes.filter((p) => !p[4] || +p[2].slice(0, 4) < 1500);
+  const cv = $("popes"), tip = $("pope-tip");
+  const hit = (ev) => { const r = cv.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top; return POPE.segs.find((s) => x >= s.x - 1 && x <= s.x + s.w + 1 && y >= s.y - 2 && y <= s.y + s.h + 2); };
+  cv.onmousemove = (ev) => {
+    const s = hit(ev), r = cv.getBoundingClientRect();
+    if (!s) { tip.hidden = true; cv.style.cursor = ""; return; }
+    cv.style.cursor = "pointer";
+    tip.textContent = `${s.p[4] ? "Antipope " : "No. " + s.p[0] + " "}${s.p[1]} · ${yr(s.p[2])}–${yr(s.p[3])}`; tip.hidden = false;
+    tip.style.left = Math.max(4, Math.min(ev.clientX - r.left + 12, r.width - tip.offsetWidth - 4)) + "px"; tip.style.top = Math.max(4, ev.clientY - r.top - 28) + "px";
+  };
+  cv.onmouseleave = () => { tip.hidden = true; };
+  cv.onclick = (ev) => { const s = hit(ev); if (s) { POPE.sel = s.p; drawPopes(); renderPopePanel(); } };
+  let t; window.addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => { if (!$("v-history").hidden) drawPopes(); }, 150); });
+  const rerender = () => { if (!$("v-history").hidden) drawPopes(); };
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rerender);
+  new MutationObserver(rerender).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  const popes = D.popes.filter((p) => !p[4]);
+  POPE.sel = popes[popes.length - 1];
+  drawPopes(); renderPopePanel();
+  const long = popes.map((p) => [p, reignDays(p)]).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  $("pope-long").innerHTML = long.map(([p, d], i) => `<li><span class="i">${i + 1}</span><span class="t"><button class="ref" data-pope="${p[0]}">${esc(p[1])}</button> <span class="status">${yr(p[2])}–${yr(p[3])}${+p[2].slice(0, 4) < 200 ? " (traditional dates)" : ""}</span></span><span class="num status">${reignLen(d)}</span></li>`).join("");
+  const base = new Map();
+  new Set(popes.map((p) => p[1])).forEach((n) => { const b = n.replace(/ [IVXL]+$/, ""); base.set(b, (base.get(b) || 0) + 1); });
+  const names = [...base].sort((a, b) => b[1] - a[1]).slice(0, 8);
+  $("pope-names").innerHTML = names.map(([n, c], i) => `<li><span class="i">${i + 1}</span><span class="t">${esc(n)}</span><span class="num status">${c}</span></li>`).join("");
+  const johns = base.get("John");
+  $("pope-names-note").textContent = `Counted by distinct pope, so Benedict IX's three separate terms count once. There are ${johns} Johns, but the numbering reaches John XXIII: medieval lists skipped "John XX" by mistake, and John XVI was an antipope.`;
+  document.querySelectorAll("#pope-long button[data-pope]").forEach((b) => { b.onclick = () => { POPE.sel = popes.find((p) => p[0] === +b.dataset.pope); drawPopes(); renderPopePanel(); $("popes").scrollIntoView({ block: "center", behavior: "smooth" }); }; });
+  $("legend-cards").innerHTML = LEGENDS.map(card).join("");
+}
+function drawPopes() {
+  const cv = $("popes"), dpr = window.devicePixelRatio || 1, W = cv.parentElement.clientWidth, labW = 64, cntW = 40, rowH = 30, H = POPE.rows * rowH + 10;
+  cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + "px";
+  const ctx = cv.getContext("2d"); ctx.scale(dpr, dpr);
+  ctx.fillStyle = token("--surface"); ctx.fillRect(0, 0, W, H);
+  const w = W - labW - cntW, X = (y) => labW + (y % 100) / 100 * w;
+  const ord = (n) => n + (n % 100 >= 11 && n % 100 <= 13 ? "th" : ["th", "st", "nd", "rd"][n % 10] || "th");
+  ctx.font = "11px 'IBM Plex Sans', system-ui, sans-serif"; ctx.textBaseline = "middle";
+  const counts = new Array(POPE.rows).fill(0);
+  POPE.segs = [];
+  let alt = 0;
+  POPE.list.forEach((p) => {
+    const a = ydate(p[2]), b = Math.max(a + 0.02, p[3] ? ydate(p[3]) : 2026 + (new Date().getMonth()) / 12), anti = p[4];
+    if (!anti) { counts[Math.min(POPE.rows - 1, Math.floor(a / 100))]++; alt ^= 1; }
+    for (let row = Math.floor(a / 100); row <= Math.min(POPE.rows - 1, Math.floor((b - 1e-9) / 100)); row++) {
+      const s = Math.max(a, row * 100), e = Math.min(b, row * 100 + 100), x = X(s), x2 = row * 100 + 100 <= e ? labW + w : X(e);
+      const y = row * rowH + (anti ? 22 : 5), h = anti ? 4 : 15;
+      ctx.fillStyle = p === POPE.sel ? token("--rubric") : anti ? token("--rubric") : alt ? token("--gold") : token("--violet");
+      ctx.globalAlpha = anti && p !== POPE.sel ? 0.75 : 1;
+      ctx.fillRect(x, y, Math.max(1.5, x2 - x - 0.5), h); ctx.globalAlpha = 1;
+      if (p === POPE.sel && !anti) { ctx.strokeStyle = token("--ink"); ctx.lineWidth = 1.5; ctx.strokeRect(x - 1, y - 1, Math.max(1.5, x2 - x - 0.5) + 2, h + 2); }
+      if (!anti && x2 - x > ctx.measureText(p[1]).width + 6) { ctx.fillStyle = token("--surface"); ctx.textAlign = "left"; ctx.fillText(p[1], x + 3, y + h / 2 + 0.5); }
+      POPE.segs.push({ x, y, w: Math.max(2, x2 - x), h, p });
+    }
+  });
+  for (let r = 0; r < POPE.rows; r++) {
+    ctx.fillStyle = token("--muted"); ctx.textAlign = "left"; ctx.fillText(`${ord(r + 1)} c.`, 4, r * rowH + 12);
+    ctx.textAlign = "right"; ctx.fillText(String(counts[r]), W - 4, r * rowH + 12);
+    ctx.strokeStyle = token("--rule"); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(labW, r * rowH + rowH - 2.5); ctx.lineTo(labW + w, r * rowH + rowH - 2.5); ctx.stroke();
+  }
+}
+function renderPopePanel() {
+  const p = POPE.sel; if (!p) return;
+  const d = reignDays(p), early = +p[2].slice(0, 4) < 200;
+  $("pope-panel").innerHTML = `<h4>${esc(p[1])}</h4><p class="status">${p[4] ? "Antipope: a rival claimant not recognized by the Church" : `No. ${p[0]} in the official list`} · ${yr(p[2])}–${yr(p[3])} · ${p[3] ? reignLen(d) : reignLen(d) + " so far"}${early ? " · traditional dates" : ""}</p><a class="ref" href="https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent((p[4] ? "Antipope " : "Pope ") + p[1])}" target="_blank" rel="noopener" style="justify-self:start">Read more on Wikipedia</a>`;
+}
+
+// ---------- translations ----------
+const TR = {}, TRD = {}, TRIX = {};
+const TR_KEYS = [["kjv", "King James (1769)"], ["webster", "Webster (1833)"], ["ylt", "Young's Literal (1898)"], ["darby", "Darby (1890)"], ["asv", "American Standard (1901)"], ["web", "World English Bible"]];
+async function loadTr(k) {
+  if (k === "kjv") return D.text;
+  if (!TR[k]) TR[k] = fetch(`data/tr-${k}.json`).then((r) => { if (!r.ok) throw new Error(`tr-${k}.json ${r.status}`); return r.json(); }).then((a) => (TRD[k] = a));
+  try { return await TR[k]; } catch (e) { delete TR[k]; throw e; }
+}
+const trIndex = (k) => TRIX[k] || (TRIX[k] = buildIndex(TRD[k]));
+const toks = (s) => s.split(/\s+/).filter(Boolean);
+const nw = (w) => w.toLowerCase().replace(/[^a-z']/g, "");
+function diffMark(base, other) {
+  const a = toks(base).map(nw), bt = toks(other), b = bt.map(nw), n = a.length, m = b.length;
+  const L = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = a[i] === b[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  const keep = new Set(); let i = 0, j = 0;
+  while (i < n && j < m) { if (a[i] === b[j]) { keep.add(j); i++; j++; } else if (L[i + 1][j] >= L[i][j + 1]) i++; else j++; }
+  return bt.map((w, k) => (keep.has(k) ? esc(w) : `<mark>${esc(w)}</mark>`)).join(" ");
+}
+function compareVerse() {
+  const v = parseRef($("tr-in").value);
+  $("tr-err").textContent = v == null ? "Couldn't read that reference." : "";
+  if (v == null) return;
+  $("tr-out").innerHTML = `<div class="r" style="font-family:var(--display);font-size:22px;color:var(--rubric)">${ref(v)}</div>` + TR_KEYS.map(([k, name]) => {
+    const t = k === "kjv" ? D.text[v] : TRD[k][v];
+    return `<div class="trv"><b>${name}</b><span>${t ? (k === "kjv" ? esc(t) : diffMark(D.text[v], t)) : `<em class="status">Not in this translation</em>`}</span></div>`;
+  }).join("");
+}
+async function initTranslations() {
+  try { await Promise.all(TR_KEYS.map(([k]) => loadTr(k))); }
+  catch (e) { $("tr-out").innerHTML = `<p class="status">Couldn't load the translations (${esc(e.message)}). Reload the page to try again.</p>`; return; }
+  $("tr-form").onsubmit = (ev) => { ev.preventDefault(); compareVerse(); };
+  compareVerse();
+  const dropped = [];
+  for (let i = 0; i < D.N; i++) if (!TRD.asv[i] && D.text[i]) dropped.push(i);
+  $("tr-dropped").innerHTML = `<p class="status"><span class="num">${dropped.length}</span> verses. Click one to compare all six translations.</p><ul class="xr">${dropped.map((i) => `<li><button class="ref" data-tr="${i}">${ref(i)}</button><span class="snip">${esc(D.text[i])}</span><span></span></li>`).join("")}</ul>`;
+  $("tr-dropped").querySelectorAll("button[data-tr]").forEach((b) => { b.onclick = () => { $("tr-in").value = ref(+b.dataset.tr); compareVerse(); $("tr-form").scrollIntoView({ behavior: "smooth" }); }; });
+  setTimeout(() => {
+    const kjvSets = D.text.map((t) => new Set(toks(t).map(nw)));
+    $("tr-drift").innerHTML = TR_KEYS.slice(1).map(([k, name]) => {
+      let s = 0, c = 0;
+      TRD[k].forEach((t, i) => { if (!t || !D.text[i]) return; const b = new Set(toks(t).map(nw)), a = kjvSets[i]; let inter = 0; b.forEach((w) => { if (a.has(w)) inter++; }); s += inter / (a.size + b.size - inter); c++; });
+      const pct = Math.round(s / c * 100);
+      return `<div class="row"><strong>${name} <span class="status num">${pct}% of words shared with the KJV, on average per verse</span></strong><div class="bars"><span style="width:${pct}%;background:var(--gold)"></span></div></div>`;
+    }).join("") + `<p class="status">Webster's 1833 Bible is a light modernization of the KJV, so it stays closest. The World English Bible is a fresh modern translation.</p>`;
+  }, 50);
+}
+
+// ---------- people ----------
+const quoteI = (i) => `<div class="q"><button class="ref" data-v="${i}">${ref(i)}</button> ${esc(D.text[i])}</div>`;
+let PEOPLE = null;
+async function initPeople() {
+  // lifespans
+  const LS = D.more.lifespans, W = 760, rowH = 19, x0 = 96, H = LS.length * rowH + 40, max = 1000, X = (v) => x0 + v / max * (W - x0 - 50);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Lifespans of biblical figures">`;
+  LS.forEach(([name, years, vi], r) => {
+    const y = 10 + r * rowH;
+    s += `<text x="${x0 - 8}" y="${y + 12}" text-anchor="end" font-size="12" style="fill:var(--ink)">${name}</text><rect x="${x0}" y="${y + 2}" width="${X(years) - x0}" height="${rowH - 6}" style="fill:${r < 10 ? "var(--gold)" : r < 19 ? "var(--rubric)" : "var(--violet)"}"><title>${name}: ${years} years (${ref(vi)})</title></rect><text x="${X(years) + 5}" y="${y + 12}" font-size="11" class="num" style="fill:var(--muted)">${years}</text>`;
+  });
+  s += `<line x1="${X(70)}" x2="${X(70)}" y1="4" y2="${H - 22}" style="stroke:var(--ink);stroke-dasharray:3 3"/><text x="${X(70) + 4}" y="${H - 8}" font-size="11" style="fill:var(--muted)">70 years: “threescore years and ten” (Psalm 90:10)</text>`;
+  s += `<text x="${W - 4}" y="${10 + 4 * rowH}" text-anchor="end" font-size="11" style="fill:var(--gold)">Before the flood (Genesis 5)</text><text x="${W - 4}" y="${10 + 13 * rowH}" text-anchor="end" font-size="11" style="fill:var(--rubric)">After the flood (Genesis 11)</text><text x="${W - 4}" y="${10 + 22 * rowH}" text-anchor="end" font-size="11" style="fill:var(--violet)">Patriarchs and the Exodus</text></svg>`;
+  $("life-chart").innerHTML = s;
+  // genealogies
+  const G = D.more.genealogies, alias = { Juda: "Judas", Thara: "Terah" }, key = (n) => alias[n] || n;
+  const m = G.matthew, la = G.luke.indexOf("Abraham"), l = G.luke.slice(la);
+  const Lc = Array.from({ length: m.length + 1 }, () => new Uint8Array(l.length + 1));
+  for (let i = m.length - 1; i >= 0; i--) for (let j = l.length - 1; j >= 0; j--) Lc[i][j] = key(m[i]) === key(l[j]) ? Lc[i + 1][j + 1] + 1 : Math.max(Lc[i + 1][j], Lc[i][j + 1]);
+  const rows = []; let i = 0, j = 0;
+  while (i < m.length || j < l.length) {
+    if (i < m.length && j < l.length && key(m[i]) === key(l[j])) rows.push([m[i++], l[j++], true]);
+    else if (j >= l.length || (i < m.length && Lc[i + 1][j] >= Lc[i][j + 1])) rows.push([m[i++], "", false]);
+    else rows.push(["", l[j++], false]);
+  }
+  $("gen-table").className = "gen";
+  $("gen-table").innerHTML = `<thead><tr><th>Matthew 1</th><th>Luke 3</th></tr></thead><tbody>${rows.map(([a, b, same]) => `<tr><td class="${same ? "same" : ""}">${a}</td><td class="${same ? "same" : ""}">${b}</td></tr>`).join("")}</tbody>`;
+  const shared = rows.filter((r) => r[2]).length, jech = m.indexOf("Jechonias");
+  $("gen-note").textContent = `Gold names appear in both lists (${shared} shared). From Abraham to Jesus, Matthew lists ${m.length} names and Luke ${l.length}; Luke then continues ${la} more generations back to Adam. Matthew 1:17 counts three sets of fourteen generations, but as written the last set, from Jechonias's son to Jesus, has ${m.length - 1 - jech} names, so Jechonias must be counted twice to make fourteen.`;
+  // family explorer
+  try { PEOPLE = await fetch("data/people.json").then((r) => { if (!r.ok) throw new Error("people.json " + r.status); return r.json(); }); }
+  catch (e) { $("fam-out").innerHTML = `<p class="status">Couldn't load the people data (${esc(e.message)}).</p>`; return; }
+  const seen = new Map();
+  // Theographic's free-text labels are unreliable, so people who share a name are told apart by their recorded parents.
+  const byName = new Map();
+  PEOPLE.forEach((p) => byName.set(p[0], (byName.get(p[0]) || 0) + 1));
+  PEOPLE.forEach((p, k) => {
+    const par = p[4] >= 0 ? p[4] : p[5];
+    let lab = byName.get(p[0]) > 1 && par >= 0 ? `${p[0]} (${p[2] === "F" ? "daughter" : p[2] === "M" ? "son" : "child"} of ${PEOPLE[par][0]})` : p[0];
+    if (seen.has(lab)) lab += ` · ${p[3]} verse${p[3] === 1 ? "" : "s"}`;
+    if (seen.has(lab)) lab += ` #${k}`;
+    seen.set(lab, k); p.label = lab;
+  });
+  $("fam-list").innerHTML = [...seen.keys()].map((l) => `<option value="${esc(l)}"></option>`).join("");
+  $("fam-form").onsubmit = (ev) => { ev.preventDefault(); showPerson(findPerson($("fam-in").value)); };
+  showPerson(findPerson("David"));
+}
+function findPerson(q) {
+  q = q.trim().toLowerCase();
+  let k = PEOPLE.findIndex((p) => p.label.toLowerCase() === q);
+  if (k < 0) { let best = -1; PEOPLE.forEach((p, i) => { if (p[0].toLowerCase() === q && (best < 0 || p[3] > PEOPLE[best][3])) best = i; }); k = best; }
+  return k;
+}
+const yearLabel = (y) => (y === "" || y == null ? "" : +y < 0 ? `${-y} BC` : `AD ${y}`);
+function showPerson(k) {
+  $("fam-err").textContent = k < 0 ? "No one by that name. Pick from the suggestions." : "";
+  if (k < 0) return;
+  const p = PEOPLE[k];
+  $("fam-in").value = p.label;
+  const chip = (i) => `<button type="button" class="ghost" data-pk="${i}">${esc(PEOPLE[i].label)}</button>`;
+  const chips = (list, empty) => list.length ? `<div class="chips">${list.map(chip).join("")}</div>` : `<p class="status">${empty}</p>`;
+  const parents = [p[4], p[5]].filter((x) => x >= 0);
+  const sibs = new Set(); parents.forEach((x) => PEOPLE[x][7].forEach((c) => { if (c !== k) sibs.add(c); }));
+  const line = []; let cur = p[4], guard = 0;
+  while (cur >= 0 && guard++ < 120) { line.push(cur); cur = PEOPLE[cur][4]; }
+  const born = yearLabel(p[8]), died = yearLabel(p[9]);
+  $("fam-out").innerHTML = `<div class="panel" style="margin-bottom:14px"><h4>${esc(p[0])}</h4><p class="status">${[p[10] ? "also called " + p[10] : "", p[2] === "M" ? "man" : p[2] === "F" ? "woman" : "", `named in ${fmt(p[3])} verse${p[3] === 1 ? "" : "s"}`, born || died ? `about ${born || "?"} to ${died || "?"}` : ""].filter(Boolean).map(esc).join(" · ")}</p></div>
+    <div class="fam"><div><h3>Parents</h3>${chips(parents, "Not recorded")}</div><div><h3>Spouses</h3>${chips(p[6], "None recorded")}</div><div><h3>Siblings</h3>${chips([...sibs], "None recorded")}</div><div><h3>Children</h3>${chips(p[7], "None recorded")}</div></div>
+    <h3 style="margin-top:16px">Line of fathers${line.length ? ` (${line.length} generation${line.length > 1 ? "s" : ""})` : ""}</h3>${line.length ? `<div class="chips fam" style="display:flex;flex-wrap:wrap;gap:6px">${line.map(chip).join("")}</div>` : `<p class="status">No father recorded.</p>`}`;
+  $("fam-out").querySelectorAll("button[data-pk]").forEach((b) => { b.onclick = () => showPerson(+b.dataset.pk); });
+}
+
+// ---------- theories: fulfilment and mood ----------
+function renderFulfil() {
+  $("fulfil").innerHTML = D.more.fulfilment.map(([i, ot, note]) => `<div class="card">${pill(note ? ["Debated", "part"] : ot >= 0 ? ["Clear source", "true"] : ["No clear source", "myth"])}<h4>${ref(i)}</h4>${quoteI(i)}${i + 1 < D.N && D.bookOf[i + 1] === D.bookOf[i] ? quoteI(i + 1) : ""}${ot >= 0 ? `<p class="status">Old Testament source</p>${quoteI(ot)}` : ""}${note ? `<p>${note}</p>` : ""}</div>`).join("");
+}
+function moodBook(b) {
+  const S = D.more.sentiment[b], W = 760, H = 150, x0 = 30, cw = (W - x0 - 10) / S.length, mid = 75, mx = Math.max(4, ...S.map(Math.abs)), sc = 60 / mx;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Tone of ${D.books[b][1]} by chapter"><text x="4" y="14" font-size="13" style="fill:var(--ink)">${D.books[b][1]}, chapter by chapter</text><line x1="${x0}" x2="${W - 10}" y1="${mid}" y2="${mid}" style="stroke:var(--rule)"/>`;
+  S.forEach((v, c) => { const x = x0 + c * cw; s += `<rect x="${x + 0.5}" y="${v >= 0 ? mid - v * sc : mid}" width="${Math.max(1, cw - 1)}" height="${Math.abs(v) * sc}" style="fill:${v >= 0 ? "var(--gold)" : "var(--violet)"}"><title>${D.books[b][1]} ${c + 1}: ${v}</title></rect>`; });
+  s += `<text x="${x0}" y="${H - 4}" font-size="11" style="fill:var(--muted)">1</text><text x="${W - 10}" y="${H - 4}" text-anchor="end" font-size="11" style="fill:var(--muted)">${S.length}</text></svg>`;
+  $("mood-book").innerHTML = s;
+}
+function renderMood() {
+  const avg = D.more.sentiment.map((ch) => ch.reduce((a, b) => a + b, 0) / ch.length), W = 760, H = 220, x0 = 10, cw = (W - 20) / 66, mid = 120, mx = Math.max(...avg.map(Math.abs)), sc = 90 / mx;
+  const ord = avg.map((v, b) => [v, b]).sort((a, b) => a[0] - b[0]), lo = new Set(ord.slice(0, 3).map((x) => x[1])), hi = new Set(ord.slice(-3).map((x) => x[1]));
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Average tone of each book"><line x1="${x0}" x2="${W - 10}" y1="${mid}" y2="${mid}" style="stroke:var(--rule)"/>`;
+  avg.forEach((v, b) => {
+    const x = x0 + b * cw;
+    s += `<rect data-mb="${b}" x="${x + 1}" y="${v >= 0 ? mid - v * sc : mid}" width="${cw - 2}" height="${Math.max(1, Math.abs(v) * sc)}" style="fill:${v >= 0 ? "var(--gold)" : "var(--violet)"};cursor:pointer"><title>${D.books[b][1]}: ${v.toFixed(1)}</title></rect>`;
+    if (lo.has(b) || hi.has(b)) s += `<text x="${x + cw / 2}" y="${v >= 0 ? mid - v * sc - 5 : mid - v * sc + 13}" text-anchor="middle" font-size="10" style="fill:var(--ink)">${D.books[b][0]}</text>`;
+  });
+  s += `<line x1="${x0 + 39 * cw}" x2="${x0 + 39 * cw}" y1="10" y2="${H - 20}" style="stroke:var(--muted);stroke-dasharray:3 3"/><text x="${x0 + 39 * cw - 4}" y="${H - 6}" text-anchor="end" font-size="11" style="fill:var(--muted)">Old Testament</text><text x="${x0 + 39 * cw + 4}" y="${H - 6}" font-size="11" style="fill:var(--muted)">New Testament</text></svg>`;
+  $("mood-chart").innerHTML = s;
+  $("mood-chart").querySelectorAll("rect[data-mb]").forEach((r) => { r.onclick = () => moodBook(+r.dataset.mb); });
+  moodBook(bookIdx("Ps"));
+}
+
+// ---------- numbers ----------
+const NUMS = [["one", 1], ["two", 2], ["three", 3], ["four", 4], ["five", 5], ["six", 6], ["seven", 7], ["eight", 8], ["nine", 9], ["ten", 10], ["eleven", 11], ["twelve", 12], ["thirteen", 13], ["fourteen", 14], ["fifteen", 15], ["twenty", 20], ["thirty", 30], ["forty", 40], ["fifty", 50], ["sixty", 60], ["seventy", 70], ["hundred", 100], ["thousand", 1000]];
+const SPECIAL = new Set([7, 10, 12]);
+const GEM = {
+  simple: (c) => c + 1,
+  sumerian: (c) => (c + 1) * 6,
+  agrippa: (c) => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800][c],
+};
+const gemValue = (word, sys) => { let s = 0; for (const ch of word.toLowerCase()) { const c = ch.charCodeAt(0) - 97; if (c >= 0 && c < 26) s += GEM[sys](c); } return s; };
+let verseWords = null;
+function runGematria() {
+  const raw = $("gem-in").value.trim(), sys = $("gem-sys").value;
+  const target = /^\d+$/.test(raw) ? +raw : gemValue(raw, sys);
+  if (!target) { $("gem-out").innerHTML = `<p class="status">Type a number or a word.</p>`; return; }
+  if (!verseWords) verseWords = D.text.map((t) => (t.toLowerCase().match(/[a-z]+(?:'[a-z]+)?/g) || []).map((w) => w.replace("'", "")));
+  const found = new Map();
+  verseWords.forEach((ws, v) => {
+    const vals = ws.map((w) => gemValue(w, sys));
+    for (let a = 0; a < ws.length; a++) { let s = 0; for (let b = a; b < Math.min(ws.length, a + 4); b++) { s += vals[b]; if (s === target) { const ph = ws.slice(a, b + 1).join(" "); if (!found.has(ph)) found.set(ph, v); } if (s > target) break; } }
+  });
+  const list = [...found], rnd = mulberry(target);
+  for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; }
+  const computer = gemValue("computer", "sumerian");
+  $("gem-out").innerHTML = `<p class="ans" style="font-family:var(--display);font-size:22px;margin:6px 0">${/^\d+$/.test(raw) ? "" : `“${esc(raw)}” = ${fmt(target)}. `}${fmt(found.size)} different KJV phrases add up to ${fmt(target)}.</p>
+    ${list.length ? `<ul class="hits" style="margin-bottom:8px">${list.slice(0, 30).map(([ph, v]) => `<li><button class="ghost ref" data-v="${v}" style="text-decoration:none">${esc(ph)} <span class="status">${ref(v)}</span></button></li>`).join("")}</ul>` : ""}
+    <p class="status">A random 30 shown. For comparison, in the Sumerian system the English word “computer” adds up to ${computer}.</p>`;
+}
+const HEB = "אבגדהוזחטיכלמנסעפצקרשת", FINALS = { "ך": "כ", "ם": "מ", "ן": "נ", "ף": "פ", "ץ": "צ" };
+const TO_FINAL = { "כ": "ך", "מ": "ם", "נ": "ן", "פ": "ף", "צ": "ץ" };
+// Letter-for-letter swap, then Hebrew final forms at the end of each word.
+const atbash = (s) => [...s].map((ch) => { const c = FINALS[ch] || ch, i = HEB.indexOf(c); return i < 0 ? ch : HEB[21 - i]; }).join("").replace(/[כמנפצ](?=\s|$)/g, (c) => TO_FINAL[c]);
+function initNumbers() {
+  const counts = NUMS.map(([w, n]) => [n, w, countRx(new RegExp(`\\b${w}\\b`, "gi"))]), W = 760, H = 230, x0 = 34, cw = (W - x0 - 10) / counts.length, mx = Math.max(...counts.map((c) => c[2])), sc = 170 / mx;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Number word frequency">`;
+  counts.forEach(([n, w, c], k) => {
+    const x = x0 + k * cw, h = c * sc, sp = SPECIAL.has(n);
+    s += `<rect x="${x + 2}" y="${190 - h}" width="${cw - 4}" height="${h}" style="fill:${sp ? "var(--rubric)" : "var(--rule)"}"><title>${w}: ${c}</title></rect><text x="${x + cw / 2}" y="${186 - h}" text-anchor="middle" font-size="10" style="fill:var(--muted)">${c}</text><text x="${x + cw / 2}" y="206" text-anchor="middle" font-size="11" style="fill:${sp ? "var(--rubric)" : "var(--ink)"};font-weight:${sp ? 600 : 400}">${n}</text>`;
+  });
+  s += `<text x="${W / 2}" y="${H - 4}" text-anchor="middle" font-size="11" style="fill:var(--muted)">Whole-word occurrences in the KJV (“seven”, not “seventy”); “one” includes its use as a pronoun</text></svg>`;
+  $("num-chart").innerHTML = s;
+  $("gem-form").onsubmit = (ev) => { ev.preventDefault(); runGematria(); };
+  runGematria();
+  const ps = D.books[bookIdx("Ps")][2][118], lam = D.books[bookIdx("Lam")][2], prov = 31 - 10 + 1;
+  const ex = (h) => `<div class="heb">${h} → ${atbash(h)}</div>`;
+  $("ciphers").innerHTML = `
+    <div class="card">${pill(["Real cipher", "true"])}<h4>Atbash: Babylon in code</h4><p>Atbash swaps each Hebrew letter for its mirror in the alphabet: the first for the last, the second for the second-to-last. Jeremiah twice calls Babylon “Sheshach”, which is “Babel” in Atbash. Jeremiah 51:1 has another: <em>lev kamai</em>, “the heart of those who rise against me”, read as one word, decodes to <em>Kasdim</em>, the Chaldeans. The decoder below runs live.</p>${ex("ששך")}${ex("לבקמי")}${quote("Jer", 51, 41)}
+      <label class="f">Try it with Hebrew letters <input type="text" id="atb-in" dir="rtl" value="בבל" class="heb" style="font-size:20px"></label><div class="heb" id="atb-out"></div></div>
+    <div class="card">${pill(["Real pattern", "true"])}<h4>Alphabet acrostics</h4><p>Several poems start each verse or stanza with the next letter of the 22-letter Hebrew alphabet. The structure is lost in English but still shows in the verse counts, computed here from the text.</p>
+      <ul><li><strong>Psalm 119:</strong> ${ps} verses = 22 letters × ${ps / 22} verses each.</li><li><strong>Lamentations 1–5:</strong> ${lam.join(", ")} verses. Chapter 3 gives each letter three verses. Chapter 5 has 22 verses but is not an acrostic.</li><li><strong>Proverbs 31:10–31</strong>, the “virtuous woman”: ${prov} verses, one per letter.</li></ul>
+      <div class="heb" style="font-size:18px;line-height:1.6">${[...HEB].join(" ")}</div></div>`;
+  const upd = () => { $("atb-out").textContent = "→ " + atbash($("atb-in").value); };
+  $("atb-in").oninput = upd; upd();
+}
+
+// ---------- boot ----------
+load().then(() => { $("loading").hidden = true; route(); }).catch((err) => {
+  $("loading").textContent = `Couldn't load the data (${err.message}). Reload the page to try again.`;
+});
+route();
+</script>
+</body></html>
