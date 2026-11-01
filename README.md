@@ -16,7 +16,7 @@ Data exploration over the 341,282 reader-voted cross-references between the
 - **Timeline** - scroll-driven story from the pyramids to the Dead Sea Scrolls: a pinned map flies between places, journeys draw in, and the year scrubs with the scroll.
 - **Quiz, heatmap, links** - a daily five-question quiz under the Ladder, a book-to-book citation heatmap under Arcs, and shareable verse links (`#verse/John.3.16`).
 - **More checks** - Kings vs Chronicles number disagreements (asserted at build), where "hell" comes from (via Young's Literal), Lucifer, 666/616, lost books, failed end dates, Dead Sea Scroll readings.
-- **Mysteries** - Egypt in the Bible (mentions by book, pharaohs matched to Egyptian records, Amenemope, the Aten hymn, myths), the Bible in Masonic ritual, the Rosicrucian manifestos, and the Psalm 46 "Shakespeare" count computed live.
+- **Mysteries** - Egypt in the Bible (mentions by book, pharaohs matched to Egyptian records, Amenemope, the Aten hymn, myths), the Bible in Masonic ritual, the Rosicrucian manifestos, and the Psalm 46 "Shakespeare" count computed live. Tim Hogan's Templar/Egypt claims checked one by one against the text and the record.
 - **People** - lifespans parsed from the text, Matthew vs Luke genealogies, family explorer (Theographic).
 - **Translations** - KJV, Webster, YLT, Darby, ASV and WEB side by side with differences marked; the 16 verses newer Bibles drop.
 - **Numbers** - number-word frequencies, a gematria coincidence machine, Atbash and the alphabet acrostics.
