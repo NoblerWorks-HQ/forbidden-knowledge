@@ -11,4 +11,4 @@ Working task list for **versegraph**. Read this at the start of a work session a
 - [x] 2026-11-01 v4 published: People, Translations, Numbers tabs; fulfilment quotes; mood by book; Thomas/Mary now match against the WEB
 - [x] 2026-11-01 history scrubbed (pat@ removed, force-pushed); repo public; LIVE https://versegraph.noblerworks.com (gh-pages, Route 53 CNAME, HTTPS enforced)
 - [ ] 2026-11-02 Pat: Search Console `sc-domain:noblerworks.com` -> submit https://versegraph.noblerworks.com/sitemap.xml
-- [ ] Ideas if kept: real ciphers panel (Atbash Sheshach = Babel, Jer 25:26), gematria coincidence machine, word/topic drift by book, OT-quoted-in-NT view, book-to-book heatmap, shareable verse links
+- [ ] Ideas: Verse Ladder as its own shareable page, word/topic drift by book, OT-quoted-in-NT view, book-to-book heatmap, shareable verse links
