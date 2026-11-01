@@ -20,6 +20,7 @@ import io, json, pathlib, re, sys, time, urllib.request, zipfile
 import build_extra
 import build_more
 import build_world
+import build_library
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CACHE = pathlib.Path.home() / ".cache" / "versegraph"
@@ -36,6 +37,7 @@ NE = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geoj
 SOURCES.update(build_extra.SOURCES)
 SOURCES.update(build_more.SOURCES)
 SOURCES.update(build_world.SOURCES)
+SOURCES.update(build_library.SOURCES)
 for _layer in ("ne_50m_land", "ne_10m_lakes", "ne_50m_rivers_lake_centerlines"):
     SOURCES[f"geo/{_layer}.geojson"] = f"{NE}{_layer}.geojson"
 
@@ -138,6 +140,8 @@ def main():
 
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "world.json").write_text(json.dumps(world, separators=(",", ":")))
+    library = build_library.build_library(fetch, text, index, world, extra)
+    (OUT / "library.json").write_text(json.dumps(library, separators=(",", ":"), ensure_ascii=False))
     (OUT / "places.json").write_text(json.dumps(places, separators=(",", ":")))
     (OUT / "land.json").write_text(json.dumps(land, separators=(",", ":")))
     (OUT / "theories.json").write_text(json.dumps(theories, separators=(",", ":")))
@@ -162,6 +166,8 @@ def main():
           f"{len(more['fulfilment'])} fulfilment verses")
     print(f"Quran {sum(len(s[3]) for s in world['quran'])} verses; Book of Mormon {sum(len(c) for _, chs in bom for c in chs)} verses, "
           f"{len(world['bomKjv'])} mostly KJV wording")
+    print(f"library: {', '.join(f'{k} {len(v)}' for k, v in library['passages'].items())}; "
+          f"{len(library['parallels'])} parallels, {len(library['shared'])} Apocrypha/KJV links")
 
 
 def tag_free(html):

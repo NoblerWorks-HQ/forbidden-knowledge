@@ -249,6 +249,7 @@ table.gen td { font-family: var(--scripture); }
     <a href="#lost" data-view="lost">Lost Worlds</a>
     <a href="#conspiracies" data-view="conspiracies">Conspiracies</a>
     <a href="#mysteries" data-view="mysteries">Mysteries</a>
+    <a href="#library" data-view="library">Library</a>
     <a href="#religions" data-view="religions">Religions</a>
     <a href="#philosophy" data-view="philosophy">Philosophy</a>
     <a href="#canon" data-view="canon">Beyond the Canon</a>
@@ -445,6 +446,23 @@ table.gen td { font-family: var(--scripture); }
     </div>
   </section>
 
+  <section id="v-library" hidden>
+    <h2>The Library</h2>
+    <p class="lede">Scripture and ancient writing from Mesopotamia to the Book of Mormon, all in public-domain translations, ordered by when they were written. Each book shows who translated it, because translators shape how alike two books sound.</p>
+    <div class="cards" id="lib-shelf"><p class="status">Loading the library…</p></div>
+    <h2 class="sub">How the books connect</h2>
+    <p class="lede">Each coloured arc is a known parallel between two passages: a quotation, the same story, the same law or saying, or a similar idea. Thin grey arcs are computed shared wording: Book of Mormon verses that repeat a KJV verse, and Apocrypha verses that retell one. Click an arc to read both passages; click a book's name to see only its connections.</p>
+    <div class="legend" id="lib-legend"></div>
+    <div class="chart" id="lib-arcs"></div>
+    <div id="lib-pick"></div>
+    <h2 class="sub">Every parallel</h2>
+    <div class="controls"><label class="f">Show <select id="lib-kind"><option value="">All kinds</option></select></label><span class="status" id="lib-count"></span></div>
+    <div class="cards" id="lib-pars"></div>
+    <h2 class="sub">Read</h2>
+    <div class="controls"><label class="f">Book <select id="lib-text"></select></label><label class="f">Part <select id="lib-part"></select></label></div>
+    <div class="reader" id="lib-out"></div>
+  </section>
+
   <section id="v-religions" hidden>
     <h2>The world's religions</h2>
     <p class="lede">Share of the world's population in 2020, from the Pew Research Center's 2025 study of 201 countries and territories.</p>
@@ -594,7 +612,7 @@ table.gen td { font-family: var(--scripture); }
   </section>
 
   <footer>
-    Cross-references from <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY), based on the <em>Treasury of Scripture Knowledge</em> with reader votes. Place identifications from <a href="https://github.com/openbibleinfo/Bible-Geocoding-Data" target="_blank" rel="noopener">OpenBible.info Bible Geocoding Data</a> (CC BY 4.0). Map shapes from <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>. Popes from <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a> (CC0). 1 Enoch in R. H. Charles's 1917 translation (public domain) via <a href="https://en.wikisource.org/wiki/The_Book_of_Enoch_(Charles)" target="_blank" rel="noopener">Wikisource</a>. Gospels of Thomas and Mary in Mark M. Mattison's public-domain translations from <a href="https://www.gospels.net/" target="_blank" rel="noopener">gospels.net</a>. The King James Version, American Standard Version and <em>Moby Dick</em> (Project Gutenberg) are in the public domain. The Quran in Marmaduke Pickthall's 1930 translation via <a href="https://tanzil.net/" target="_blank" rel="noopener">Tanzil.net</a>; the Book of Mormon (1830), the <em>Analects</em> (Legge) and the <em>Dhammapada</em> (Müller) from Project Gutenberg, all public domain. Religion figures from the <a href="https://www.pewresearch.org/religion/2025/06/09/how-the-global-religious-landscape-changed-from-2010-to-2020/" target="_blank" rel="noopener">Pew Research Center</a>. Built by Nobler Works.
+    Cross-references from <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY), based on the <em>Treasury of Scripture Knowledge</em> with reader votes. Place identifications from <a href="https://github.com/openbibleinfo/Bible-Geocoding-Data" target="_blank" rel="noopener">OpenBible.info Bible Geocoding Data</a> (CC BY 4.0). Map shapes from <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>. Popes from <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a> (CC0). 1 Enoch in R. H. Charles's 1917 translation (public domain) via <a href="https://en.wikisource.org/wiki/The_Book_of_Enoch_(Charles)" target="_blank" rel="noopener">Wikisource</a>. Gospels of Thomas and Mary in Mark M. Mattison's public-domain translations from <a href="https://www.gospels.net/" target="_blank" rel="noopener">gospels.net</a>. The King James Version, American Standard Version and <em>Moby Dick</em> (Project Gutenberg) are in the public domain. The Quran in Marmaduke Pickthall's 1930 translation via <a href="https://tanzil.net/" target="_blank" rel="noopener">Tanzil.net</a>; the Book of Mormon (1830), the <em>Analects</em> (Legge) and the <em>Dhammapada</em> (Müller) from Project Gutenberg, all public domain. The Apocrypha (KJV 1611, via scrollmapper), the Epic of Gilgamesh (R. Campbell Thompson, 1928, via the Internet Archive), the Code of Hammurabi (C. H. W. Johns), the <em>Tao Te Ching</em> (Legge) and the <em>Bhagavad Gita</em> (Arnold), all public domain. Religion figures from the <a href="https://www.pewresearch.org/religion/2025/06/09/how-the-global-religious-landscape-changed-from-2010-to-2020/" target="_blank" rel="noopener">Pew Research Center</a>. Built by Nobler Works.
   </footer>
 </div>
 
@@ -679,7 +697,7 @@ darkMQ.addEventListener("change", applyTheme);
 applyTheme();
 
 // ---------- routing ----------
-const VIEWS = ["religions", "philosophy", "lost", "conspiracies", "arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
+const VIEWS = ["library", "religions", "philosophy", "lost", "conspiracies", "arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
 const rendered = {};
 function route() {
   const [h, arg] = location.hash.slice(1).split("/"), name = VIEWS.includes(h) ? h : "timeline";
@@ -687,7 +705,7 @@ function route() {
   if (!D) return;
   VIEWS.forEach((v) => { $("v-" + v).hidden = v !== name; });
   if (name === "verse" && arg) { const v = parseRef(decodeURIComponent(arg)); rendered.verse = true; $("verse-in").value = v == null ? decodeURIComponent(arg) : ref(v); showVerse(v); }
-  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, religions: initReligions, philosophy: initPhilosophy, lost: initLost, conspiracies: initConspiracies, timeline: initTimeline, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes })[name](); }
+  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, library: initLibrary, religions: initReligions, philosophy: initPhilosophy, lost: initLost, conspiracies: initConspiracies, timeline: initTimeline, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes })[name](); }
   else if (name === "arcs") drawArcs();
   else if (name === "history") drawPopes();
   else if (name === "map") drawMap();
@@ -1667,7 +1685,7 @@ function renderWager() {
 // ---------- lost worlds ----------
 const LOST_CIV = [
   { c: "Göbekli Tepe", v: ["Real, and astonishing", "true"], b: "Carved stone pillars up to 5.5 m tall, arranged in rings on a hill in south-east Turkey and built around 9500 BC, before farming, pottery or writing, and about 7,000 years before Stonehenge's stones. Klaus Schmidt, who excavated from 1995, called it a temple; later work found houses too. Graham Hancock reads it as a legacy of a lost advanced civilization; archaeologists see the work of hunter-gatherers, whose tools and food remains are on site." },
-  { c: "Atlantis", v: ["Plato's invention", "myth"], b: "The only ancient source is Plato's <em>Timaeus</em> and <em>Critias</em>, around 360 BC: a naval empire beyond the Pillars of Heracles, sunk 9,000 years before Solon as a lesson in pride. Most classicists read it as a parable Plato made up. Ignatius Donnelly's 1882 <em>Atlantis: The Antediluvian World</em> started the modern search; the volcanic eruption of Thera (Santorini) around 1600 BC, which hit Minoan Crete, is the favourite real-world echo." },
+  { c: "Atlantis", v: ["Open question", "part"], b: "The only ancient source is Plato's <em>Timaeus</em> and <em>Critias</em> (c. 360 BC): a sea power beyond the Pillars of Heracles, built in rings of land and water, swallowed by the sea “in a single day and night” 9,000 years before Solon. Plato says the story reached Solon from Egyptian priests at Saïs. Some classicists read it as a moral fable; many others think it preserves memories of real places under different names. No ruins matching his description have been confirmed, so each candidate rests on how well it fits:", list: ["<b>Thera and Minoan Crete:</b> a Bronze Age sea power wrecked when the Thera volcano erupted around 1600 BC; Santorini's drowned caldera was a ring island. Proposed by Spyridon Marinatos in 1939.", "<b>Helike:</b> a Greek city that sank in one night in an earthquake and tidal wave in 373 BC, during Plato's own lifetime. Archaeologists have since traced the site on the coast near Aigio.", "<b>Tartessos:</b> a wealthy Bronze and Iron Age culture beyond the Pillars of Heracles, in the marshes of south-west Spain; searched for since Adolf Schulten in the 1920s.", "<b>The Richat Structure:</b> a 40 km ring formation in the Sahara whose concentric circles echo Plato's; geologists explain it as an eroded dome.", "<b>Drowned Ice Age coasts:</b> sea levels rose about 120 m after the last Ice Age, flooding real inhabited land such as Doggerland in the North Sea, a plausible root for flood memories."] },
   { c: "The Younger Dryas impact", v: ["Contested", "part"], b: "About 12,900 years ago the warming world snapped back into near-glacial cold for over a thousand years. A 2007 paper proposed a comet impact as the cause, and lost-civilization writers made it the catastrophe that erased an Ice Age culture. Many geologists and archaeologists dispute the impact evidence, and none of it shows an advanced civilization." },
   { c: "Gunung Padang, the 27,000-year-old pyramid", v: ["Paper retracted", "myth"], b: "A 2023 paper claimed the Indonesian hill was a man-made structure begun 27,000 years ago. Critics showed the dates came from soil with no sign of human work, and the journal <em>Archaeological Prospection</em> retracted the paper in 2024." },
   { c: "The Bosnian pyramids", v: ["Natural hills", "myth"], b: "Since 2005 Semir Osmanagić has promoted hills near Visoko as giant ancient pyramids. Geologists identify them as natural formations, and the European Association of Archaeologists called the project a cruel hoax." },
@@ -1781,6 +1799,91 @@ function initConspiracies() {
   $("ac-count").textContent = countRx(/\bantichrists?\b/gi);
   const AC = [["c. 95", "Nero, returning from the dead, in many early readings of Revelation 13 (666 = Nero Caesar)"], ["1520", "The papacy, according to Martin Luther and most Protestant reformers"], ["1520s", "Luther, according to his Catholic opponents"], ["1650s", "Oliver Cromwell, to royalists"], ["1800s", "Napoleon Bonaparte"], ["1930s–40s", "Mussolini and Hitler"], ["1980s", "Mikhail Gorbachev, for the birthmark on his head"], ["2000s onward", "Every recent US president, to someone"]];
   $("antichrists").innerHTML = AC.map(([y, t], k) => `<li><span class="i" style="min-width:5.5em">${y}</span><span class="t" style="white-space:normal">${t}</span><span></span></li>`).join("") + `<li><span class="i" style="min-width:5.5em">—</span><span class="t" style="white-space:normal">${esc(D.text[vi("1John", 2, 18)])}</span><span class="num status"><button class="ref" data-v="${vi("1John", 2, 18)}">1 John 2:18</button></span></li>`;
+}
+
+// ---------- the library ----------
+let LIB = null;
+const KIND_COLOR = { quote: "#f43f5e", story: "#0ea5e9", law: "#f59e0b", saying: "#10b981", idea: "#a855f7" };
+const libFlat = {};
+function libSetup() {
+  if (libFlat.quran) return;
+  libFlat.quran = W.quran.flatMap((s, k) => s[3].map((t, a) => [`Quran ${k + 1}:${a + 1}`, t]));
+  libFlat.bom = W.bom.flatMap(([n, chs]) => chs.flatMap((ch, c) => ch.map((t, v) => [`${n} ${c + 1}:${v + 1}`, t])));
+  libFlat.enoch = D.extra.enoch.flatMap((ch, c) => ch.map(([l, t]) => [`1 Enoch ${c + 1}:${l}`, t]));
+  libFlat.thomas = D.extra.thomas.map(([n, h, t]) => [n ? `Thomas, saying ${n}` : "Thomas, prologue", t]);
+  Object.entries(LIB.passages).forEach(([k, ps]) => { libFlat[k] = ps.map(([l, t]) => [k === "apoc" ? l : `${LIB.texts.find((x) => x.id === k).name}, ${l}`, t]); });
+}
+const libCount = (t) => (t === "kjv" ? D.N : libFlat[t].length);
+const libLabel = (t, i) => (t === "kjv" ? ref(i) : libFlat[t][i][0]);
+const libText = (t, i) => (t === "kjv" ? D.text[i] : libFlat[t][i][1]);
+const libQ = (t, i) => `<div class="q">${t === "kjv" ? `<button class="ref" data-v="${i}">${ref(i)}</button>` : `<b>${esc(libLabel(t, i))}</b>`} ${esc(libText(t, i))}</div>`;
+async function initLibrary() {
+  try { await loadWorld(); LIB = LIB || await fetch("data/library.json").then((r) => { if (!r.ok) throw new Error("library.json " + r.status); return r.json(); }); }
+  catch (e) { $("lib-shelf").innerHTML = `<p class="status">Couldn't load the library (${esc(e.message)}).</p>`; return; }
+  libSetup();
+  const links = (id) => LIB.parallels.filter((p) => p[0] === id || p[2] === id).length;
+  $("lib-shelf").innerHTML = LIB.texts.map((t) => `<div class="card">${pill([t.trad, "part"])}<h4>${t.name}</h4><p class="status">Written ${t.written} · ${fmt(libCount(t.id))} ${t.id === "kjv" ? "verses" : "passages"} · ${t.tr}</p><p>${links(t.id)} curated parallel${links(t.id) === 1 ? "" : "s"}</p>${t.id === "kjv" ? `<button type="button" class="ghost" data-go="verse" style="justify-self:start">Read in the Verse tab</button>` : `<button type="button" class="ghost" data-read="${t.id}" style="justify-self:start">Read</button>`}</div>`).join("");
+  $("lib-shelf").querySelectorAll("button[data-read]").forEach((b) => { b.onclick = () => { $("lib-text").value = b.dataset.read; libParts(); $("lib-text").scrollIntoView({ behavior: "smooth", block: "center" }); }; });
+  $("lib-shelf").querySelectorAll("button[data-go]").forEach((b) => { b.onclick = () => go(b.dataset.go); });
+  $("lib-legend").innerHTML = Object.entries(LIB.kinds).map(([k, n]) => `<span><span class="swatch" style="background:${KIND_COLOR[k]}"></span>${n}</span>`).join("") + `<span><span class="swatch" style="background:var(--muted);opacity:.5"></span>Shared wording (computed)</span>`;
+  LIBV.focus = null; drawLibArcs();
+  Object.entries(LIB.kinds).forEach(([k, n]) => $("lib-kind").add(new Option(n, k)));
+  $("lib-kind").onchange = renderLibPars; renderLibPars();
+  LIB.texts.filter((t) => t.id !== "kjv").forEach((t) => $("lib-text").add(new Option(t.name, t.id)));
+  $("lib-text").value = "gilgamesh"; $("lib-text").onchange = libParts; $("lib-part").onchange = renderLibRead; libParts();
+}
+const LIBV = { focus: null };
+function drawLibArcs() {
+  const T = LIB.texts, W0 = 1000, gap = 8, base = 330, H = 420;
+  const raw = T.map((t) => Math.max(58, Math.sqrt(libCount(t.id)) * 1.1)), sc = (W0 - gap * (T.length - 1)) / raw.reduce((a, b) => a + b, 0);
+  let x = 0; const seg = {};
+  T.forEach((t, k) => { seg[t.id] = { x, w: raw[k] * sc }; x += raw[k] * sc + gap; });
+  const X = (t, i) => seg[t].x + ((i + 0.5) / libCount(t)) * seg[t].w;
+  const on = (a, b) => !LIBV.focus || a === LIBV.focus || b === LIBV.focus;
+  const arc = (x1, x2, extra) => { const [a, b] = x1 < x2 ? [x1, x2] : [x2, x1], r = (b - a) / 2; return `<path d="M${a.toFixed(1)} ${base} A${r.toFixed(1)} ${Math.min(r, base - 20).toFixed(1)} 0 0 1 ${b.toFixed(1)} ${base}" ${extra}/>`; };
+  let s = `<svg viewBox="0 0 ${W0 + 90} ${H}" role="img" aria-label="Arcs between passages in different books" style="min-width:640px">`;
+  const shared = [...W.bomKjv.map(([k, i]) => ["bom", k, "kjv", i]), ...LIB.shared.map(([a, i, b, j]) => [a, i, b, j])];
+  shared.forEach(([a, i, b, j]) => { if (on(a, b)) s += arc(X(a, i), X(b, j), `fill="none" style="stroke:var(--muted)" stroke-opacity="0.18" stroke-width="0.7"`); });
+  LIB.parallels.forEach(([a, i, b, j, kind, note], k) => { if (on(a, b)) s += arc(X(a, i), X(b, j), `fill="none" data-p="${k}" style="stroke:${KIND_COLOR[kind]};cursor:pointer" stroke-width="2.2" stroke-opacity="0.9"><title>${esc(libLabel(a, i))} ↔ ${esc(libLabel(b, j))}: ${esc(note)}</title></path`); });
+  T.forEach((t) => {
+    const g = seg[t.id], f = LIBV.focus === t.id;
+    s += `<rect x="${g.x}" y="${base + 2}" width="${g.w}" height="10" rx="2" data-t="${t.id}" style="fill:${f ? "var(--rubric)" : "var(--ink)"};cursor:pointer" opacity="${!LIBV.focus || f ? 0.9 : 0.35}"><title>${t.name}, ${t.written}</title></rect>`;
+    s += `<text transform="translate(${g.x + g.w / 2} ${base + 24}) rotate(35)" font-size="12" data-t="${t.id}" style="fill:${f ? "var(--rubric)" : "var(--ink)"};cursor:pointer;font-weight:${f ? 600 : 400}">${t.name}</text>`;
+  });
+  $("lib-arcs").innerHTML = s + "</svg>";
+  const svg = $("lib-arcs").querySelector("svg");
+  svg.onclick = (ev) => {
+    const p = ev.target.closest("[data-p]"), t = ev.target.closest("[data-t]");
+    if (p) { const [a, i, b, j, kind, note] = LIB.parallels[+p.dataset.p]; $("lib-pick").innerHTML = `<div class="card" style="margin-top:12px">${pill([LIB.kinds[kind], kind === "quote" || kind === "law" ? "true" : "part"])}<h4>${esc(libLabel(a, i))} ↔ ${esc(libLabel(b, j))}</h4><p>${note}</p>${libQ(a, i)}${libQ(b, j)}</div>`; }
+    else if (t) { LIBV.focus = LIBV.focus === t.dataset.t ? null : t.dataset.t; drawLibArcs(); }
+  };
+}
+function renderLibPars() {
+  const k = $("lib-kind").value, ps = LIB.parallels.filter((p) => !k || p[4] === k);
+  $("lib-count").textContent = `${ps.length} parallels`;
+  $("lib-pars").innerHTML = ps.map(([a, i, b, j, kind, note]) => `<div class="card"><span class="pill" style="justify-self:start;color:${KIND_COLOR[kind]};border-color:${KIND_COLOR[kind]}">${LIB.kinds[kind]}</span><h4>${esc(LIB.texts.find((t) => t.id === a).name)} ↔ ${esc(LIB.texts.find((t) => t.id === b).name)}</h4><p>${note}</p>${libQ(a, i)}${libQ(b, j)}</div>`).join("");
+}
+// Reading parts: chapters where the labels have them, otherwise runs of 30 passages
+function libGroups(t) {
+  const ps = libFlat[t], key = { apoc: (l) => l.replace(/:\d+$/, ""), gilgamesh: (l) => l.replace(/\.\d+$/, ""), gita: (l) => l.replace(/\.\d+$/, ""), quran: (l) => l.replace(/:\d+$/, ""), bom: (l) => l.replace(/:\d+$/, ""), enoch: (l) => l.replace(/:[\da-d]+$/, "") }[t];
+  const out = [];
+  ps.forEach(([l], i) => { const g = key ? key(l) : `${Math.floor(i / 30) * 30}`; if (!out.length || out[out.length - 1][0] !== g) out.push([g, i, i]); out[out.length - 1][2] = i; });
+  return out.map(([g, a, b]) => [key ? g.replace(/^.*?, /, "") : `${libFlat[t][a][0].replace(/^.*?, /, "")} – ${libFlat[t][b][0].replace(/^.*?, /, "")}`, a, b]);
+}
+function libParts() {
+  const t = $("lib-text").value, sel = $("lib-part");
+  sel.innerHTML = ""; libGroups(t).forEach(([g, a, b]) => sel.add(new Option(g, `${a}-${b}`)));
+  renderLibRead();
+}
+function renderLibRead() {
+  const t = $("lib-text").value, [a, b] = $("lib-part").value.split("-").map(Number);
+  const par = new Map(); LIB.parallels.forEach((p, k) => { if (p[0] === t) par.set(p[1], [...(par.get(p[1]) || []), k]); if (p[2] === t) par.set(p[3], [...(par.get(p[3]) || []), k]); });
+  let h = "";
+  for (let i = a; i <= b; i++) {
+    const links = (par.get(i) || []).map((k) => { const p = LIB.parallels[k], [ot, oi] = p[0] === t ? [p[2], p[3]] : [p[0], p[1]]; return `<div class="simout">${pill([LIB.kinds[p[4]], "part"])} ${esc(p[5])}${libQ(ot, oi)}</div>`; }).join("");
+    h += `<div class="passage"><span class="pn">${esc(libFlat[t][i][0].replace(/^.*?, /, "").replace(/^(Quran|1 Enoch) /, ""))}</span><div class="pt">${esc(libFlat[t][i][1])}</div>${links}</div>`;
+  }
+  $("lib-out").innerHTML = h;
 }
 
 // ---------- beyond the canon ----------
