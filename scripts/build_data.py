@@ -9,11 +9,14 @@ Sources (cached in ~/.cache/versegraph):
   - Bible geocoding (CC BY 4.0): https://github.com/openbibleinfo/Bible-Geocoding-Data
   - ASV text (public domain) for divine-name counts - it renders YHWH as "Jehovah"
   - Natural Earth coastlines, lakes and rivers (public domain)
+  - popes, 1 Enoch, Thomas and Mary: see build_extra.py
 
-Writes site/data/{bible.json,xrefs.json,moby.txt,places.json,land.json,theories.json}. Fails loudly if any
+Writes site/data/{bible.json,xrefs.json,moby.txt,places.json,land.json,theories.json,popes.json,extra.json}. Fails loudly if any
 cross-reference does not resolve to a KJV verse beyond a small, known tolerance.
 """
-import io, json, pathlib, re, sys, urllib.request, zipfile
+import io, json, pathlib, re, sys, time, urllib.request, zipfile
+
+import build_extra
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CACHE = pathlib.Path.home() / ".cache" / "versegraph"
@@ -27,6 +30,7 @@ SOURCES = {
     "geo/ancient.jsonl": "https://raw.githubusercontent.com/openbibleinfo/Bible-Geocoding-Data/main/data/ancient.jsonl",
 }
 NE = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/"
+SOURCES.update(build_extra.SOURCES)
 for _layer in ("ne_50m_land", "ne_10m_lakes", "ne_50m_rivers_lake_centerlines"):
     SOURCES[f"geo/{_layer}.geojson"] = f"{NE}{_layer}.geojson"
 
@@ -60,8 +64,9 @@ def fetch(name):
     if not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
         print(f"downloading {SOURCES[name]}")
-        req = urllib.request.Request(SOURCES[name], headers={"User-Agent": "versegraph-build"})
+        req = urllib.request.Request(SOURCES[name], headers={"User-Agent": "versegraph-build/0.1 (+https://github.com/NoblerWorks-HQ/versegraph)"})
         path.write_bytes(urllib.request.urlopen(req, timeout=60).read())
+        time.sleep(0.3)  # polite to Wikisource and Wikidata
     return path.read_bytes()
 
 
@@ -110,11 +115,15 @@ def main():
     places = build_places(index)
     land = build_land()
     theories = build_theories(books, text, rows)
+    popes = build_extra.build_popes(fetch)
+    extra = {k: getattr(build_extra, f"build_{k}")(fetch) for k in ("enoch", "thomas", "mary")}
 
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "places.json").write_text(json.dumps(places, separators=(",", ":")))
     (OUT / "land.json").write_text(json.dumps(land, separators=(",", ":")))
     (OUT / "theories.json").write_text(json.dumps(theories, separators=(",", ":")))
+    (OUT / "popes.json").write_text(json.dumps(popes, separators=(",", ":")))
+    (OUT / "extra.json").write_text(json.dumps(extra, separators=(",", ":")))
     (OUT / "bible.json").write_text(json.dumps({"books": books, "text": text}, separators=(",", ":")))
     (OUT / "xrefs.json").write_text(json.dumps(rows, separators=(",", ":")))
     (OUT / "moby.txt").write_text(moby[start:end].strip() + "\n")
@@ -122,6 +131,9 @@ def main():
           f"{dropped_votes} with votes < 1 dropped, {unresolved} unresolved")
     print(f"{len(places)} mapped places, {sum(len(x) for x in land.values())} map shapes, "
           f"synoptic: {theories['synoptic']['counts']}")
+    print(f"{sum(1 for p in popes if not p[4])} popes, {sum(1 for p in popes if p[4])} antipopes; "
+          f"Enoch {len(extra['enoch'])} chapters, {sum(map(len, extra['enoch']))} verses; "
+          f"Thomas {len(extra['thomas']) - 1} sayings; Mary {len(extra['mary'])} sections")
 
 
 def tag_free(html):

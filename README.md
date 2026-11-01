@@ -10,7 +10,9 @@ Data exploration over the 341,282 reader-voted cross-references between the
 - **Myths** - misconceptions checked against the text, an "Is that in the Bible?" phrase checker, computed facts, word dispersion.
 - **Theories** - YHWH vs Elohim per chapter of Genesis (ASV), synoptic overlap of Matthew, Mark and Luke.
 - **Map** - every geocoded place by book, plus every proposed site for disputed places (Sinai, Red Sea, Eden...).
-- **Beyond the Canon** - 1 Enoch, Nag Hammadi, Thomas, Mary, Philip, Judas, the Gospel of Jesus' Wife forgery.
+- **Beyond the Canon** - 1 Enoch, Nag Hammadi, Thomas, Mary, Philip, Judas, the Gospel of Jesus' Wife forgery;
+  Enoch-Bible parallels; full readers for 1 Enoch, Thomas and Mary with "closest Bible verses" per passage.
+- **History** - papal succession by century (Wikidata) with antipopes; Shroud, Eucharistic miracles, Templars, Pope Joan, the arks.
 - **Code Breaker** - equidistant letter sequence search run on the KJV, *Moby Dick* and the
   KJV's letters shuffled, each next to the count expected from letter frequencies alone.
 
@@ -31,4 +33,7 @@ python3 -m http.server -d site  # then open http://localhost:8000
 - *Moby Dick*: public domain, Project Gutenberg #2701 (header and license text stripped).
 - Place identifications: [OpenBible.info Bible Geocoding Data](https://github.com/openbibleinfo/Bible-Geocoding-Data), CC BY 4.0.
 - ASV text (divine-name counts): public domain. Map shapes: Natural Earth, public domain.
+- Popes and antipopes: Wikidata, CC0.
+- 1 Enoch: R. H. Charles translation (1917), public domain, via Wikisource.
+- Gospels of Thomas and Mary: Mark M. Mattison's translations, dedicated to the public domain (gospels.net).
 - Code: MIT.

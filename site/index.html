@@ -167,6 +167,15 @@ section h2.sub { margin-top: 36px; }
 .cand { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; }
 .cand .bar { grid-column: 1 / -1; background: var(--rubric); }
 .cand button.ref { justify-self: start; text-align: left; }
+.reader { display: grid; gap: 0; max-width: 820px; }
+.passage { display: grid; grid-template-columns: 3.4em minmax(0, 1fr); gap: 4px 12px; padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.passage .pn { font-family: var(--mono); font-size: 12px; color: var(--rubric); padding-top: 4px; text-align: right; }
+.passage .pt { font-family: var(--scripture); font-size: 16px; line-height: 1.6; white-space: pre-line; }
+.passage .pt h4 { font-family: var(--display); font-weight: 400; font-size: 19px; margin: 0 0 2px; }
+.passage .gap { color: var(--muted); font-style: italic; }
+.passage button.sim { grid-column: 2; justify-self: start; font-size: 12px; padding: 3px 10px; }
+.passage .simout { grid-column: 2; }
+.passage .simout ul { margin: 4px 0 0; padding-left: 18px; display: grid; gap: 4px; font-size: 14px; }
 @media (max-width: 480px) { .mark { font-size: 32px; } .verse-hero blockquote { font-size: 18px; } }
 @media (prefers-reduced-motion: reduce) { .progress div { transition: none; } }
 </style>
@@ -187,6 +196,7 @@ section h2.sub { margin-top: 36px; }
     <a href="#theories" data-view="theories">Theories</a>
     <a href="#map" data-view="map">Map</a>
     <a href="#canon" data-view="canon">Beyond the Canon</a>
+    <a href="#history" data-view="history">History</a>
     <a href="#codes" data-view="codes">Code Breaker</a>
   </nav>
 
@@ -298,6 +308,31 @@ section h2.sub { margin-top: 36px; }
     <h2>Beyond the Canon</h2>
     <p class="lede">Many ancient texts about the same figures never made it into most Bibles. Some are quoted inside the Bible itself. Some are genuine ancient writings that attract modern myths, and one famous papyrus is a modern forgery.</p>
     <div class="cards" id="canon-cards"></div>
+    <h2 class="sub">Where Enoch and the Bible meet</h2>
+    <p class="lede">Passages where 1 Enoch and the Bible tell the same story or use the same image, side by side.</p>
+    <div class="cards" id="enoch-echoes"></div>
+    <h2 class="sub">Read the texts</h2>
+    <p class="lede">Full public-domain translations. Under any passage, "Closest Bible verses" finds the verses that share the most distinctive words with it. That shows shared vocabulary, not proof of borrowing, and the modern translations of Thomas and Mary share fewer words with the 1769 KJV than Charles's older English does.</p>
+    <div class="controls">
+      <label class="f">Text <select id="x-text"><option value="enoch">1 Enoch (R. H. Charles, 1917)</option><option value="thomas">Gospel of Thomas (Mark M. Mattison)</option><option value="mary">Gospel of Mary (Mark M. Mattison)</option></select></label>
+      <label class="f" id="x-ch-f">Chapter <select id="x-ch"></select></label>
+    </div>
+    <div class="reader" id="x-out"></div>
+  </section>
+
+  <section id="v-history" hidden>
+    <h2>The line of popes</h2>
+    <p class="lede">Every entry in the official list of popes, from Peter to Leo XIV, one row per century. Each bar is one reign; click one for details. Red bars under a row are antipopes, rival claimants the Church does not recognize; the cluster in the 1300s and 1400s is the Western Schism, when up to three men claimed the title at once. White gaps are vacancies between popes. Dates come from Wikidata, and those before about AD 200 are traditional rather than recorded.</p>
+    <div class="canvasbox"><canvas id="popes" aria-label="Timeline of papal reigns by century"></canvas><div class="tip" id="pope-tip" hidden></div></div>
+    <div class="legend"><span><span class="swatch" style="background:var(--gold)"></span><span class="swatch" style="background:var(--violet)"></span>Reigns, alternating colors</span><span><span class="swatch" style="background:var(--rubric)"></span>Antipopes before 1500</span></div>
+    <div class="panel" id="pope-panel" style="margin-top:14px"></div>
+    <div class="grid2">
+      <div><h3>Longest reigns</h3><ol class="rank" id="pope-long"></ol></div>
+      <div><h3>Most-used papal names</h3><ol class="rank" id="pope-names"></ol><p class="status" id="pope-names-note"></p></div>
+    </div>
+    <h2 class="sub">Relics, orders and legends</h2>
+    <p class="lede">The stories that grew up around the Church, sorted into what the evidence supports and what it does not.</p>
+    <div class="cards" id="legend-cards"></div>
   </section>
 
   <section id="v-codes" hidden>
@@ -317,7 +352,7 @@ section h2.sub { margin-top: 36px; }
   </section>
 
   <footer>
-    Cross-references from <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY), based on the <em>Treasury of Scripture Knowledge</em> with reader votes. Place identifications from <a href="https://github.com/openbibleinfo/Bible-Geocoding-Data" target="_blank" rel="noopener">OpenBible.info Bible Geocoding Data</a> (CC BY 4.0). Map shapes from <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>. The King James Version, American Standard Version and <em>Moby Dick</em> (Project Gutenberg) are in the public domain. Built by Nobler Works.
+    Cross-references from <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY), based on the <em>Treasury of Scripture Knowledge</em> with reader votes. Place identifications from <a href="https://github.com/openbibleinfo/Bible-Geocoding-Data" target="_blank" rel="noopener">OpenBible.info Bible Geocoding Data</a> (CC BY 4.0). Map shapes from <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>. Popes from <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a> (CC0). 1 Enoch in R. H. Charles's 1917 translation (public domain) via <a href="https://en.wikisource.org/wiki/The_Book_of_Enoch_(Charles)" target="_blank" rel="noopener">Wikisource</a>. Gospels of Thomas and Mary in Mark M. Mattison's public-domain translations from <a href="https://www.gospels.net/" target="_blank" rel="noopener">gospels.net</a>. The King James Version, American Standard Version and <em>Moby Dick</em> (Project Gutenberg) are in the public domain. Built by Nobler Works.
   </footer>
 </div>
 
@@ -331,7 +366,7 @@ let D = null; // loaded data and indexes
 // ---------- data ----------
 async function load() {
   const getJSON = (f) => fetch("data/" + f).then((r) => { if (!r.ok) throw new Error(f + " " + r.status); return r.json(); });
-  const [places, land, theories] = await Promise.all(["places.json", "land.json", "theories.json"].map(getJSON));
+  const [places, land, theories, popes, extra] = await Promise.all(["places.json", "land.json", "theories.json", "popes.json", "extra.json"].map(getJSON));
   const [bible, xr, moby] = await Promise.all([
     fetch("data/bible.json").then((r) => { if (!r.ok) throw new Error("bible.json " + r.status); return r.json(); }),
     fetch("data/xrefs.json").then((r) => { if (!r.ok) throw new Error("xrefs.json " + r.status); return r.json(); }),
@@ -358,7 +393,7 @@ async function load() {
   for (let v = 0; v < N; v++) outEdge.subarray(outOff[v], outOff[v + 1]).sort((a, b) => votes[b] - votes[a]);
   const inVotes = new Float64Array(N), inCount = new Int32Array(N);
   for (let e = 0; e < E; e++) { inVotes[to[e]] += votes[e]; inCount[to[e]]++; }
-  D = { books: bible.books, text: bible.text, N, E, bookOf, chOf, vOf, bookStart, chapStart, from, to, span, votes, outOff, outEdge, inVotes, inCount, moby, places, land, theories };
+  D = { books: bible.books, text: bible.text, N, E, bookOf, chOf, vOf, bookStart, chapStart, from, to, span, votes, outOff, outEdge, inVotes, inCount, moby, places, land, theories, popes, extra };
 }
 
 const ref = (i) => `${D.books[D.bookOf[i]][1]} ${D.chOf[i]}:${D.vOf[i]}`;
@@ -380,15 +415,16 @@ function parseRef(s) {
 }
 
 // ---------- routing ----------
-const VIEWS = ["arcs", "verse", "path", "ladder", "myths", "theories", "map", "canon", "codes"];
+const VIEWS = ["arcs", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "codes"];
 const rendered = {};
 function route() {
   const name = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "arcs";
   document.querySelectorAll("nav.tabs a").forEach((a) => { if (a.dataset.view === name) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
   if (!D) return;
   VIEWS.forEach((v) => { $("v-" + v).hidden = v !== name; });
-  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, codes: runCodes })[name](); }
+  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, codes: runCodes })[name](); }
   else if (name === "arcs") drawArcs();
+  else if (name === "history") drawPopes();
   else if (name === "map") drawMap();
 }
 window.addEventListener("hashchange", route);
@@ -763,19 +799,32 @@ const MYTHS = [
 const STOPW = new Set("the and of to that in he shall unto for i his a they be is him not them it with all thou thy was which my me but ye their have thee from as are when this out were by upon there then so said on what one into an those who".split(" "));
 let inv = null, normText = null;
 const norm = (s) => s.toLowerCase().replace(/[^a-z' ]+/g, " ").replace(/\s+/g, " ").trim();
-function checkPhrase(q) {
-  if (!inv) {
-    inv = new Map(); normText = D.text.map(norm);
-    normText.forEach((t, i) => { for (const w of new Set(t.split(" "))) { let a = inv.get(w); if (!a) inv.set(w, a = []); a.push(i); } });
+function ensureInv() {
+  if (inv) return;
+  inv = new Map(); normText = D.text.map(norm);
+  normText.forEach((t, i) => { for (const w of new Set(t.split(" "))) { let a = inv.get(w); if (!a) inv.set(w, a = []); a.push(i); } });
+}
+// Verses ranked by the summed rarity (IDF) of the query's content words they contain.
+function rankVerses(nq, k) {
+  ensureInv();
+  const all = [...new Set(nq.split(" "))].filter(Boolean), content = all.filter((w) => !STOPW.has(w)), qw = content.length ? content : all;
+  const score = new Float64Array(D.N); let total = 0;
+  for (const w of qw) { const post = inv.get(w); const idf = Math.log((D.N + 1) / ((post ? post.length : 0) + 1)); total += idf; if (post) for (const i of post) score[i] += idf; }
+  const top = [];
+  for (let i = 0; i < D.N; i++) {
+    if (score[i] <= 0) continue;
+    if (top.length < k) { top.push(i); top.sort((a, b) => score[b] - score[a]); }
+    else if (score[i] > score[top[k - 1]]) { top[k - 1] = i; top.sort((a, b) => score[b] - score[a]); }
   }
+  return { top, score, total };
+}
+function checkPhrase(q) {
+  ensureInv();
   const nq = norm(q);
   if (!nq) return "";
   const exact = [];
   for (let i = 0; i < D.N && exact.length < 5; i++) if (normText[i].includes(nq)) exact.push(i);
-  const all = [...new Set(nq.split(" "))], content = all.filter((w) => !STOPW.has(w)), qw = content.length ? content : all;
-  const score = new Float64Array(D.N); let total = 0;
-  for (const w of qw) { const post = inv.get(w); const idf = Math.log((D.N + 1) / ((post ? post.length : 0) + 1)); total += idf; if (post) for (const i of post) score[i] += idf; }
-  const top = Array.from({ length: D.N }, (_, i) => i).sort((a, b) => score[b] - score[a]).slice(0, 5).filter((i) => score[i] > 0);
+  const { top, score, total } = rankVerses(nq, 5);
   const best = top.length ? score[top[0]] / total : 0;
   const ans = exact.length ? "Yes. It's in the KJV word for word." : best >= 0.8 ? "Close, but not word for word." : "Not in the Bible as written.";
   const list = (exact.length ? exact : top).map((i) => `<li><button class="ref" data-v="${i}">${ref(i)}</button> <span class="snip">${esc(D.text[i])}</span>${exact.length ? "" : ` <span class="num status">${Math.round(score[i] / total * 100)}% of the key words</span>`}</li>`).join("");
@@ -1022,7 +1071,130 @@ const CANON = [
   { c: "The Gospel of Judas", v: ["Contested reading", "part"], b: "A real Coptic text from the 3rd or 4th century, published by National Geographic in 2006 as showing Judas as Jesus' most loyal disciple. Other scholars, including April DeConick, argued that the first translation misread key lines and that the text calls Judas a demon (<em>daimōn</em>)." },
   { c: "The Council of Nicaea chose the books of the Bible", v: ["Myth", "myth"], b: "The council of 325 argued over whether Jesus was fully divine and when to celebrate Easter. It made no list of books. The first surviving list matching today's 27 New Testament books is from Athanasius in 367. Fiction such as <em>The Da Vinci Code</em> spread the myth." },
 ];
-function initCanon() { $("canon-cards").innerHTML = CANON.map(card).join(""); }
+const ECHOES = [
+  { t: "Jude quotes Enoch", n: "The clearest case: a New Testament letter quotes 1 Enoch and names it as Enoch's prophecy.", en: [[1, "9"]], bi: [["Jude", 1, 14], ["Jude", 1, 15]] },
+  { t: "Angels take human wives", n: "Genesis gives the story in four verses. Enoch's Book of the Watchers expands it into a full account of fallen angels and their giant children.", en: [[6, "1"], [6, "2"]], bi: [["Gen", 6, 2], ["Gen", 6, 4]] },
+  { t: "Angels bound in darkness until judgement", n: "2 Peter and Jude both describe sinning angels held in chains of darkness for the judgement, as Enoch 10 does. 2 Peter's verb for “cast down to hell” is literally “cast into Tartarus”, a place Enoch names.", en: [[10, "4"], [10, "12"]], bi: [["2Pet", 2, 4], ["Jude", 1, 6]] },
+  { t: "The Son of Man and the Head of Days", n: "Enoch's Parables build on Daniel's vision of the Ancient of Days and “one like the Son of man”.", en: [[46, "1"], [46, "2"]], bi: [["Dan", 7, 9], ["Dan", 7, 13]] },
+  { t: "The Son of Man on the throne of his glory", n: "Matthew's judgement scene uses the same phrase as Enoch's Parables.", en: [[62, "5"], [69, "27"]], bi: [["Matt", 25, 31], ["Matt", 19, 28]] },
+  { t: "Named archangels", n: "Enoch 20 names seven archangels. The Protestant Bible names only two of them, Michael and Gabriel.", en: [[20, "5"], [20, "7"]], bi: [["Jude", 1, 9], ["Luke", 1, 19]] },
+];
+const enochQ = (c, l) => { const v = D.extra.enoch[c - 1].find((x) => x[0] === l); return v ? `<div class="q"><b>1 Enoch ${c}:${l}</b> ${esc(v[1])}</div>` : ""; };
+const ENOCH_PARTS = [["Book of the Watchers", 1, 36], ["Parables (Similitudes)", 37, 71], ["Astronomical Book", 72, 82], ["Dream Visions", 83, 90], ["Epistle of Enoch", 91, 108]];
+function renderReader() {
+  const which = $("x-text").value;
+  $("x-ch-f").hidden = which !== "enoch";
+  let rows = [];
+  if (which === "enoch") {
+    const c = +$("x-ch").value;
+    rows = D.extra.enoch[c - 1].map(([l, t]) => ({ n: `${c}:${l}`, t }));
+  } else if (which === "thomas") {
+    rows = D.extra.thomas.map(([n, title, t]) => ({ n: n ? String(n) : "", h: title, t }));
+  } else {
+    rows = D.extra.mary.map(([h, t]) => (h ? { n: "", h, t } : { n: "", gap: t }));
+  }
+  $("x-out").innerHTML = rows.map((r, i) => r.gap ? `<div class="passage"><span class="pn"></span><div class="pt gap">${esc(r.gap)}</div></div>` :
+    `<div class="passage"><span class="pn">${r.n}</span><div class="pt">${r.h ? `<h4>${esc(r.h)}</h4>` : ""}${esc(r.t)}</div><button type="button" class="ghost sim" data-i="${i}">Closest Bible verses</button><div class="simout" id="sim-${i}"></div></div>`).join("");
+  $("x-out").querySelectorAll("button.sim").forEach((b) => {
+    b.onclick = () => {
+      const r = rows[+b.dataset.i], { top, score, total } = rankVerses(norm(r.t), 4), out = $("sim-" + b.dataset.i);
+      out.innerHTML = top.length ? `<ul>${top.map((v) => `<li><button class="ref" data-v="${v}">${ref(v)}</button> <span class="snip">${esc(D.text[v])}</span> <span class="num status">${Math.round(score[v] / total * 100)}%</span></li>`).join("")}</ul>` : `<p class="status">No shared words.</p>`;
+      b.hidden = true;
+    };
+  });
+}
+function initCanon() {
+  $("canon-cards").innerHTML = CANON.map(card).join("");
+  $("enoch-echoes").innerHTML = ECHOES.map((e) => `<div class="card">${pill(["Parallel", "true"])}<h4>${e.t}</h4><p>${e.n}</p>${e.en.map(([c, l]) => enochQ(c, l)).join("")}${e.bi.map((r) => quote(...r)).join("")}</div>`).join("");
+  const sel = $("x-ch");
+  ENOCH_PARTS.forEach(([name, a, b]) => { const g = document.createElement("optgroup"); g.label = name; for (let c = a; c <= b; c++) g.appendChild(new Option(`Chapter ${c}`, c)); sel.appendChild(g); });
+  $("x-text").onchange = renderReader; sel.onchange = renderReader;
+  renderReader();
+}
+
+// ---------- history ----------
+const LEGENDS = [
+  { c: "The Shroud of Turin", v: ["Dated to 1260–1390", "part"], b: "A linen cloth bearing the faint front and back image of a man. Its first secure record is at Lirey, France, in the 1350s, and in 1389 the local bishop wrote to the Avignon pope that an artist had confessed to painting it. In 1988 labs in Oxford, Arizona and Zurich radiocarbon-dated samples to AD 1260–1390 (published in <em>Nature</em>, 1989). Defenders argue the sample came from a medieval repair; a 2010 re-examination of leftover sample found no evidence of one. How the image was made is still argued over. The Catholic Church has never ruled on its authenticity." },
+  { c: "Eucharistic miracles", v: ["Claimed, not verified", "part"], b: "Reports of consecrated bread or wine visibly turning into flesh or blood. The best known is Lanciano, Italy, an 8th-century story whose relics a professor, Odoardo Linoli, examined in 1970–71 and described as heart tissue and type AB blood. Modern cases include Buenos Aires (1996) and Sokółka, Poland (2008). None has been confirmed by independent, peer-reviewed testing, and Catholics are not required to believe in any of them. The usual skeptical explanation for “bleeding” bread is <em>Serratia marcescens</em>, a red bacterium that grows on starchy food. Tradition ties the 1263 miracle of Bolsena to the feast of Corpus Christi, which Urban IV extended to the whole Church in 1264, though his decree does not mention it." },
+  { c: "The Knights Templar", v: ["Real order", "true"], b: "Founded around 1119 in Jerusalem by Hugues de Payens to protect pilgrims, and approved at the Council of Troyes in 1129. They became bankers to kings. On Friday 13 October 1307, Philip IV of France had every Templar in France arrested, partly to escape his debts to them. Pope Clement V dissolved the order in 1312, and the last Grand Master, Jacques de Molay, was burned in Paris in 1314. In 2001 historian Barbara Frale found the Chinon Parchment in the Vatican archives, showing Clement had privately absolved the order's leaders in 1308." },
+  { c: "Friday the 13th is unlucky because of the Templars", v: ["Myth", "myth"], b: "The arrests did fall on a Friday the 13th, but the superstition about that date only appears in the 19th century, and the Templar link is a 20th-century invention spread by novels such as <em>The Da Vinci Code</em>." },
+  { c: "The Templars guard the Holy Grail and Jesus' bloodline", v: ["Hoax", "myth"], b: "The secret society said to protect the bloodline, the Priory of Sion, was invented by Pierre Plantard, who planted forged documents in France's national library in the 1960s. He admitted under oath in 1993 that he had made it up. The 1982 book <em>The Holy Blood and the Holy Grail</em>, and later <em>The Da Vinci Code</em>, built on his forgeries." },
+  { c: "Pope Joan", v: ["Myth", "myth"], b: "A woman said to have reigned as pope in the 850s, disguised as a man. The story first appears in the 13th century, about 400 years later, and nothing written in the 9th century mentions her. Leo IV died in 855 and Benedict III was elected the same year, leaving no gap for her reign." },
+  { c: "Noah's Ark has been found", v: ["Myth", "myth"], b: "Genesis gives the ark as 300 × 50 × 30 cubits: about 137 × 23 × 14 m at an 18-inch cubit. It comes to rest on “the mountains of Ararat”, a region (ancient Urartu), not a single peak. The best-known claim, the boat-shaped Durupınar formation near Mount Ararat, is a natural rock formation according to geologists, and no expedition has produced verified remains. Kentucky's Ark Encounter (2016) is a replica built 510 feet long using a longer cubit.", r: [["Gen", 6, 15], ["Gen", 8, 4]] },
+  { c: "The Ark of the Covenant", v: ["Lost since 586 BC", "part"], b: "A gold-covered chest, 2½ × 1½ × 1½ cubits (about 1.1 × 0.7 × 0.7 m), that held the tablets of the law. The Bible never says what happened to it after the Babylonians destroyed the Temple in 586 BC, and Jeremiah says it will not be missed. The Ethiopian Orthodox Church says it rests in a chapel at Aksum, guarded by one monk who alone may see it, so the claim cannot be tested. 2 Maccabees, in Catholic and Orthodox Bibles, says Jeremiah hid it in a cave on Mount Nebo.", r: [["Exod", 25, 10], ["Jer", 3, 16]], e: ["“ark of the covenant” in the KJV", /ark of the covenant/gi] },
+];
+const POPE = { segs: [], sel: null, rows: 21, list: null };
+const ydate = (s) => { const [y, m, d] = s.split("-").map(Number); return y + ((m - 1) * 30.44 + (d - 1)) / 365.25; };
+function reignDays(p) { const end = p[3] ? new Date(p[3] + "T00:00:00Z") : new Date(); const st = new Date(p[2].padStart(10, "0") + "T00:00:00Z"); return Math.max(0, Math.round((end - st) / 864e5)); }
+const reignLen = (d) => d < 365 ? `${d} days` : `${(d / 365.25).toFixed(1)} years`;
+const yr = (s) => s ? String(+s.slice(0, 4)) : "present";
+function initHistory() {
+  POPE.list = D.popes.filter((p) => !p[4] || +p[2].slice(0, 4) < 1500);
+  const cv = $("popes"), tip = $("pope-tip");
+  const hit = (ev) => { const r = cv.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top; return POPE.segs.find((s) => x >= s.x - 1 && x <= s.x + s.w + 1 && y >= s.y - 2 && y <= s.y + s.h + 2); };
+  cv.onmousemove = (ev) => {
+    const s = hit(ev), r = cv.getBoundingClientRect();
+    if (!s) { tip.hidden = true; cv.style.cursor = ""; return; }
+    cv.style.cursor = "pointer";
+    tip.textContent = `${s.p[4] ? "Antipope " : "No. " + s.p[0] + " "}${s.p[1]} · ${yr(s.p[2])}–${yr(s.p[3])}`; tip.hidden = false;
+    tip.style.left = Math.max(4, Math.min(ev.clientX - r.left + 12, r.width - tip.offsetWidth - 4)) + "px"; tip.style.top = Math.max(4, ev.clientY - r.top - 28) + "px";
+  };
+  cv.onmouseleave = () => { tip.hidden = true; };
+  cv.onclick = (ev) => { const s = hit(ev); if (s) { POPE.sel = s.p; drawPopes(); renderPopePanel(); } };
+  let t; window.addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => { if (!$("v-history").hidden) drawPopes(); }, 150); });
+  const rerender = () => { if (!$("v-history").hidden) drawPopes(); };
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rerender);
+  new MutationObserver(rerender).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  const popes = D.popes.filter((p) => !p[4]);
+  POPE.sel = popes[popes.length - 1];
+  drawPopes(); renderPopePanel();
+  const long = popes.map((p) => [p, reignDays(p)]).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  $("pope-long").innerHTML = long.map(([p, d], i) => `<li><span class="i">${i + 1}</span><span class="t"><button class="ref" data-pope="${p[0]}">${esc(p[1])}</button> <span class="status">${yr(p[2])}–${yr(p[3])}${+p[2].slice(0, 4) < 200 ? " (traditional dates)" : ""}</span></span><span class="num status">${reignLen(d)}</span></li>`).join("");
+  const base = new Map();
+  new Set(popes.map((p) => p[1])).forEach((n) => { const b = n.replace(/ [IVXL]+$/, ""); base.set(b, (base.get(b) || 0) + 1); });
+  const names = [...base].sort((a, b) => b[1] - a[1]).slice(0, 8);
+  $("pope-names").innerHTML = names.map(([n, c], i) => `<li><span class="i">${i + 1}</span><span class="t">${esc(n)}</span><span class="num status">${c}</span></li>`).join("");
+  const johns = base.get("John");
+  $("pope-names-note").textContent = `Counted by distinct pope, so Benedict IX's three separate terms count once. There are ${johns} Johns, but the numbering reaches John XXIII: medieval lists skipped "John XX" by mistake, and John XVI was an antipope.`;
+  document.querySelectorAll("#pope-long button[data-pope]").forEach((b) => { b.onclick = () => { POPE.sel = popes.find((p) => p[0] === +b.dataset.pope); drawPopes(); renderPopePanel(); $("popes").scrollIntoView({ block: "center", behavior: "smooth" }); }; });
+  $("legend-cards").innerHTML = LEGENDS.map(card).join("");
+}
+function drawPopes() {
+  const cv = $("popes"), dpr = window.devicePixelRatio || 1, W = cv.parentElement.clientWidth, labW = 64, cntW = 40, rowH = 30, H = POPE.rows * rowH + 10;
+  cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + "px";
+  const ctx = cv.getContext("2d"); ctx.scale(dpr, dpr);
+  ctx.fillStyle = token("--surface"); ctx.fillRect(0, 0, W, H);
+  const w = W - labW - cntW, X = (y) => labW + (y % 100) / 100 * w;
+  const ord = (n) => n + (n % 100 >= 11 && n % 100 <= 13 ? "th" : ["th", "st", "nd", "rd"][n % 10] || "th");
+  ctx.font = "11px 'IBM Plex Sans', system-ui, sans-serif"; ctx.textBaseline = "middle";
+  const counts = new Array(POPE.rows).fill(0);
+  POPE.segs = [];
+  let alt = 0;
+  POPE.list.forEach((p) => {
+    const a = ydate(p[2]), b = Math.max(a + 0.02, p[3] ? ydate(p[3]) : 2026 + (new Date().getMonth()) / 12), anti = p[4];
+    if (!anti) { counts[Math.min(POPE.rows - 1, Math.floor(a / 100))]++; alt ^= 1; }
+    for (let row = Math.floor(a / 100); row <= Math.min(POPE.rows - 1, Math.floor((b - 1e-9) / 100)); row++) {
+      const s = Math.max(a, row * 100), e = Math.min(b, row * 100 + 100), x = X(s), x2 = row * 100 + 100 <= e ? labW + w : X(e);
+      const y = row * rowH + (anti ? 22 : 5), h = anti ? 4 : 15;
+      ctx.fillStyle = p === POPE.sel ? token("--rubric") : anti ? token("--rubric") : alt ? token("--gold") : token("--violet");
+      ctx.globalAlpha = anti && p !== POPE.sel ? 0.75 : 1;
+      ctx.fillRect(x, y, Math.max(1.5, x2 - x - 0.5), h); ctx.globalAlpha = 1;
+      if (p === POPE.sel && !anti) { ctx.strokeStyle = token("--ink"); ctx.lineWidth = 1.5; ctx.strokeRect(x - 1, y - 1, Math.max(1.5, x2 - x - 0.5) + 2, h + 2); }
+      if (!anti && x2 - x > ctx.measureText(p[1]).width + 6) { ctx.fillStyle = token("--surface"); ctx.textAlign = "left"; ctx.fillText(p[1], x + 3, y + h / 2 + 0.5); }
+      POPE.segs.push({ x, y, w: Math.max(2, x2 - x), h, p });
+    }
+  });
+  for (let r = 0; r < POPE.rows; r++) {
+    ctx.fillStyle = token("--muted"); ctx.textAlign = "left"; ctx.fillText(`${ord(r + 1)} c.`, 4, r * rowH + 12);
+    ctx.textAlign = "right"; ctx.fillText(String(counts[r]), W - 4, r * rowH + 12);
+    ctx.strokeStyle = token("--rule"); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(labW, r * rowH + rowH - 2.5); ctx.lineTo(labW + w, r * rowH + rowH - 2.5); ctx.stroke();
+  }
+}
+function renderPopePanel() {
+  const p = POPE.sel; if (!p) return;
+  const d = reignDays(p), early = +p[2].slice(0, 4) < 200;
+  $("pope-panel").innerHTML = `<h4>${esc(p[1])}</h4><p class="status">${p[4] ? "Antipope: a rival claimant not recognized by the Church" : `No. ${p[0]} in the official list`} · ${yr(p[2])}–${yr(p[3])} · ${p[3] ? reignLen(d) : reignLen(d) + " so far"}${early ? " · traditional dates" : ""}</p><a class="ref" href="https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent((p[4] ? "Antipope " : "Pope ") + p[1])}" target="_blank" rel="noopener" style="justify-self:start">Read more on Wikipedia</a>`;
+}
 
 // ---------- boot ----------
 load().then(() => { $("loading").hidden = true; route(); }).catch((err) => {
