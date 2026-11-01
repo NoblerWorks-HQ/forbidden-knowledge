@@ -13,6 +13,7 @@ Data exploration over the 341,282 reader-voted cross-references between the
 - **Beyond the Canon** - 1 Enoch, Nag Hammadi, Thomas, Mary, Philip, Judas, the Gospel of Jesus' Wife forgery;
   Enoch-Bible parallels; full readers for 1 Enoch, Thomas and Mary with "closest Bible verses" per passage.
 - **History** - papal succession by century (Wikidata) with antipopes; Shroud, Eucharistic miracles, Templars, Pope Joan, the arks.
+- **Beyond the Bible** - Religions (Pew 2020 shares, names across the Bible/Quran/Book of Mormon, Book of Mormon vs KJV overlap computed at build, Quran reader with closest Bible verses), Philosophy (Pascal's wager calculator, arguments, misquotes), Lost Worlds (Göbekli Tepe, Atlantis, Giza theories, real and fake lost technology, giants, forbidden knowledge), Conspiracies (Illuminati, Protocols, Bible Mandela effect checked against the text, antichrists).
 - **Timeline** - scroll-driven story from the pyramids to the Dead Sea Scrolls: a pinned map flies between places, journeys draw in, and the year scrubs with the scroll.
 - **Quiz, heatmap, links** - a daily five-question quiz under the Ladder, a book-to-book citation heatmap under Arcs, and shareable verse links (`#verse/John.3.16`).
 - **More checks** - Kings vs Chronicles number disagreements (asserted at build), where "hell" comes from (via Young's Literal), Lucifer, 666/616, lost books, failed end dates, Dead Sea Scroll readings.

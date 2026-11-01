@@ -19,6 +19,7 @@ import io, json, pathlib, re, sys, time, urllib.request, zipfile
 
 import build_extra
 import build_more
+import build_world
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CACHE = pathlib.Path.home() / ".cache" / "versegraph"
@@ -34,6 +35,7 @@ SOURCES = {
 NE = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/"
 SOURCES.update(build_extra.SOURCES)
 SOURCES.update(build_more.SOURCES)
+SOURCES.update(build_world.SOURCES)
 for _layer in ("ne_50m_land", "ne_10m_lakes", "ne_50m_rivers_lake_centerlines"):
     SOURCES[f"geo/{_layer}.geojson"] = f"{NE}{_layer}.geojson"
 
@@ -130,7 +132,12 @@ def main():
         "parallels": build_more.build_parallels(text, index),
     }
 
+    bom = build_world.build_bom(fetch)
+    world = {"quran": build_world.build_quran(fetch), "bom": bom, "bomKjv": build_world.build_bom_kjv(bom, text),
+             "quotes": build_world.build_quotes(fetch)}
+
     OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / "world.json").write_text(json.dumps(world, separators=(",", ":")))
     (OUT / "places.json").write_text(json.dumps(places, separators=(",", ":")))
     (OUT / "land.json").write_text(json.dumps(land, separators=(",", ":")))
     (OUT / "theories.json").write_text(json.dumps(theories, separators=(",", ":")))
@@ -153,6 +160,8 @@ def main():
     print(f"translations {sorted(translations)}; {len(people)} people; {len(more['lifespans'])} lifespans; "
           f"genealogies Matt {len(more['genealogies']['matthew'])} / Luke {len(more['genealogies']['luke'])}; "
           f"{len(more['fulfilment'])} fulfilment verses")
+    print(f"Quran {sum(len(s[3]) for s in world['quran'])} verses; Book of Mormon {sum(len(c) for _, chs in bom for c in chs)} verses, "
+          f"{len(world['bomKjv'])} mostly KJV wording")
 
 
 def tag_free(html):
@@ -195,7 +204,7 @@ def build_land():
                 last = pt
         return pts if any(lon0 - 5 < x < lon1 + 5 and lat0 - 5 < y < lat1 + 5 for x, y in pts) else None
 
-    def shapes(layer, keep=lambda props: True, holes=True):
+    def shapes(layer, keep=lambda props: True, holes=True, everywhere=False):
         out = []
         for ft in json.loads(fetch(f"geo/{layer}.geojson"))["features"]:
             if not keep(ft["properties"]):
@@ -205,13 +214,13 @@ def build_land():
                      "LineString": [[g["coordinates"]]], "MultiLineString": [[c] for c in g["coordinates"]]}[g["type"]]
             for part in parts:
                 for r in part[: None if holes else 1]:
-                    r2 = ring(r)
+                    r2 = ring(r) if not everywhere else [[round(x, 2), round(y, 2)] for x, y in r]
                     if r2 and len(r2) > 1:
                         out.append(r2)
         return out
 
     return {
-        "land": shapes("ne_50m_land", holes=False),
+        "land": shapes("ne_50m_land", holes=False, everywhere=True),
         "lakes": shapes("ne_10m_lakes", lambda p: p.get("name") in LAKES, holes=False),
         "rivers": shapes("ne_50m_rivers_lake_centerlines", lambda p: p.get("name") in RIVERS),
     }

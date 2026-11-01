@@ -17,9 +17,9 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE, DIST = ROOT / "site", ROOT / "dist"
 HOST = "versegraph.noblerworks.com"
 BASE = f"https://{HOST}"
-DESC = ("Explore 341,282 cross-references between the 31,102 verses of the King James Bible: arc diagrams, "
-        "a daily verse ladder, myths checked against the text, maps of disputed sites, Enoch, Thomas and Mary, "
-        "papal history and an honest test of Bible codes.")
+DESC = ("The Bible as data, plus world religions, philosophy, lost civilizations, giants and conspiracy theories, "
+        "each claim checked against the sources: 341,282 cross-references, a scroll-through timeline, the Quran and "
+        "the Book of Mormon compared with the KJV, Giza theories, and an honest test of Bible codes.")
 XREFS_PER_VERSE = 3
 MIN_VOTES = 5
 

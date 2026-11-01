@@ -47,6 +47,10 @@ header.mast { display: flex; flex-wrap: wrap; align-items: baseline; justify-con
 .tagline { color: var(--muted); margin: 6px 0 0; max-width: 60ch; }
 nav.tabs { display: flex; flex-wrap: wrap; gap: 4px; margin: 18px 0 22px; }
 nav.tabs a { font-family: var(--ui); font-weight: 500; color: var(--muted); text-decoration: none; padding: 7px 14px; border-radius: 999px; border: 1px solid transparent; }
+nav.tabs .grp { font: 600 11px var(--ui); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); align-self: center; padding: 0 6px 0 4px; }
+nav.tabs .brk { flex-basis: 100%; height: 0; }
+.wager { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; align-items: start; }
+@media (max-width: 720px) { .wager { grid-template-columns: minmax(0, 1fr); } }
 nav.tabs a:hover { color: var(--ink); border-color: var(--rule); }
 nav.tabs a[aria-current="page"] { color: var(--ink); background: var(--surface); border-color: var(--rule); }
 nav.tabs a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
@@ -221,10 +225,11 @@ table.gen td { font-family: var(--scripture); }
   <header class="mast">
     <div>
       <h1 class="mark">Verse<span>graph</span></h1>
-      <p class="tagline">Explore 341,282 cross-references between the 31,102 verses of the King James Bible, then test the "Bible code" claims against a whale novel.</p>
+      <p class="tagline">The Bible as data, and the world of religion, philosophy, lost civilizations and conspiracy theories around it, each claim checked against the sources.</p>
     </div>
   </header>
   <nav class="tabs" aria-label="Views">
+    <span class="grp">The Bible</span>
     <a href="#arcs" data-view="arcs">Arcs</a>
     <a href="#timeline" data-view="timeline">Timeline</a>
     <a href="#verse" data-view="verse">Verse</a>
@@ -233,13 +238,18 @@ table.gen td { font-family: var(--scripture); }
     <a href="#myths" data-view="myths">Myths</a>
     <a href="#theories" data-view="theories">Theories</a>
     <a href="#map" data-view="map">Map</a>
-    <a href="#canon" data-view="canon">Beyond the Canon</a>
-    <a href="#history" data-view="history">History</a>
-    <a href="#mysteries" data-view="mysteries">Mysteries</a>
     <a href="#people" data-view="people">People</a>
     <a href="#translations" data-view="translations">Translations</a>
     <a href="#numbers" data-view="numbers">Numbers</a>
     <a href="#codes" data-view="codes">Code Breaker</a>
+    <span class="brk"></span><span class="grp">Beyond</span>
+    <a href="#religions" data-view="religions">Religions</a>
+    <a href="#philosophy" data-view="philosophy">Philosophy</a>
+    <a href="#lost" data-view="lost">Lost Worlds</a>
+    <a href="#conspiracies" data-view="conspiracies">Conspiracies</a>
+    <a href="#mysteries" data-view="mysteries">Mysteries</a>
+    <a href="#canon" data-view="canon">Beyond the Canon</a>
+    <a href="#history" data-view="history">History</a>
   </nav>
 
   <div id="loading" class="loading">Loading 31,102 verses and 341,282 cross-references…</div>
@@ -265,8 +275,8 @@ table.gen td { font-family: var(--scripture); }
   </section>
 
   <section id="v-timeline" hidden>
-    <h2>Four thousand years, scrolled</h2>
-    <p class="lede">From the pyramids to the Dead Sea Scrolls. Scroll down and the map follows: it flies between places, journeys draw themselves in, and the year runs with you. Dates before about 900 BC are traditional or disputed, and each card says so.</p>
+    <h2>Eleven thousand years, scrolled</h2>
+    <p class="lede">From Göbekli Tepe to the Dead Sea Scrolls, across the Bible's world and the religions and mysteries around it. Scroll down and the map follows: it flies between places, journeys draw themselves in, and the year runs with you. Dates before about 900 BC are traditional or disputed, and each card says so.</p>
     <div class="tl">
       <div class="tl-steps" id="tl-steps"></div>
       <div class="tl-stage"><div class="tl-map"><canvas id="tl-map" aria-label="Map following the timeline"></canvas><div class="tl-year" id="tl-year"></div><div class="tl-era" id="tl-era"></div></div><div class="tl-axis" id="tl-axis"></div></div>
@@ -420,6 +430,77 @@ table.gen td { font-family: var(--scripture); }
     </div>
   </section>
 
+  <section id="v-religions" hidden>
+    <h2>The world's religions</h2>
+    <p class="lede">Share of the world's population in 2020, from the Pew Research Center's 2025 study of 201 countries and territories.</p>
+    <div class="chart" id="rel-chart"></div>
+    <div class="cards" id="rel-families"></div>
+    <h2 class="sub">Who appears in which scripture</h2>
+    <p class="lede">The same figures run through the Bible, the Quran and the Book of Mormon. Whole-word counts in the KJV, Marmaduke Pickthall's 1930 English Quran and the 1830 Book of Mormon, computed in your browser. The Quran retells many Bible stories. Mary is the only woman it names, and a whole sura carries her name; the New Testament's count covers several different Marys.</p>
+    <div class="tablewrap"><table id="names-table"><tbody><tr><td class="status">Loading the Quran and the Book of Mormon…</td></tr></tbody></table></div>
+    <h2 class="sub">The Book of Mormon and the King James Bible</h2>
+    <p class="lede">Joseph Smith published the Book of Mormon in 1830 as a translation of golden plates written by ancient Americans. Matching each of its verses against every KJV verse shows how much of it is KJV wording.</p>
+    <div id="bom-out"></div>
+    <h2 class="sub">Stories the Quran shares with older texts</h2>
+    <div class="cards" id="quran-cards"></div>
+    <h2 class="sub">Read the Quran</h2>
+    <p class="lede">Pickthall's 1930 translation, the first by an English Muslim and now in the public domain. His English is close to the KJV's, so "Closest Bible verses" finds shared wording well. Shared words are not proof of borrowing.</p>
+    <div class="controls"><label class="f">Sura <select id="q-sura"></select></label></div>
+    <div class="reader" id="q-out"></div>
+    <h2 class="sub">One idea, many traditions</h2>
+    <div class="cards" id="rel-cards"></div>
+  </section>
+
+  <section id="v-philosophy" hidden>
+    <h2>Pascal's wager</h2>
+    <p class="lede">Blaise Pascal argued that believing in God is a good bet: if God exists you gain everything, and if not you lose little. Set the numbers yourself. Then add rival gods, the classic objection: each demands belief in itself alone.</p>
+    <div class="wager">
+      <div class="controls" style="flex-direction:column;align-items:stretch">
+        <label class="f">Chance that a god exists <span><input type="range" id="w-p" min="0" max="100" value="10"> <span class="num" id="w-p-v"></span></span></label>
+        <label class="f">Reward for believing in the right god <select id="w-r"><option value="inf">Infinite (Pascal's version)</option><option value="1000">1,000</option><option value="100">100</option></select></label>
+        <label class="f">Cost of believing, in this life <span><input type="range" id="w-c" min="0" max="50" value="5"> <span class="num" id="w-c-v"></span></span></label>
+        <label class="f">Rival gods, each jealous <span><input type="range" id="w-g" min="1" max="20" value="1"> <span class="num" id="w-g-v"></span></span></label>
+      </div>
+      <div id="w-out"></div>
+    </div>
+    <h2 class="sub">The big arguments</h2>
+    <div class="cards" id="phil-args"></div>
+    <h2 class="sub">Philosophers, quoted and misquoted</h2>
+    <div class="cards" id="phil-quotes"></div>
+  </section>
+
+  <section id="v-lost" hidden>
+    <h2>Lost civilizations</h2>
+    <p class="lede">Real sites that rewrote history, and theories that went further than the evidence. Each card says which is which.</p>
+    <div class="cards" id="lost-civ"></div>
+    <h2 class="sub">Giza theories</h2>
+    <div class="cards" id="lost-giza"></div>
+    <h2 class="sub">Lost technology that was real</h2>
+    <div class="cards" id="lost-real"></div>
+    <h2 class="sub">Lost technology that wasn't</h2>
+    <div class="cards" id="lost-myth"></div>
+    <h2 class="sub">Giants</h2>
+    <p class="lede" id="giant-lede"></p>
+    <div class="chart" id="giant-chart"></div>
+    <div class="cards" id="lost-giants"></div>
+    <h2 class="sub">Forbidden knowledge</h2>
+    <div class="cards" id="lost-forbidden"></div>
+  </section>
+
+  <section id="v-conspiracies" hidden>
+    <h2>Conspiracies</h2>
+    <p class="lede">Secret societies, hidden truths and stolen holidays: where each story came from and what the evidence shows.</p>
+    <div class="cards" id="consp-cards"></div>
+    <h2 class="sub">The Bible “Mandela effect”</h2>
+    <p class="lede">Some people insist the Bible's wording has been changed, because famous lines no longer say what they remember. Each phrase below is checked against the KJV text as printed since 1769.</p>
+    <div class="cards" id="mandela"></div>
+    <h2 class="sub">Is the Bible's earth flat?</h2>
+    <div class="cards" id="flat"></div>
+    <h2 class="sub">Everyone who has been the Antichrist</h2>
+    <p class="lede">The word “antichrist” appears in the Bible <span id="ac-count"></span> times, all in the letters of John, and never for a single future ruler. Readers have pinned it on someone in every age.</p>
+    <ol class="rank" id="antichrists"></ol>
+  </section>
+
   <section id="v-canon" hidden>
     <h2>Beyond the Canon</h2>
     <p class="lede">Many ancient texts about the same figures never made it into most Bibles. Some are quoted inside the Bible itself. Some are genuine ancient writings that attract modern myths, and one famous papyrus is a modern forgery.</p>
@@ -498,7 +579,7 @@ table.gen td { font-family: var(--scripture); }
   </section>
 
   <footer>
-    Cross-references from <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY), based on the <em>Treasury of Scripture Knowledge</em> with reader votes. Place identifications from <a href="https://github.com/openbibleinfo/Bible-Geocoding-Data" target="_blank" rel="noopener">OpenBible.info Bible Geocoding Data</a> (CC BY 4.0). Map shapes from <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>. Popes from <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a> (CC0). 1 Enoch in R. H. Charles's 1917 translation (public domain) via <a href="https://en.wikisource.org/wiki/The_Book_of_Enoch_(Charles)" target="_blank" rel="noopener">Wikisource</a>. Gospels of Thomas and Mary in Mark M. Mattison's public-domain translations from <a href="https://www.gospels.net/" target="_blank" rel="noopener">gospels.net</a>. The King James Version, American Standard Version and <em>Moby Dick</em> (Project Gutenberg) are in the public domain. Built by Nobler Works.
+    Cross-references from <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY), based on the <em>Treasury of Scripture Knowledge</em> with reader votes. Place identifications from <a href="https://github.com/openbibleinfo/Bible-Geocoding-Data" target="_blank" rel="noopener">OpenBible.info Bible Geocoding Data</a> (CC BY 4.0). Map shapes from <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>. Popes from <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a> (CC0). 1 Enoch in R. H. Charles's 1917 translation (public domain) via <a href="https://en.wikisource.org/wiki/The_Book_of_Enoch_(Charles)" target="_blank" rel="noopener">Wikisource</a>. Gospels of Thomas and Mary in Mark M. Mattison's public-domain translations from <a href="https://www.gospels.net/" target="_blank" rel="noopener">gospels.net</a>. The King James Version, American Standard Version and <em>Moby Dick</em> (Project Gutenberg) are in the public domain. The Quran in Marmaduke Pickthall's 1930 translation via <a href="https://tanzil.net/" target="_blank" rel="noopener">Tanzil.net</a>; the Book of Mormon (1830), the <em>Analects</em> (Legge) and the <em>Dhammapada</em> (Müller) from Project Gutenberg, all public domain. Religion figures from the <a href="https://www.pewresearch.org/religion/2025/06/09/how-the-global-religious-landscape-changed-from-2010-to-2020/" target="_blank" rel="noopener">Pew Research Center</a>. Built by Nobler Works.
   </footer>
 </div>
 
@@ -561,7 +642,7 @@ function parseRef(s) {
 }
 
 // ---------- routing ----------
-const VIEWS = ["arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
+const VIEWS = ["religions", "philosophy", "lost", "conspiracies", "arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
 const rendered = {};
 function route() {
   const [h, arg] = location.hash.slice(1).split("/"), name = VIEWS.includes(h) ? h : "arcs";
@@ -569,7 +650,7 @@ function route() {
   if (!D) return;
   VIEWS.forEach((v) => { $("v-" + v).hidden = v !== name; });
   if (name === "verse" && arg) { const v = parseRef(decodeURIComponent(arg)); rendered.verse = true; $("verse-in").value = v == null ? decodeURIComponent(arg) : ref(v); showVerse(v); }
-  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, timeline: initTimeline, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes })[name](); }
+  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, religions: initReligions, philosophy: initPhilosophy, lost: initLost, conspiracies: initConspiracies, timeline: initTimeline, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes })[name](); }
   else if (name === "arcs") drawArcs();
   else if (name === "history") drawPopes();
   else if (name === "map") drawMap();
@@ -1303,8 +1384,10 @@ function initMap() {
 // ---------- timeline ----------
 // Each step: when (number for the scrubber), d (label), era, title, body, pins [name, lon, lat], optional route, verses, books for faint place dots
 const STEPS = [
+  { y: -9500, d: "c. 9500 BC", era: "Before farming", t: "Göbekli Tepe", b: "Hunter-gatherers raise rings of carved stone pillars on a hill in south-east Turkey, seven thousand years before Stonehenge's stones and before farming, pottery or writing. It is the oldest monumental site known.", pins: [["Göbekli Tepe", 38.922, 37.223]], span: 5, go: ["lost", "Lost civilizations"] },
   { y: -2560, d: "c. 2560 BC", era: "Egypt", t: "The Great Pyramid", b: "Pharaoh Khufu's pyramid rises at Giza, more than a thousand years before any date proposed for the Exodus. The Bible never mentions pyramids, and the builders were Egyptian work crews housed in a town beside the site.", pins: [["Giza", 31.134, 29.979]], span: 9, go: ["mysteries", "Egypt in the Bible"] },
   { y: -1900, d: "c. 2000–1800 BC (traditional)", era: "The patriarchs", t: "Abraham leaves Ur", b: "Genesis follows Abram from Ur of the Chaldees to Harran, into Canaan, and down to Egypt in a famine. The date comes from adding up the ages in Genesis; no inscription names Abraham.", pins: [["Ur", 46.103, 30.962], ["Harran", 39.031, 36.865], ["Shechem", 35.281, 32.213], ["Egypt", 31.3, 30.1]], route: true, r: [["Gen", 12, 1], ["Gen", 12, 10]], books: ["Gen"] },
+  { y: -1800, d: "c. 1800 BC", era: "Mesopotamia", t: "Gilgamesh and the flood", b: "Old Babylonian scribes copy the Epic of Gilgamesh, the hero-king of Uruk. Its later Tablet XI tells of Utnapishtim, warned by a god to build a boat before a great flood, who sends out a dove, a swallow and a raven.", pins: [["Uruk", 45.64, 31.32], ["Nineveh", 43.152, 36.359]], r: [["Gen", 8, 7]], go: ["religions", "One idea, many traditions"] },
   { y: -1700, d: "Traditional date", era: "The patriarchs", t: "Joseph in Egypt", b: "Sold by his brothers, Joseph rises to govern Egypt, takes an Egyptian name and marries the daughter of a priest of On, the city of the sun god. His father is embalmed in the Egyptian way. No Egyptian record names him.", pins: [["On (Heliopolis)", 31.307, 30.129], ["Goshen", 31.9, 30.55], ["Hebron", 35.099, 31.529]], r: [["Gen", 41, 45], ["Gen", 50, 3]] },
   { y: -1350, d: "c. 1350 BC", era: "Egypt", t: "Akhenaten's one god", b: "At his new capital, Amarna, Pharaoh Akhenaten worships a single god, the sun disk Aten. A hymn found in a tomb there runs through the same scenes as Psalm 104. Freud later guessed that Moses was his follower; nothing links them.", pins: [["Amarna", 30.896, 27.645]], span: 6, r: [["Ps", 104, 24]] },
   { y: -1250, d: "c. 1446 BC or 1200s BC (disputed)", era: "The Exodus", t: "Out of Egypt", b: "Israel builds the store cities Pithom and Raamses, leaves Egypt, receives the law at Sinai and wanders to the edge of Canaan. 1 Kings implies about 1446 BC; the city of Raamses points to the 1200s. No Egyptian record mentions it, and both the route and the mountain are disputed.", pins: [["Raamses", 31.836, 30.799], ["Mount Sinai (traditional)", 33.975, 28.539], ["Kadesh-barnea", 34.42, 30.69], ["Mount Nebo", 35.725, 31.768]], route: true, r: [["Exod", 1, 11], ["Exod", 14, 21]], books: ["Exod", "Num"] },
@@ -1315,21 +1398,32 @@ const STEPS = [
   { y: -722, d: "722 BC", era: "Empires", t: "Assyria takes Samaria", b: "Assyria destroys the northern kingdom of Israel and deports its people, the origin of the “ten lost tribes”. About twenty years later Sennacherib besieges Jerusalem.", pins: [["Nineveh", 43.152, 36.359], ["Samaria", 35.19, 32.276], ["Jerusalem", 35.235, 31.778]], r: [["2Kgs", 17, 6], ["2Kgs", 19, 9]] },
   { y: -586, d: "586 BC", era: "Empires", t: "Babylon burns the Temple", b: "Nebuchadnezzar destroys Jerusalem and its Temple and carries its people into exile. The Ark of the Covenant is never mentioned again; Jeremiah says it will not be missed.", pins: [["Jerusalem", 35.235, 31.778], ["Babylon", 44.421, 32.536]], route: true, r: [["2Kgs", 25, 9], ["Jer", 3, 16]], go: ["history", "The arks"] },
   { y: -538, d: "538 BC", era: "Empires", t: "The return", b: "Cyrus of Persia takes Babylon and lets the exiles go home. Zerubbabel leads the rebuilding of the Temple, the story Freemasonry's Royal Arch degree retells.", pins: [["Babylon", 44.421, 32.536], ["Jerusalem", 35.235, 31.778]], route: true, r: [["Ezra", 1, 1], ["Ezra", 3, 8]] },
+  { y: -500, d: "551–479 BC", era: "Axial Age", t: "Confucius", b: "In the state of Lu, Confucius teaches ritual, loyalty and reciprocity: “What you do not want done to yourself, do not do to others.” His followers collect his sayings as the <em>Analects</em>.", pins: [["Qufu", 116.99, 35.58]], span: 8 },
+  { y: -450, d: "5th century BC", era: "Axial Age", t: "The Buddha", b: "Siddhartha Gautama, born at Lumbini, reaches awakening under a tree at Bodh Gaya and teaches a path out of suffering. His dates are uncertain; most scholars place his death around 400 BC.", pins: [["Lumbini", 83.276, 27.469], ["Bodh Gaya", 84.991, 24.696]], span: 6, go: ["religions", "The world's religions"] },
   { y: -250, d: "3rd century BC", era: "Second Temple", t: "The Septuagint and Enoch", b: "Jewish scholars in Alexandria translate the Law into Greek, the Septuagint. Around the same time the Book of the Watchers, the oldest part of 1 Enoch, expands Genesis 6's story of angels and giants.", pins: [["Alexandria", 29.919, 31.2], ["Jerusalem", 35.235, 31.778]], r: [["Gen", 6, 4]], go: ["canon", "Beyond the Canon"] },
   { y: -125, d: "c. 125 BC", era: "Second Temple", t: "The Great Isaiah Scroll", b: "A scribe copies all of Isaiah on a scroll that ends up hidden in a cave by Qumran, on the Dead Sea. It is about a thousand years older than the Hebrew manuscripts behind the KJV, and agrees closely with them.", pins: [["Qumran", 35.459, 31.741]], span: 0.7, r: [["Isa", 40, 8]], go: ["mysteries", "What the Dead Sea Scrolls changed"] },
+  { y: -100, d: "2nd–1st century BC", era: "Lost technology", t: "The Antikythera mechanism", b: "A Greek workshop builds a geared bronze calculator of the heavens, with at least 30 gears, that predicts eclipses. It sinks with a ship off Antikythera and is recovered in 1901. Nothing as intricate is known for a thousand years.", pins: [["Antikythera", 23.31, 35.87]], span: 4, go: ["lost", "Lost technology that was real"] },
   { y: -4, d: "c. 4 BC – AD 30", era: "Jesus", t: "Jesus of Nazareth", b: "Born in Bethlehem late in Herod the Great's reign, raised in Nazareth, teaching around the Sea of Galilee, crucified in Jerusalem under Pontius Pilate. The Gospels give no birth date; 25 December came later.", pins: [["Bethlehem", 35.202, 31.705], ["Nazareth", 35.297, 32.699], ["Capernaum", 35.575, 32.881], ["Jerusalem", 35.235, 31.778]], route: true, r: [["Luke", 2, 4], ["Matt", 4, 13]], books: ["Matt", "Mark", "Luke", "John"] },
   { y: 50, d: "AD 46–62", era: "The church", t: "Paul's journeys", b: "Paul carries the new faith from Antioch through Asia Minor and Greece, and finally reaches Rome as a prisoner. His letters are the oldest writings in the New Testament.", pins: [["Antioch", 36.161, 36.202], ["Ephesus", 27.341, 37.941], ["Philippi", 24.286, 41.012], ["Corinth", 22.879, 37.906], ["Rome", 12.484, 41.891]], route: true, r: [["Acts", 13, 4], ["Acts", 28, 16]], books: ["Acts"] },
   { y: 70, d: "AD 70", era: "The church", t: "The Temple falls", b: "Roman legions under Titus destroy Jerusalem and the Second Temple. The Arch of Titus in Rome still shows the Temple's menorah carried in his triumph.", pins: [["Jerusalem", 35.235, 31.778], ["Rome", 12.484, 41.891]], r: [["Matt", 24, 2]] },
   { y: 95, d: "c. AD 95", era: "The church", t: "Revelation on Patmos", b: "Exiled on the island of Patmos, John writes Revelation, with its beast whose number is 666, or 616 in some early copies.", pins: [["Patmos", 26.547, 37.31]], span: 3, r: [["Rev", 1, 9], ["Rev", 13, 18]], go: ["numbers", "666, or 616?"] },
   { y: 325, d: "AD 325 and 367", era: "The empire", t: "Nicaea, and the list of books", b: "The Council of Nicaea argues over whether Jesus is fully divine and when to keep Easter; it does not choose the books of the Bible. In 367 Athanasius of Alexandria writes the first surviving list of today's 27 New Testament books.", pins: [["Nicaea", 29.72, 40.43], ["Alexandria", 29.919, 31.2]] },
   { y: 380, d: "4th century", era: "The empire", t: "Books buried at Nag Hammadi", b: "Someone buries a jar of leather-bound Coptic books near Nag Hammadi in Upper Egypt, among them the Gospel of Thomas. Farmers dig it up in December 1945.", pins: [["Nag Hammadi", 32.242, 26.049]], span: 5, go: ["canon", "Beyond the Canon"] },
+  { y: 391, d: "AD 391", era: "The empire", t: "The Serapeum falls", b: "Christians destroy the Serapeum of Alexandria, which housed the great library's daughter collection. The library had been declining for centuries; the story that it burned in a single night is a myth.", pins: [["Alexandria", 29.919, 31.2]], span: 3, go: ["lost", "Forbidden knowledge"] },
   { y: 405, d: "c. AD 405", era: "The empire", t: "Jerome's Vulgate", b: "Working in Bethlehem, Jerome finishes his Latin translation from the Hebrew and Greek. His word <em>lucifer</em>, “light-bringer”, in Isaiah 14:12 passes into the KJV as a name.", pins: [["Bethlehem", 35.202, 31.705]], span: 2, r: [["Isa", 14, 12]], go: ["translations", "Lucifer"] },
+  { y: 600, d: "c. AD 600", era: "The Americas", t: "Puma Punku", b: "At Tiwanaku, near Lake Titicaca, builders cut andesite blocks with flat faces and repeated shapes and hold them with copper clamps poured into place. It is often called impossible; it was made with stone tools, abrasives and templates.", pins: [["Tiwanaku", -68.68, -16.56]], span: 8, go: ["lost", "Lost technology that wasn't"] },
+  { y: 622, d: "AD 610–632", era: "Islam", t: "Muhammad and the Quran", b: "In Mecca, Muhammad begins reciting revelations in 610. In 622 he and his followers move to Medina, the Hijra, year one of the Islamic calendar. The Quran retells many Bible stories, and Mary is the only woman it names.", pins: [["Mecca", 39.826, 21.423], ["Medina", 39.611, 24.468]], route: true, go: ["religions", "Read the Quran"] },
   { y: 1119, d: "1119–1312", era: "Middle Ages", t: "The Knights Templar", b: "Founded in Jerusalem to protect pilgrims, the Templars become Europe's bankers. On Friday 13 October 1307 Philip IV of France arrests every Templar in his kingdom; the pope dissolves the order in 1312.", pins: [["Jerusalem", 35.235, 31.778], ["Paris", 2.352, 48.857]], route: true, go: ["history", "Relics, orders and legends"] },
   { y: 1355, d: "1350s; carbon-dated 1260–1390", era: "Middle Ages", t: "The Shroud appears", b: "The Shroud of Turin's first secure record is at Lirey in France in the 1350s. It reaches Turin in 1578, and radiocarbon tests in 1988 dated the linen to 1260–1390.", pins: [["Lirey", 4.04, 48.18], ["Turin", 7.686, 45.07]], route: true },
+  { y: 1469, d: "1469", era: "Sikhism", t: "Guru Nanak", b: "Guru Nanak is born at Talwandi, now Nankana Sahib in Pakistan. His teaching of one God beyond Hindu and Muslim divisions becomes Sikhism, carried on by nine further Gurus and the scripture, the Guru Granth Sahib.", pins: [["Nankana Sahib", 73.69, 31.45]], span: 6 },
   { y: 1611, d: "1611", era: "Print", t: "The King James Version", b: "Six committees of scholars, two each at Westminster, Oxford and Cambridge, finish the Authorized Version. Shakespeare had turned 46 the year before, which is all the Psalm 46 “code” needs.", pins: [["Westminster", -0.127, 51.5], ["Oxford", -1.257, 51.752], ["Cambridge", 0.119, 52.205]], r: [["Ps", 46, 3]], go: ["mysteries", "The Rosicrucians"] },
   { y: 1615, d: "1614–1616", era: "Print", t: "The Rosicrucian manifestos", b: "Pamphlets printed in Kassel announce a secret Brotherhood of the Rosy Cross. Europe goes looking and never finds it; Johann Valentin Andreae of Tübingen later calls his part a joke.", pins: [["Kassel", 9.479, 51.312], ["Tübingen", 9.056, 48.52]] },
   { y: 1717, d: "1717", era: "Enlightenment", t: "The first Grand Lodge", b: "Four London lodges meet at the Goose and Gridiron tavern and form the first Grand Lodge of Freemasonry. Its rituals retell the building of Solomon's Temple.", pins: [["London", -0.098, 51.513]], span: 4, r: [["1Kgs", 7, 21]] },
+  { y: 1830, d: "1830", era: "New scriptures", t: "The Book of Mormon", b: "In Palmyra, New York, Joseph Smith publishes the Book of Mormon, presented as a translation of golden plates. About one verse in thirteen is almost word for word the King James Bible.", pins: [["Palmyra", -77.233, 43.064]], span: 10, go: ["religions", "The Book of Mormon and the King James Bible"] },
+  { y: 1869, d: "1869", era: "Hoaxes", t: "The Cardiff Giant", b: "Well-diggers in Cardiff, New York, unearth a 10-foot “petrified man”. George Hull had it carved from gypsum after arguing with a preacher about the giants of Genesis. Crowds pay to see it anyway.", pins: [["Cardiff, NY", -76.14, 42.89]], span: 6, r: [["Gen", 6, 4]], go: ["lost", "Giants"] },
+  { y: 1872, d: "1872", era: "Discovery", t: "A flood older than Noah's", b: "George Smith, a self-taught assistant at the British Museum, reads a cuneiform tablet from Nineveh and finds a flood story with a boat and birds. He announces it to the Society of Biblical Archaeology in December 1872.", pins: [["London", -0.128, 51.519], ["Nineveh", 43.152, 36.359]] },
   { y: 1946, d: "1945–1947", era: "Discovery", t: "The great finds", b: "In December 1945 farmers dig up the Nag Hammadi books. Over the winter of 1946–47 Bedouin shepherds find the first Dead Sea Scrolls in a cave above Qumran, and by 1956 eleven caves have given up about a thousand manuscripts.", pins: [["Qumran", 35.459, 31.741], ["Nag Hammadi", 32.242, 26.049]] },
+  { y: 2002, d: "2002, told in 2016", era: "Claims", t: "The Giant of Kandahar", b: "Anonymous men claiming to be former soldiers say US special forces killed a 12-to-15-foot giant in an Afghan cave. No named witness, record, photograph or body has ever appeared.", pins: [["Kandahar", 65.71, 31.61]], span: 8, go: ["lost", "Giants"] },
   { y: 2026, d: "Today", era: "Now", t: "Every place in one picture", b: "", all: true, pins: [], cam: [36, 33, 34] },
 ];
 const TL = { land: null, dots: [], cams: [], raf: 0 };
@@ -1354,8 +1448,9 @@ function initTimeline() {
     const bs = s.books.map(bookIdx);
     return D.places.filter((p) => p.v.some((v) => bs.includes(D.bookOf[v]))).map((p) => [p.c[0][1], p.c[0][2]]);
   });
-  const lo = -2700, hi = 2050, X = (y) => ((y - lo) / (hi - lo)) * 100;
-  $("tl-axis").innerHTML = `<div class="line"></div>${STEPS.map((s) => `<span class="tick" style="left:${X(s.y)}%"></span>`).join("")}${[-2500, -1500, -500, 500, 1500].map((y) => `<span class="lab" style="left:${X(y)}%">${tlYear(y)}</span>`).join("")}<span class="mark" id="tl-mark"></span>`;
+  // Piecewise, so 9500 BC fits without squeezing the last five thousand years
+  const X = (y) => (y < -3000 ? ((y + 9700) / 6700) * 14 : 14 + ((y + 3000) / 5050) * 86);
+  $("tl-axis").innerHTML = `<div class="line"></div>${STEPS.map((s) => `<span class="tick" style="left:${X(s.y)}%"></span>`).join("")}${[-9000, -2500, -1000, 500, 1800].map((y) => `<span class="lab" style="left:${X(y)}%">${tlYear(y)}</span>`).join("")}<span class="mark" id="tl-mark"></span>`;
   TL.X = X;
   const tick = () => { if (!TL.raf && !$("v-timeline").hidden) TL.raf = requestAnimationFrame(() => { TL.raf = 0; tlUpdate(); }); };
   window.addEventListener("scroll", tick, { passive: true });
@@ -1422,6 +1517,233 @@ function drawTL(cam, i, j, t) {
   };
   layer(i, j === i ? 1 : 1 - t, 1);
   if (j !== i) layer(j, t, Math.min(1, t * 1.4));
+}
+
+// ---------- world religions ----------
+let W = null;
+const loadWorld = () => W ? Promise.resolve(W) : fetch("data/world.json").then((r) => { if (!r.ok) throw new Error("world.json " + r.status); return r.json(); }).then((w) => (W = w));
+// Pew Research Center, "How the Global Religious Landscape Changed From 2010 to 2020" (June 2025)
+const PEW = [["Christians", 28.8, "2.3 billion"], ["Muslims", 25.6, "2.0 billion"], ["Religiously unaffiliated", 24.2, "1.9 billion"], ["Hindus", 14.9, "1.2 billion"], ["Buddhists", 4.1, "324 million"], ["Other religions", 2.2, ""], ["Jews", 0.2, "14.8 million"]];
+const FAMILIES = [
+  { c: "Abrahamic", v: ["One God, from Abraham", "true"], b: "Religions that trace themselves to Abraham and worship the God of Israel.", list: ["<b>Judaism</b>: the covenant with Israel; the Hebrew Bible", "<b>Christianity</b>: from Jesus of Nazareth, c. AD 30", "<b>Islam</b>: from Muhammad's revelations, beginning AD 610", "<b>Latter-day Saints</b>: Joseph Smith, 1830", "<b>Bahá'í</b>: Bahá'u'lláh, 1863"] },
+  { c: "Dharmic", v: ["From the Indian subcontinent", "true"], b: "Traditions sharing ideas of dharma, karma and rebirth.", list: ["<b>Hinduism</b>: no founder; the Rigveda was composed c. 1500–1200 BC", "<b>Buddhism</b>: Siddhartha Gautama, 5th century BC", "<b>Jainism</b>: Mahavira, 6th–5th century BC", "<b>Sikhism</b>: Guru Nanak, born 1469"] },
+  { c: "East Asian", v: ["The Tao and the ancestors", "true"], b: "Traditions often practised side by side rather than exclusively.", list: ["<b>Confucianism</b>: Confucius, 551–479 BC", "<b>Taoism</b>: the <em>Tao Te Ching</em>, credited to Laozi, c. 4th century BC", "<b>Shinto</b>: Japan's native kami worship, first written down in the 8th century AD"] },
+  { c: "Iranian", v: ["Dates disputed", "part"], b: "<b>Zoroastrianism</b>, from the prophet Zarathustra, dated anywhere from about 1500 to 500 BC. Its ideas of a final judgement, a world-saviour and good and evil spirits may have influenced Judaism during and after the Persian period, which scholars still debate." },
+];
+const XNAMES = ["Mary", "Jesus", "Moses", "Abraham", "Noah", "Adam", "Joseph", "Pharaoh", "Solomon", "David", "Jonah", "Gabriel", "Satan", "Isaac", "Ishmael", "Jacob", "Aaron", "Lot"];
+const QSHARED = [
+  { c: "Mary gives birth under a palm tree", v: ["Shared with Christian legend", "true"], b: "The Quran's account of Jesus' birth has Mary alone under a palm tree that drops dates for her. A Christian story later written down in the <em>Gospel of Pseudo-Matthew</em> has a palm tree bow down to feed her on the flight into Egypt.", q: [[19, 23], [19, 25]] },
+  { c: "Jesus speaks from the cradle", v: ["Shared with Christian legend", "true"], b: "The newborn Jesus defends his mother's honour. The Syriac and Arabic Infancy Gospels also have the infant Jesus speak in his cradle.", q: [[19, 29], [19, 30]] },
+  { c: "Birds made of clay", v: ["Shared with Christian legend", "true"], b: "The Quran says Jesus shaped birds from clay and breathed life into them. The <em>Infancy Gospel of Thomas</em>, from the 2nd century, has the child Jesus make twelve clay sparrows on the Sabbath and send them flying.", q: [[3, 49]] },
+  { c: "The sleepers in the cave", v: ["Shared with Christian legend", "true"], b: "Young believers sleep for centuries in a cave and wake in a changed world. Christians told the same story as the Seven Sleepers of Ephesus, recorded by Jacob of Serugh around AD 500.", q: [[18, 10], [18, 25]] },
+  { c: "Abraham smashes the idols", v: ["Shared with Jewish tradition", "true"], b: "Abraham breaks his people's idols and leaves the biggest one standing to take the blame. The Jewish midrash <em>Genesis Rabbah</em> tells the same story of Abraham in his father's idol shop.", q: [[21, 58], [21, 63]] },
+  { c: "Whoever saves one life", v: ["Shared with Jewish tradition", "true"], b: "The Quran says this was decreed for the Children of Israel, and the Mishnah (Sanhedrin 4:5) does say it: whoever destroys a single life destroys a whole world, and whoever saves one saves a whole world.", q: [[5, 32]] },
+  { c: "A raven shows Cain how to bury Abel", v: ["Shared with Jewish tradition", "true"], b: "Genesis does not say what happened to Abel's body. The Quran has a raven scratch the ground to show Cain; the Jewish <em>Pirkei de-Rabbi Eliezer</em> has a raven show Adam and Eve.", q: [[5, 31]], r: [["Gen", 4, 8]] },
+];
+const qv = (s, a) => W.quran[s - 1][3][a - 1];
+const quranQ = (s, a) => `<div class="q"><b>Quran ${s}:${a}</b> ${esc(qv(s, a))}</div>`;
+async function initReligions() {
+  const max = PEW[0][1];
+  $("rel-chart").innerHTML = `<svg viewBox="0 0 760 ${PEW.length * 34 + 10}" role="img" aria-label="World religions by share of population, 2020">${PEW.map(([n, p, c], k) => `<text x="186" y="${k * 34 + 22}" text-anchor="end" font-size="13" style="fill:var(--ink)">${n}</text><rect x="196" y="${k * 34 + 8}" width="${Math.max(2, p / max * 470)}" height="20" rx="3" style="fill:${k === 2 ? "var(--muted)" : "var(--gold)"}"/><text x="${202 + p / max * 470}" y="${k * 34 + 22}" font-size="12" style="fill:var(--muted)">${p}%${c ? " · " + c : ""}</text>`).join("")}</svg><p class="status">Source: <a href="https://www.pewresearch.org/religion/2025/06/09/how-the-global-religious-landscape-changed-from-2010-to-2020/" target="_blank" rel="noopener">Pew Research Center, 2025</a>.</p>`;
+  $("rel-families").innerHTML = FAMILIES.map(card).join("");
+  try { await loadWorld(); } catch (e) { $("names-table").innerHTML = `<tbody><tr><td class="status">Couldn't load the scriptures (${esc(e.message)}).</td></tr></tbody>`; return; }
+  const quran = W.quran.flatMap((s) => s[3]), bom = W.bom.flatMap(([, chs]) => chs.flat());
+  const cnt = (arr, rx) => arr.reduce((a, t) => a + (t.match(rx) || []).length, 0), ot = D.text.slice(0, D.bookStart[39]), nt = D.text.slice(D.bookStart[39]);
+  const rows = XNAMES.map((n) => { const rx = new RegExp(`\\b${n}\\b`, "g"); return [n, cnt(ot, rx), cnt(nt, rx), cnt(quran, rx), cnt(bom, rx)]; });
+  const top = (r) => Math.max(...r.slice(1));
+  $("names-table").innerHTML = `<thead><tr><th>Name</th><th class="n">Old Testament</th><th class="n">New Testament</th><th class="n">Quran</th><th class="n">Book of Mormon</th></tr></thead><tbody>${rows.map((r) => `<tr><td>${r[0]}</td>${r.slice(1).map((c) => `<td class="n" style="${c === top(r) && c ? "color:var(--rubric);font-weight:600" : ""}">${fmt(c)}</td>`).join("")}</tr>`).join("")}</tbody>`;
+  // Book of Mormon verses that are mostly one KJV verse
+  const bref = []; W.bom.forEach(([name, chs]) => chs.forEach((ch, c) => ch.forEach((_, v) => bref.push([name, c + 1, v + 1]))));
+  const btxt = (k) => { const [n, c, v] = bref[k]; return W.bom.find((b) => b[0] === n)[1][c - 1][v - 1]; };
+  const groups = new Map(), byBook = new Map();
+  W.bomKjv.forEach(([k, i]) => { const key = `${bref[k][0]} ${bref[k][1]}|${D.books[D.bookOf[i]][1]} ${D.chOf[i]}`; groups.set(key, (groups.get(key) || 0) + 1); const bk = D.books[D.bookOf[i]][1]; byBook.set(bk, (byBook.get(bk) || 0) + 1); });
+  const ex = W.bomKjv.find(([k]) => bref[k][0] === "2 Nephi" && bref[k][1] === 13 && bref[k][2] === 16) || W.bomKjv[0];
+  $("bom-out").innerHTML = `<div class="facts" style="margin-bottom:12px"><div><span class="k">Verses mostly KJV wording</span><span class="val">${fmt(W.bomKjv.length)}</span><span class="s">of ${fmt(bref.length)} (${(W.bomKjv.length / bref.length * 100).toFixed(1)}%)</span></div>${[...byBook].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([b, n]) => `<div><span class="k">From ${b}</span><span class="val">${n}</span><span class="s">verses</span></div>`).join("")}</div>
+    <div class="grid2"><div><h3>Chapters that follow a KJV chapter</h3><ol class="rank">${[...groups].sort((a, b) => b[1] - a[1]).slice(0, 10).map(([k, n], j) => { const [a, b] = k.split("|"); return `<li><span class="i">${j + 1}</span><span class="t" style="white-space:normal">${a} ↔ ${b}</span><span class="num status">${n} verses</span></li>`; }).join("")}</ol></div>
+    <div class="card">${pill(["Side by side", "part"])}<h4>${bref[ex[0]].join(" ").replace(/ (\d+) (\d+)$/, " $1:$2")} and ${ref(ex[1])}</h4><div class="q"><b>Book of Mormon</b> ${esc(btxt(ex[0]))}</div>${quoteI(ex[1])}
+      <p>Latter-day Saints explain the long Isaiah passages as Nephi copying from brass plates his family brought from Jerusalem, rendered in the familiar language of the KJV. Critics point out that the passages also carry the KJV's own wording choices, and that 1 Nephi 20–21 quotes Isaiah 48–49, part of the section most scholars date after 586 BC, later than the family's departure from Jerusalem around 600 BC.</p></div></div>
+    <p class="status">A verse counts when at least 80% of its distinctive words match one KJV verse. Shorter quotations and paraphrases are not counted.</p>`;
+  $("quran-cards").innerHTML = QSHARED.map((m) => card(m).replace(/<\/div>$/, m.q.map(([s, a]) => quranQ(s, a)).join("") + "</div>")).join("");
+  const sel = $("q-sura");
+  W.quran.forEach(([t, e, ty], s) => sel.add(new Option(`${s + 1}. ${t} (${e}) · ${ty}`, s)));
+  sel.onchange = renderQuran; renderQuran();
+  $("rel-cards").innerHTML = [
+    { c: "The Golden Rule", v: ["Nearly everywhere", "true"], b: `Treat others as you would be treated, in negative or positive form, across traditions. Confucius, in Legge's translation: “${esc(W.quotes.analects)}” Rabbi Hillel, asked to teach the whole Torah standing on one foot, answered: what is hateful to you, do not do to your neighbour (Talmud, Shabbat 31a). A hadith in al-Nawawi's collection says none of you truly believes until he wants for his brother what he wants for himself.`, r: [["Matt", 7, 12]] },
+    { c: "Hatred ceases by love", v: ["Shared ideal", "true"], b: `The Buddhist Dhammapada, in Max Müller's translation: “${esc(W.quotes.dhammapada)}”. Jesus' command to love enemies makes the same turn.`, r: [["Matt", 5, 44]] },
+    { c: "The flood before Noah's", v: ["Older parallel", "true"], b: "In 1872 George Smith of the British Museum announced a cuneiform tablet from Nineveh with a flood story: Tablet XI of the Epic of Gilgamesh, whose hero Utnapishtim is warned by a god to build a boat, takes animals aboard, lands on a mountain, sends out a dove, a swallow and a raven, and offers a sacrifice whose smell draws the gods. The older Babylonian <em>Atrahasis</em> tells it too. Genesis has the same sequence with one God.", r: [["Gen", 8, 7], ["Gen", 8, 21]] },
+  ].map(card).join("");
+}
+function renderQuran() {
+  const s = +$("q-sura").value, rows = W.quran[s][3];
+  $("q-out").innerHTML = rows.map((t, i) => `<div class="passage"><span class="pn">${s + 1}:${i + 1}</span><div class="pt">${esc(t)}</div><button type="button" class="ghost sim" data-i="${i}">Closest Bible verses</button><div class="simout" id="qsim-${i}"></div></div>`).join("");
+  $("q-out").querySelectorAll("button.sim").forEach((b) => {
+    b.onclick = () => {
+      const { top, score, total } = rankVerses(norm(rows[+b.dataset.i]), 4), out = $("qsim-" + b.dataset.i);
+      out.innerHTML = top.length ? `<ul>${top.map((v) => `<li><button class="ref" data-v="${v}">${ref(v)}</button> <span class="snip">${esc(D.text[v])}</span> <span class="num status">${Math.round(score[v] / total * 100)}%</span></li>`).join("")}</ul>` : `<p class="status">No shared words.</p>`;
+      b.hidden = true;
+    };
+  });
+}
+
+// ---------- philosophy ----------
+const PHIL_ARGS = [
+  { c: "The ontological argument", v: ["For God", "part"], b: "Anselm of Canterbury, 1078: God is “that than which nothing greater can be conceived”, and a God who exists in reality is greater than one who exists only in the mind, so God must exist. The monk Gaunilo replied that the same logic would prove a perfect island. Kant answered in 1781 that existence is not a property that makes a thing greater." },
+  { c: "The cosmological argument", v: ["For God", "part"], b: "Everything that begins has a cause, so the universe needs a first cause. Aristotle's unmoved mover, Thomas Aquinas's Five Ways and the medieval Islamic <em>kalam</em> argument of al-Ghazali all take this form; William Lane Craig revived the kalam version in 1979. Critics ask why the first cause must be a personal God, and whether the rule about causes holds for the universe itself." },
+  { c: "The design argument", v: ["For God", "part"], b: "William Paley, 1802: find a watch on a heath and you infer a watchmaker; nature is more intricate than any watch. David Hume had already attacked the reasoning in 1779, and Darwin's natural selection (1859) explained living complexity without a designer. Today's version points to the fine-tuning of physical constants." },
+  { c: "The problem of evil", v: ["Against God", "part"], b: "If God is willing but unable to prevent evil, he is not all-powerful; if able but unwilling, he is not good; if both, why is there evil? Hume's <em>Dialogues</em> credit this to Epicurus, but it survives only in the Christian writer Lactantius, and may not be Epicurus' at all. The best-known reply, the free-will defence, was formalised by Alvin Plantinga in 1974." },
+  { c: "The Euthyphro dilemma", v: ["A puzzle for both sides", "part"], b: "Plato, around 399 BC: is something good because the gods love it, or do the gods love it because it is good? If the first, morality is arbitrary; if the second, goodness stands above the gods. Theists usually answer that goodness is God's own nature." },
+  { c: "Predestination", v: ["Argued for 1,600 years", "part"], b: "If God knows and decides everything in advance, are people free? Augustine argued against Pelagius in the 400s that salvation depends on grace alone; John Calvin pushed this to double predestination in the 1500s. Paul's letter to the Romans is the battleground.", r: [["Rom", 8, 29]] },
+  { c: "Plato's cave and the Gnostic creator", v: ["A line of influence", "true"], b: "In Plato's <em>Republic</em>, prisoners mistake shadows on a cave wall for reality. His <em>Timaeus</em> has the world shaped by a craftsman, the <em>demiurge</em>. Gnostic Christians, like the authors of some Nag Hammadi texts, turned that craftsman into a lesser, ignorant god who made the flawed material world. See Beyond the Canon." },
+  { c: "The simulation argument", v: ["A modern twist", "part"], b: "Nick Bostrom, 2003: if civilizations can and do run vast numbers of simulated worlds, most minds like ours would be simulated. It is a design argument with programmers in the place of God, and like the old ones it cannot be tested from the inside." },
+];
+const PHIL_QUOTES = [
+  { c: "Nietzsche: “God is dead”", v: ["Real, misread", "part"], b: "From <em>The Gay Science</em> (1882), section 125, where a madman cries: “God is dead. God remains dead. And we have killed him.” It is a warning that Europe had lost the foundation of its values, not a celebration." },
+  { c: "Marx: “the opium of the people”", v: ["Real, cut short", "part"], b: "Marx, 1844: religion is “the sigh of the oppressed creature, the heart of a heartless world, and the soul of soulless conditions. It is the opium of the people.” Opium was a painkiller; he meant religion relieved real suffering it could not cure." },
+  { c: "Occam's razor: “entities must not be multiplied beyond necessity”", v: ["Not his words", "myth"], b: "William of Ockham, a 14th-century friar, wrote that plurality should not be posited without necessity. The famous wording comes from John Punch in 1639, three centuries later." },
+  { c: "Voltaire: “If God did not exist, it would be necessary to invent him”", v: ["Real", "true"], b: "From a 1768 verse letter answering an anonymous treatise on the “Three Impostors” (Moses, Jesus and Muhammad). Voltaire attacked the churches but believed in a creator; he meant society needs belief in a God who judges." },
+  { c: "Einstein: “God does not play dice”", v: ["Close", "part"], b: "In a 1926 letter to Max Born he wrote that he was convinced that He “does not throw dice”. He was objecting to chance in quantum theory, not talking about religion; in a 1954 letter to Eric Gutkind, sold in 2018 for $2.9 million, he called the word God “the expression and product of human weaknesses”." },
+  { c: "Descartes: “I think, therefore I am”", v: ["Real, and older", "true"], b: "French in the <em>Discourse on Method</em> (1637), Latin <em>cogito, ergo sum</em> in the <em>Principles</em> (1644). Augustine made a similar argument 1,200 years earlier: “if I am mistaken, I exist.”" },
+  { c: "Darwin renounced evolution on his deathbed", v: ["Myth", "myth"], b: "The story comes from Lady Elizabeth Hope, an evangelist who told it in 1915, 33 years after Darwin died. His daughter Henrietta, who was with him at the end, wrote in 1922 that it was untrue." },
+  { c: "Seneca: religion is “true to the common people, false to the wise, useful to rulers”", v: ["Misattributed", "myth"], b: "This is Edward Gibbon, writing in 1776 about ancient Rome: the forms of worship were considered “by the people as equally true; by the philosopher as equally false; and by the magistrate as equally useful”. It is often pinned on Seneca." },
+  { c: "Twain: “Faith is believing what you know ain't so”", v: ["Real", "true"], b: "A maxim of “Pudd'nhead Wilson's New Calendar” in Mark Twain's travel book <em>Following the Equator</em> (1897), credited to a schoolboy." },
+];
+function initPhilosophy() {
+  $("phil-args").innerHTML = PHIL_ARGS.map(card).join("");
+  $("phil-quotes").innerHTML = PHIL_QUOTES.map(card).join("");
+  ["w-p", "w-r", "w-c", "w-g"].forEach((id) => { $(id).oninput = renderWager; $(id).onchange = renderWager; });
+  renderWager();
+}
+function renderWager() {
+  const p = +$("w-p").value / 100, R = $("w-r").value === "inf" ? Infinity : +$("w-r").value, c = +$("w-c").value, N = +$("w-g").value;
+  $("w-p-v").textContent = Math.round(p * 100) + "%"; $("w-c-v").textContent = c; $("w-g-v").textContent = N;
+  // A god exists with chance p, any of N equally likely; the one that exists rewards its believers (R) and punishes everyone else (-R)
+  const ev = (k) => (k ? p * (R / N - (R * (N - 1)) / N) - c : -p * R);
+  const show = (x) => (Number.isNaN(x) ? "undefined" : x === Infinity ? "+∞" : x === -Infinity ? "−∞" : (Math.round(x * 10) / 10).toLocaleString());
+  const b = ev(1), n = ev(0);
+  let verdict;
+  if (Number.isNaN(b)) verdict = `With ${N} jealous gods and infinite stakes, believing in any one of them risks infinite punishment from the others: infinity minus infinity has no value, and the wager stops choosing. This is the “many gods” objection, made by Diderot among others.`;
+  else if (p === 0) verdict = "With no chance of a god, belief only costs you.";
+  else verdict = b > n ? `Believing in one god scores higher (${show(b)} against ${show(n)}).${N > 1 ? ` But you have only a 1 in ${N} chance of picking the right one.` : ""}` : `Not believing scores higher (${show(n)} against ${show(b)}): ${N > 1 ? "too many rival gods split the reward." : "the cost outweighs the reward at these odds."}`;
+  $("w-out").innerHTML = `<div class="facts"><div><span class="k">Believe in one god</span><span class="val">${show(b)}</span><span class="s">expected value</span></div><div><span class="k">Believe in none</span><span class="val">${show(n)}</span><span class="s">expected value</span></div></div><p>${verdict}</p><p class="status">Pascal's <em>Pensées</em> (published 1670) offered the wager to someone already choosing between Christianity and unbelief; the model here is a toy, not his full argument.</p>`;
+}
+
+// ---------- lost worlds ----------
+const LOST_CIV = [
+  { c: "Göbekli Tepe", v: ["Real, and astonishing", "true"], b: "Carved stone pillars up to 5.5 m tall, arranged in rings on a hill in south-east Turkey and built around 9500 BC, before farming, pottery or writing, and about 7,000 years before Stonehenge's stones. Klaus Schmidt, who excavated from 1995, called it a temple; later work found houses too. Graham Hancock reads it as a legacy of a lost advanced civilization; archaeologists see the work of hunter-gatherers, whose tools and food remains are on site." },
+  { c: "Atlantis", v: ["Plato's invention", "myth"], b: "The only ancient source is Plato's <em>Timaeus</em> and <em>Critias</em>, around 360 BC: a naval empire beyond the Pillars of Heracles, sunk 9,000 years before Solon as a lesson in pride. Most classicists read it as a parable Plato made up. Ignatius Donnelly's 1882 <em>Atlantis: The Antediluvian World</em> started the modern search; the volcanic eruption of Thera (Santorini) around 1600 BC, which hit Minoan Crete, is the favourite real-world echo." },
+  { c: "The Younger Dryas impact", v: ["Contested", "part"], b: "About 12,900 years ago the warming world snapped back into near-glacial cold for over a thousand years. A 2007 paper proposed a comet impact as the cause, and lost-civilization writers made it the catastrophe that erased an Ice Age culture. Many geologists and archaeologists dispute the impact evidence, and none of it shows an advanced civilization." },
+  { c: "Gunung Padang, the 27,000-year-old pyramid", v: ["Paper retracted", "myth"], b: "A 2023 paper claimed the Indonesian hill was a man-made structure begun 27,000 years ago. Critics showed the dates came from soil with no sign of human work, and the journal <em>Archaeological Prospection</em> retracted the paper in 2024." },
+  { c: "The Bosnian pyramids", v: ["Natural hills", "myth"], b: "Since 2005 Semir Osmanagić has promoted hills near Visoko as giant ancient pyramids. Geologists identify them as natural formations, and the European Association of Archaeologists called the project a cruel hoax." },
+  { c: "The Anunnaki made humanity", v: ["Mistranslation", "myth"], b: "Zecharia Sitchin's <em>The 12th Planet</em> (1976) said Sumerian texts describe astronauts from a planet, Nibiru, who engineered humans. Assyriologists say his translations do not match the cuneiform: the Anunnaki are ordinary Mesopotamian gods, and no text describes a hidden planet." },
+  { c: "Derinkuyu", v: ["Real", "true"], b: "An underground city in Cappadocia, Turkey, dug into soft volcanic rock at least eight levels deep, with ventilation shafts, stables and rolling stone doors, able to shelter thousands. Its earliest phase is uncertain; it was much expanded in the Byzantine period as a refuge from raids. It was rediscovered in 1963 when a man knocked through a wall in his house." },
+];
+const LOST_GIZA = [
+  { c: "Aliens built the pyramids", v: ["Myth", "myth"], b: "Popularised by Erich von Däniken's <em>Chariots of the Gods?</em> (1968). The record of construction is unusually full: earlier failed and bent pyramids show the learning curve, quarries and ramps survive, and the workers left their town, bakeries, tombs and graffiti naming their gangs." },
+  { c: "Khufu's name was forged inside the pyramid", v: ["Myth", "myth"], b: "Zecharia Sitchin claimed in 1980 that Colonel Howard Vyse painted the cartouche he found in 1837. In 2013 Pierre Tallet found papyri at Wadi al-Jarf, the oldest inscribed papyri known: the logbook of an inspector named Merer, recording limestone shipped to Giza for Khufu's pyramid." },
+  { c: "The Sphinx is thousands of years older", v: ["Disputed by one geologist", "part"], b: "Geologist Robert Schoch argued in 1992 that the weathering on the Sphinx's enclosure was made by heavy rain, which would put it before 5000 BC. Egyptologists and most geologists date it to Khafre's reign, around 2500 BC, from its place in his pyramid complex and the tools and quarrying pattern." },
+  { c: "The pyramids mirror Orion's belt", v: ["Speculation", "part"], b: "Robert Bauval's 1994 <em>The Orion Mystery</em> noted that the three Giza pyramids resemble the three stars of Orion's belt and dated the match to 10,500 BC. Critics note the pyramids were built over three reigns, and that the third pyramid's offset only fits if the map is flipped." },
+  { c: "The Great Pyramid points almost exactly north", v: ["True", "true"], b: "Its sides are aligned to true north within about four minutes of arc, a fifteenth of a degree, likely by watching stars or the sun's shadow. The precision is real and impressive; it needs good astronomy, not lost technology." },
+  { c: "A hidden void inside the Great Pyramid", v: ["True", "true"], b: "In 2017 the ScanPyramids team reported in <em>Nature</em> a large void above the Grand Gallery, found with cosmic-ray muons. In 2023 they found and filmed a 9 m corridor behind the north face. What the void is for is unknown." },
+  { c: "Pyramid inches and π", v: ["Disproved by a survey", "myth"], b: "Charles Piazzi Smyth claimed in 1864 that the Great Pyramid encoded a sacred “pyramid inch”, π and the Earth's dimensions. Flinders Petrie went to Giza in 1880 to confirm it, measured carefully, and found the numbers did not hold. He became the father of scientific Egyptology instead." },
+  { c: "The pyramids were Joseph's granaries", v: ["Medieval tradition", "part"], b: "Medieval Christians thought the pyramids were the barns where Joseph stored grain for the famine; 13th-century mosaics in St Mark's, Venice, show them that way. Pyramids are almost solid stone, with tiny chambers, and they predate any date for Joseph by centuries.", r: [["Gen", 41, 49]] },
+  { c: "Edgar Cayce's Hall of Records", v: ["Failed prophecy", "myth"], b: "The American psychic said in the 1930s that Atlantean records lay in a chamber near the Sphinx and would be opened by 1998. Excavations and ground-penetrating radar around the Sphinx have found nothing of the kind." },
+];
+const LOST_REAL = [
+  { c: "The Antikythera mechanism", v: ["Real", "true"], b: "A shoebox-sized bronze machine of at least 30 interlocking gears, recovered from a Roman-era shipwreck off Antikythera in 1901 and made in the 2nd or 1st century BC. It modelled the motions of the sun and moon, predicted eclipses and tracked the Olympic Games. Nothing as intricate is known for another thousand years." },
+  { c: "Roman concrete", v: ["Real", "true"], b: "Roman harbour walls have stood in seawater for 2,000 years while modern concrete crumbles in decades. Studies found that seawater grows new minerals in the volcanic-ash mix, and in 2023 MIT researchers showed that lumps of quicklime, mixed in hot, let cracks heal themselves." },
+  { c: "Damascus steel", v: ["Real, partly lost", "true"], b: "Blades forged from wootz steel made in India and Sri Lanka were famous for their watery patterns and sharpness. The supply and the know-how faded by the 1800s; modern smiths have reproduced the patterns, and studies have found carbon nanotube-like structures in old blades." },
+  { c: "Greek fire", v: ["Real, recipe lost", "true"], b: "A liquid fire the Byzantines sprayed from siphons on their ships from around 672, said to keep burning on water. It saved Constantinople from Arab fleets. The recipe was a state secret so well kept that it was lost." },
+  { c: "The Lycurgus Cup", v: ["Real", "true"], b: "A 4th-century Roman glass cup, now in the British Museum, that looks green in reflected light and red when lit from inside. The effect comes from gold and silver particles about 70 nanometres across: nanotechnology by accident or by craft." },
+];
+const LOST_MYTH = [
+  { c: "The Baghdad battery", v: ["Probably not", "myth"], b: "A clay jar with a copper cylinder and an iron rod, from Parthian or Sasanian Iraq, described as a battery by Wilhelm König in 1938. Replicas filled with grape juice make about half a volt, but no wires, conductors or electrical devices have been found with any of them. Similar jars stored scrolls." },
+  { c: "The Dendera light bulb", v: ["Myth", "myth"], b: "Reliefs in the temple of Hathor at Dendera show a long bulb-like shape with a wavy line inside. The hieroglyphs beside them describe a lotus flower from which a snake emerges, a creation image, and no Egyptian site has filaments, wiring or soot-free lighting." },
+  { c: "The Coso artifact", v: ["A 1920s spark plug", "myth"], b: "Found in 1961 inside a rock-hard lump near Olancha, California, and claimed to be 500,000 years old. In 1999 spark plug collectors identified it as a Champion spark plug of the 1920s, encased in iron-rich clay." },
+  { c: "The Ica stones", v: ["Hoax", "myth"], b: "Andesite stones from Peru engraved with people riding dinosaurs and doing heart transplants. A local farmer, Basilio Uschuya, admitted carving them, copying pictures from comics and magazines, and demonstrated how." },
+  { c: "Puma Punku's impossible stones", v: ["Skilled, not impossible", "part"], b: "Precisely cut andesite and sandstone blocks at Tiwanaku, Bolivia, built around AD 600. The flat faces, drill holes and repeated shapes were made with harder hammerstones, abrasives and standard templates, and the blocks were held with copper-alloy clamps poured into place. It is a feat of craft, not of lost machinery." },
+  { c: "The Piri Reis map shows Antarctica", v: ["Myth", "myth"], b: "An Ottoman admiral's world map of 1513, compiled from older charts including one of Columbus's. Charles Hapgood argued in 1966 that its southern coast was Antarctica before the ice. Map historians read it as the coast of South America bent east to fit the parchment." },
+  { c: "The Vimanas, ancient Indian aircraft", v: ["Modern text", "myth"], b: "The <em>Vaimanika Shastra</em>, said to describe ancient flying machines, was dictated in the early 20th century by Pandit Subbaraya Shastry. A 1974 study at the Indian Institute of Science found its designs could not fly." },
+  { c: "Ancient nuclear war at Mohenjo-daro", v: ["Myth", "myth"], b: "Claims of radioactive skeletons and fused glass at the Indus city (c. 2500 BC) do not appear in excavation reports. The skeletons found in the upper streets come from different periods and show no sign of a blast." },
+];
+// Heights in metres; cubit taken as 18 inches (0.457 m)
+const GIANT_H = [["Average man", 1.75, "var(--muted)"], ["Goliath, Dead Sea Scroll and Septuagint (4 cubits + a span)", 2.06, "var(--gold)"], ["Robert Wadlow, tallest person on record", 2.72, "var(--ok)"], ["Goliath, KJV (6 cubits + a span)", 2.97, "var(--gold)"], ["Gigantopithecus, extinct ape (estimate)", 3.0, "var(--ok)"], ["The Cardiff Giant (a statue)", 3.05, "var(--violet)"], ["Og's bed, not Og (9 cubits)", 4.11, "var(--gold)"], ["Giant of Kandahar, as claimed (12–15 ft)", 4.57, "var(--rubric)"]];
+const LOST_GIANTS = [
+  { c: "The Nephilim", v: ["In the text", "true"], b: "Genesis 6 has the Nephilim on the earth when “the sons of God” took human wives, and the spies in Numbers feel like grasshoppers beside them. The KJV's “giants” follows the Greek Septuagint's <em>gigantes</em>. 1 Enoch, which the Bible quotes, gives the giants a height of three thousand ells.", r: [["Gen", 6, 4], ["Num", 13, 33]], en: [[7, "2"]] },
+  { c: "Og's iron bed", v: ["In the text", "true"], b: "Og, king of Bashan, the last of the giants, had a bedstead nine cubits long and four wide, about 4.1 by 1.8 m. That is the bed, not the man; scholars suggest it may have been a ceremonial couch or a basalt sarcophagus.", r: [["Deut", 3, 11]] },
+  { c: "The Giant of Kandahar", v: ["No evidence", "myth"], b: "In 2016, anonymous men claiming to be former soldiers told Christian fringe radio, including Steve Quayle's show, and L. A. Marzulli's Nephilim films, that US special forces killed a 12-to-15-foot red-haired giant in a cave near Kandahar around 2002 and the body was flown away. No soldier has been named on record and no unit report, photograph or remains have appeared." },
+  { c: "The Smithsonian hid giant skeletons", v: ["Hoax", "myth"], b: "19th-century newspapers carried many stories of giant bones dug from mounds, none preserved. In 2014 a story that the US Supreme Court had forced the Smithsonian to release documents on giants spread widely; it came from World News Daily Report, a satire site." },
+  { c: "Photos of giant skeletons", v: ["Photoshop", "myth"], b: "The famous images of enormous skeletons at a dig were made for a 2002 Photoshop contest on the site Worth1000 and later passed around as news of discoveries in India, Greece and Saudi Arabia." },
+  { c: "The Cardiff Giant", v: ["Hoax", "myth"], b: "A 10-foot “petrified man” dug up in New York in 1869. George Hull, an atheist who had argued with a preacher about the giants of Genesis, had it carved from gypsum and buried. P. T. Barnum exhibited a copy, and Hull admitted the hoax." },
+  { c: "The red-haired giants of Lovelock Cave", v: ["Legend", "myth"], b: "Paiute oral tradition tells of red-haired cannibals, the Si-Te-Cah, driven into a Nevada cave and burned. Guano miners dug into the cave in 1911 and found mummies and remains of normal height; hair often turns reddish after death as its pigment breaks down." },
+  { c: "The giants of Patagonia", v: ["Exaggeration", "part"], b: "Magellan's chronicler Antonio Pigafetta wrote in 1520 that the Tehuelche people were so tall that Europeans reached only to their waists. The Tehuelche were tall, around 1.8 m on average, which was impressive beside 16th-century sailors." },
+  { c: "Gigantopithecus", v: ["Real giant", "true"], b: "A real giant ape that lived in southern China, known from hundreds of teeth and a few jaws, estimated at up to 3 m tall. A 2024 study in <em>Nature</em> dated its extinction to between 295,000 and 215,000 years ago, as its forest habitat changed." },
+];
+const LOST_FORBIDDEN = [
+  { c: "The Watchers' forbidden arts", v: ["In 1 Enoch", "true"], b: "In the Book of the Watchers, fallen angels teach humans what they were not meant to know: Azazel teaches metalworking, weapons and cosmetics, others teach spells, root-cutting and astrology.", en: [[8, "1"], [8, "3"]], go: "canon" },
+  { c: "The tree of knowledge", v: ["In the text", "true"], b: "The original forbidden knowledge: the fruit of the tree of the knowledge of good and evil. God's worry afterwards is that humans will also eat from the tree of life.", r: [["Gen", 2, 17], ["Gen", 3, 22]] },
+  { c: "The Library of Alexandria burned in one night", v: ["Myth", "myth"], b: "It declined over centuries. Julius Caesar's fire in 48 BC destroyed books near the harbour; funding and scholars dwindled under later rulers; the daughter library in the Serapeum was destroyed in 391. The story that the caliph Umar ordered the books burned first appears around 1200, five centuries after the event, and most historians reject it." },
+  { c: "The Emerald Tablet", v: ["Medieval, not ancient Egyptian", "part"], b: "The short alchemical text behind “as above, so below” is credited to Hermes Trismegistus. Its oldest known versions are Arabic, from around the 8th to 10th centuries. Isaac Newton made his own translation of it." },
+  { c: "Hermes Trismegistus, older than Moses", v: ["Dated in 1614", "myth"], b: "Renaissance scholars believed the <em>Corpus Hermeticum</em> was ancient Egyptian wisdom older than Moses. In 1614 Isaac Casaubon showed from its Greek vocabulary and ideas that it was written in the first centuries AD." },
+  { c: "The Kybalion", v: ["Written in 1908", "myth"], b: "Presented as ancient Hermetic teachings by “Three Initiates”, it was published in Chicago in 1908 and was most likely written by William Walker Atkinson, a prolific New Thought author." },
+  { c: "The Voynich manuscript", v: ["Real, unread", "true"], b: "A book of plants, star charts and bathing women in an unknown script, held at Yale. Radiocarbon dating in 2009 placed its vellum between 1404 and 1438. Every claimed decipherment so far has failed; some think it is a hoax, others a lost language or cipher." },
+  { c: "The Vatican Secret Archives", v: ["Misnamed", "part"], b: "<em>Secretum</em> meant private: the pope's own archive. Leo XIII opened it to scholars in 1881, and in 2019 Francis renamed it the Vatican Apostolic Archive. Recent papacies stay closed for about 70 years; Pius XII's files opened in 2020." },
+  { c: "The Necronomicon", v: ["Fiction", "myth"], b: "The forbidden book of the “mad Arab” Abdul Alhazred was invented by H. P. Lovecraft for his stories, first mentioned in 1924. Several books have since been published under the title." },
+];
+function cardEn(m) { return card(m).replace(/<\/div>$/, (m.en || []).map(([c, l]) => enochQ(c, l)).join("") + "</div>"); }
+function initLost() {
+  $("lost-civ").innerHTML = LOST_CIV.map(card).join("");
+  $("lost-giza").innerHTML = LOST_GIZA.map(card).join("");
+  $("lost-real").innerHTML = LOST_REAL.map(card).join("");
+  $("lost-myth").innerHTML = LOST_MYTH.map(card).join("");
+  $("giant-lede").innerHTML = `“Giant” or “giants” appears ${fmt(countRx(/\bgiants?\b/gi))} times in the KJV. Here is how the Bible's giants compare with real and claimed ones.`;
+  const mx = 4.8, rowH = 30;
+  $("giant-chart").innerHTML = `<svg viewBox="0 0 760 ${GIANT_H.length * rowH + 30}" role="img" aria-label="Heights of giants, real and claimed">${GIANT_H.map(([n, h, col], k) => `<text x="300" y="${k * rowH + 20}" text-anchor="end" font-size="12" style="fill:var(--ink)">${n}</text><rect x="310" y="${k * rowH + 8}" width="${h / mx * 400}" height="18" rx="3" style="fill:${col}"/><text x="${316 + h / mx * 400}" y="${k * rowH + 21}" font-size="12" style="fill:var(--muted)">${h.toFixed(2)} m · ${Math.floor(h / 0.3048)}′${Math.round((h / 0.3048 % 1) * 12)}″</text>`).join("")}<text x="310" y="${GIANT_H.length * rowH + 22}" font-size="11" style="fill:var(--muted)">Cubits at 18 inches. Gold: the Bible; green: real; red: claimed with no evidence; violet: hoax.</text></svg>`;
+  $("lost-giants").innerHTML = LOST_GIANTS.map(cardEn).join("");
+  $("lost-forbidden").innerHTML = LOST_FORBIDDEN.map((m) => cardEn(m).replace(/<\/div>$/, m.go ? `<button type="button" class="ghost" data-go="${m.go}" style="justify-self:start">Read 1 Enoch</button></div>` : "</div>")).join("");
+  $("lost-forbidden").querySelectorAll("button[data-go]").forEach((b) => { b.onclick = () => { go(b.dataset.go); window.scrollTo({ top: 0 }); }; });
+}
+
+// ---------- conspiracies ----------
+const CONSP = [
+  { c: "The Illuminati", v: ["Real, then gone", "part"], b: "Adam Weishaupt, a law professor, founded the Bavarian Illuminati on 1 May 1776 as a secret society for Enlightenment ideas. Bavaria banned secret societies in 1784–85 and the order collapsed. In 1797 Augustin Barruel and John Robison blamed it for the French Revolution, and the idea of a hidden Illuminati has outlived the order by two centuries; the 1970s <em>Illuminatus!</em> novels turned it into pop culture." },
+  { c: "The Protocols of the Elders of Zion", v: ["Antisemitic forgery", "myth"], b: "A supposed Jewish plan for world domination, published in Russia around 1903. In 1921 Philip Graves of <em>The Times</em> showed that whole passages were copied from Maurice Joly's 1864 satire of Napoleon III, which had nothing to do with Jews. It was spread by Henry Ford's newspaper in the 1920s and by Nazi propaganda, and still circulates." },
+  { c: "“Novus ordo seclorum”: the New World Order", v: ["Mistranslation", "myth"], b: "The motto on the Great Seal and the dollar means “a new order of the ages”: the new American era, beginning in 1776. Charles Thomson took it in 1782 from a line in Virgil's fourth Eclogue. It does not say “new world order”." },
+  { c: "Jesus in India", v: ["Forgery", "myth"], b: "In 1894 Nicolas Notovitch published a “Life of Saint Issa” he said he had found at Hemis monastery in Ladakh, describing Jesus' lost years in India. In 1895 a British visitor, J. Archibald Douglas, went to Hemis, and the head lama denied that any such text existed or that Notovitch had seen one. A shrine in Srinagar later identified as Jesus' tomb is held by its custodians to be that of a Muslim saint, Yuz Asaf." },
+  { c: "Jesus never existed", v: ["Fringe", "myth"], b: "Almost all historians, religious or not, accept that Jesus was a real Jewish preacher crucified under Pontius Pilate. Besides the Gospels and Paul's letters, the Roman historian Tacitus (about AD 116) mentions his execution, and the Jewish historian Josephus mentions him twice, though one passage was later expanded by Christian copyists." },
+  { c: "Constantine invented Jesus' divinity at Nicaea", v: ["Myth", "myth"], b: "Christians worshipped Jesus as divine long before 325: around AD 112 the Roman governor Pliny reported that Christians sang hymns “to Christ as to a god”. Nicaea settled how divine, against Arius, and all but two of the bishops present signed its creed.", r: [["John", 1, 1]] },
+  { c: "Christmas is a pagan festival in disguise", v: ["Disputed", "part"], b: "25 December first appears as Jesus' birthday in a Roman calendar of 354. The emperor Aurelian had founded a festival of the Unconquered Sun in 274, and many think the Church chose the date to replace it. Others point to an older Christian calculation that put Jesus' conception on 25 March, nine months earlier. The Bible gives no date." },
+  { c: "Easter is named after Ishtar", v: ["Myth", "myth"], b: "The English word comes from Ēostre, a spring goddess mentioned by Bede in 725, or from an old word for dawn. Most languages call the feast Pascha, from the Hebrew Pesach, Passover. Ishtar, the Mesopotamian goddess, is unrelated, and her name was pronounced nothing like Easter." },
+  { c: "The Rapture is a 19th-century invention", v: ["Mostly true", "part"], b: "Paul writes of believers being “caught up” to meet the Lord. The idea of a secret rapture before seven years of tribulation was set out in the 1830s by John Nelson Darby, the same Darby whose translation is in the Translations tab, and spread through the Scofield Reference Bible (1909) and the <em>Left Behind</em> novels (1995 onwards).", r: [["1Thess", 4, 17]] },
+  { c: "The Vatican's LUCIFER telescope", v: ["True, misread", "part"], b: "LUCIFER was a near-infrared camera on the Large Binocular Telescope on Mount Graham, Arizona: an acronym for “Large Binocular Telescope Near-infrared Utility with Camera and Integral Field Unit for Extragalactic Research”, later renamed LUCI. The Vatican Observatory runs a different telescope on the same mountain." },
+  { c: "The Third Secret of Fatima is still hidden", v: ["Published 2000", "part"], b: "Three Portuguese children said Mary appeared to them in 1917 and gave three secrets. The Vatican published the third in June 2000: a vision of a bishop in white shot on a hill of ruins, which it linked to the 1981 attempt on John Paul II. Some still claim a second, apocalyptic part was withheld; Sister Lúcia, the last seer, said it had all been released." },
+  { c: "The Jesuit “Black Pope” rules the world", v: ["Myth", "myth"], b: "“Black pope” is a nickname for the Superior General of the Jesuits, who wears a black cassock, as opposed to the pope's white. He leads a religious order of about 14,000 members under the pope's authority." },
+  { c: "The Georgia Guidestones", v: ["Real, now gone", "true"], b: "Granite slabs erected in 1980 in Elbert County, Georgia, paid for by someone using the pseudonym R. C. Christian, with ten guidelines in eight languages, including keeping humanity under 500 million. Conspiracy theorists called them a New World Order manifesto. They were bombed on 6 July 2022 and demolished the same day." },
+];
+const MANDELA = [
+  ["the lion shall lie down with the lamb", "Usually remembered this way. Isaiah has the wolf with the lamb, and the leopard with the kid."],
+  ["the wolf also shall dwell with the lamb", ""],
+  ["money is the root of all evil", "Present, but only inside “the love of money is the root of all evil”."],
+  ["pride goeth before a fall", "Proverbs says pride goeth before destruction, and a haughty spirit before a fall."],
+  ["new wine into old wineskins", "The KJV says bottles."],
+  ["spare the rod and spoil the child", "From Samuel Butler's 1663 poem <em>Hudibras</em>. Proverbs 13:24 says he that spareth his rod hateth his son."],
+  ["god helps those who help themselves", "Benjamin Franklin popularised it in 1736, from Algernon Sidney."],
+  ["cleanliness is next to godliness", "An old proverb that John Wesley quoted in a sermon in the 1780s."],
+];
+const times = (n) => (n === 1 ? "once" : n === 2 ? "twice" : `${n} times`);
+function initConspiracies() {
+  $("consp-cards").innerHTML = CONSP.map(card).join("");
+  $("mandela").innerHTML = MANDELA.map(([ph, note]) => {
+    const at = findPhrase(ph);
+    return `<div class="card">${pill(at >= 0 ? ["In the KJV", "true"] : ["Not in the KJV", "myth"])}<h4>“${ph}”</h4>${note ? `<p>${note}</p>` : ""}${at >= 0 ? quoteI(at) : ""}</div>`;
+  }).join("");
+  const corners = countRx(/four corners of the earth/gi), circle = countRx(/circle of the earth/gi);
+  $("flat").innerHTML = [
+    { c: "“The four corners of the earth”", v: ["A figure of speech", "part"], b: `The phrase appears ${times(corners)} in the KJV, “the circle of the earth” ${times(circle)}. Both are poetry: the corners are the four directions, and the Hebrew <em>chug</em>, circle, describes a disc or vault as seen from the ground. Ancient Hebrew cosmology did picture a flat earth under a solid dome, as most ancient peoples did.`, r: [["Isa", 11, 12], ["Isa", 40, 22], ["Rev", 7, 1]] },
+    { c: "Medieval Christians thought the earth was flat", v: ["Myth", "myth"], b: "Educated Europeans knew the earth was round from antiquity onwards: Bede, Aquinas and the standard medieval textbook <em>On the Sphere</em> all say so. Columbus's critics argued the earth was bigger than he thought, and they were right. The flat-earth story was spread by Washington Irving's 1828 biography of Columbus." },
+  ].map(card).join("");
+  $("ac-count").textContent = countRx(/\bantichrists?\b/gi);
+  const AC = [["c. 95", "Nero, returning from the dead, in many early readings of Revelation 13 (666 = Nero Caesar)"], ["1520", "The papacy, according to Martin Luther and most Protestant reformers"], ["1520s", "Luther, according to his Catholic opponents"], ["1650s", "Oliver Cromwell, to royalists"], ["1800s", "Napoleon Bonaparte"], ["1930s–40s", "Mussolini and Hitler"], ["1980s", "Mikhail Gorbachev, for the birthmark on his head"], ["2000s onward", "Every recent US president, to someone"]];
+  $("antichrists").innerHTML = AC.map(([y, t], k) => `<li><span class="i" style="min-width:5.5em">${y}</span><span class="t" style="white-space:normal">${t}</span><span></span></li>`).join("") + `<li><span class="i" style="min-width:5.5em">—</span><span class="t" style="white-space:normal">${esc(D.text[vi("1John", 2, 18)])}</span><span class="num status"><button class="ref" data-v="${vi("1John", 2, 18)}">1 John 2:18</button></span></li>`;
 }
 
 // ---------- beyond the canon ----------
