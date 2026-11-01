@@ -1,7 +1,12 @@
-# Versegraph
+# Forbidden Knowledge
 
-Data exploration over the 341,282 reader-voted cross-references between the
-31,102 verses of the King James Bible, plus an honest "Bible code" (ELS) search.
+Lost civilizations, secret societies, banned books and Bible codes: every claim checked against the
+sources. Live at https://versegraph.noblerworks.com (the repo and domain keep the original name,
+Versegraph, from when this was only a Bible data explorer).
+
+Underneath is real data work: 341,282 reader-voted cross-references between the 31,102 verses of the
+King James Bible, the Quran and the Book of Mormon aligned against the KJV, and an honest "Bible code"
+(ELS) search with chance baselines.
 
 - **Arcs** - every cross-reference as an arc, colored by reach; filter by book and vote count.
 - **Verse** - look up a verse and its cross-references, strongest first.

@@ -17,9 +17,9 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE, DIST = ROOT / "site", ROOT / "dist"
 HOST = "versegraph.noblerworks.com"
 BASE = f"https://{HOST}"
-DESC = ("The Bible as data, plus world religions, philosophy, lost civilizations, giants and conspiracy theories, "
-        "each claim checked against the sources: 341,282 cross-references, a scroll-through timeline, the Quran and "
-        "the Book of Mormon compared with the KJV, Giza theories, and an honest test of Bible codes.")
+DESC = ("Lost civilizations, secret societies, banned books and Bible codes, every claim checked against the sources: "
+        "an 11,000-year scroll-through timeline, Giza theories, giants, the Templars, the Book of Enoch, "
+        "the Quran and the Book of Mormon beside the KJV, and an honest test of Bible codes.")
 XREFS_PER_VERSE = 3
 MIN_VOTES = 5
 
@@ -47,10 +47,10 @@ nav.pn { display: flex; justify-content: space-between; gap: 12px; margin-top: 2
 .books a { display: inline-block; min-width: 2.2em; }
 footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--rule); color: var(--muted); font: 12px system-ui, sans-serif; }
 """
-# A rubric-red "V" on vellum, inline so there is no favicon request to 404
+# A red eye with a gold iris on the night background, inline so there is no favicon request to 404
 ICON = ('<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E'
-        '%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%23eef1f5%27/%3E%3Ctext x=%2716%27 y=%2724%27 font-size=%2722%27 '
-        'text-anchor=%27middle%27 font-family=%27Georgia,serif%27 fill=%27%23b23a24%27%3EV%3C/text%3E%3C/svg%3E">')
+        '%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%230d1220%27/%3E%3Cpath d=%27M4 16q12-12 24 0q-12 12-24 0z%27 '
+        'fill=%27none%27 stroke=%27%23e0664c%27 stroke-width=%272.4%27/%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%274.2%27 fill=%27%23d9b45a%27/%3E%3C/svg%3E">')
 FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Literata:opsz@7..72&display=swap">'
 FOOTER = ('<footer>Text: King James Version (public domain). Cross-references from '
           '<a href="https://www.openbible.info/labs/cross-references/">OpenBible.info</a> (CC BY). '
@@ -87,7 +87,7 @@ def main():
     app = (SITE / "index.html").read_text()
     app = re.sub(r'<meta charset="utf-8">\s*|<title>.*?</title>\s*|<meta name="claude:viewport-fit-sides"[^>]*>\s*', "", app, count=3)
     # The artifact host's wrapper zeroes the body margin; do the same here.
-    (DIST / "index.html").write_text(doc("Versegraph", DESC, BASE + "/", app, "<style>body{margin:0}</style>"))
+    (DIST / "index.html").write_text(doc("Forbidden Knowledge", DESC, BASE + "/", app, "<style>body{margin:0}</style>"))
 
     # verse index -> (book, chapter, verse)
     loc = []
@@ -130,7 +130,7 @@ def main():
         first = text[i - n]
         desc = f"{name} {c} in the King James Version, with the strongest cross-references for each verse. {first[:110]}"
         canonical = f"{BASE}/read/{slug(name)}/{c}.html"
-        body = (f'<main><header><a class="mark" href="/">Verse<span>graph</span></a><a href="/read/">All books</a></header>'
+        body = (f'<main><header><a class="mark" href="/">Forbidden <span>Knowledge</span></a><a href="/read/">All books</a></header>'
                 f'<h1>{html.escape(name)} {c}</h1><p class="sub">King James Version · {n} verses · '
                 f'<a href="/#verse/{books[b][0]}.{c}.1">Explore cross-references interactively</a></p>{"".join(rows)}'
                 f'<nav class="pn">{prev_l}{next_l}</nav>{FOOTER}</main>')
@@ -143,12 +143,12 @@ def main():
                   for _, name, counts in books)
     (DIST / "read" / "index.html").write_text(doc(
         "Read the King James Bible with cross-references", "Every chapter of the King James Bible, each verse with its strongest cross-references.",
-        BASE + "/read/", f'<main><header><a class="mark" href="/">Verse<span>graph</span></a><a href="/">Explore</a></header><h1>Read</h1>'
+        BASE + "/read/", f'<main><header><a class="mark" href="/">Forbidden <span>Knowledge</span></a><a href="/">Explore</a></header><h1>Read</h1>'
         f'<p class="sub">All 66 books and 1,189 chapters of the King James Version.</p><div class="books">{idx}</div>{FOOTER}</main>',
         FONTS + f"<style>{PAGE_CSS}</style>"))
 
-    (DIST / "404.html").write_text(doc("Not found · Versegraph", "Page not found.", BASE + "/404.html",
-                                       f'<main><h1>Not found</h1><p><a href="/">Go to Versegraph</a> or <a href="/read/">read by chapter</a>.</p></main>',
+    (DIST / "404.html").write_text(doc("Not found · Forbidden Knowledge", "Page not found.", BASE + "/404.html",
+                                       f'<main><h1>Not found</h1><p><a href="/">Go to Forbidden Knowledge</a> or <a href="/read/">read by chapter</a>.</p></main>',
                                        f"<style>{PAGE_CSS}</style>"))
     (DIST / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
                                       + "".join(f"<url><loc>{u}</loc></url>\n" for u in urls) + "</urlset>\n")
