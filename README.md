@@ -13,6 +13,7 @@ Data exploration over the 341,282 reader-voted cross-references between the
 - **Beyond the Canon** - 1 Enoch, Nag Hammadi, Thomas, Mary, Philip, Judas, the Gospel of Jesus' Wife forgery;
   Enoch-Bible parallels; full readers for 1 Enoch, Thomas and Mary with "closest Bible verses" per passage.
 - **History** - papal succession by century (Wikidata) with antipopes; Shroud, Eucharistic miracles, Templars, Pope Joan, the arks.
+- **Mysteries** - Egypt in the Bible (mentions by book, pharaohs matched to Egyptian records, Amenemope, the Aten hymn, myths), the Bible in Masonic ritual, the Rosicrucian manifestos, and the Psalm 46 "Shakespeare" count computed live.
 - **People** - lifespans parsed from the text, Matthew vs Luke genealogies, family explorer (Theographic).
 - **Translations** - KJV, Webster, YLT, Darby, ASV and WEB side by side with differences marked; the 16 verses newer Bibles drop.
 - **Numbers** - number-word frequencies, a gematria coincidence machine, Atbash and the alphabet acrostics.
