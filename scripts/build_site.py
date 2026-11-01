@@ -47,6 +47,10 @@ nav.pn { display: flex; justify-content: space-between; gap: 12px; margin-top: 2
 .books a { display: inline-block; min-width: 2.2em; }
 footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--rule); color: var(--muted); font: 12px system-ui, sans-serif; }
 """
+# A rubric-red "V" on vellum, inline so there is no favicon request to 404
+ICON = ('<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E'
+        '%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%23eef1f5%27/%3E%3Ctext x=%2716%27 y=%2724%27 font-size=%2722%27 '
+        'text-anchor=%27middle%27 font-family=%27Georgia,serif%27 fill=%27%23b23a24%27%3EV%3C/text%3E%3C/svg%3E">')
 FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Literata:opsz@7..72&display=swap">'
 FOOTER = ('<footer>Text: King James Version (public domain). Cross-references from '
           '<a href="https://www.openbible.info/labs/cross-references/">OpenBible.info</a> (CC BY). '
@@ -64,7 +68,7 @@ def doc(title, desc, canonical, body, extra_head=""):
             f"<title>{html.escape(title)}</title><meta name=\"description\" content=\"{html.escape(desc)}\">"
             f'<link rel="canonical" href="{canonical}"><meta property="og:title" content="{html.escape(title)}">'
             f'<meta property="og:description" content="{html.escape(desc)}"><meta property="og:url" content="{canonical}">'
-            f'<meta property="og:type" content="website">{extra_head}</head><body>{body}</body></html>')
+            f'<meta property="og:type" content="website">{ICON}{extra_head}</head><body>{body}</body></html>')
 
 
 def main():
@@ -82,7 +86,8 @@ def main():
     # The app: the artifact page is a fragment (title, style, markup, script); give it a real document.
     app = (SITE / "index.html").read_text()
     app = re.sub(r'<meta charset="utf-8">\s*|<title>.*?</title>\s*|<meta name="claude:viewport-fit-sides"[^>]*>\s*', "", app, count=3)
-    (DIST / "index.html").write_text(doc("Versegraph", DESC, BASE + "/", app))
+    # The artifact host's wrapper zeroes the body margin; do the same here.
+    (DIST / "index.html").write_text(doc("Versegraph", DESC, BASE + "/", app, "<style>body{margin:0}</style>"))
 
     # verse index -> (book, chapter, verse)
     loc = []
