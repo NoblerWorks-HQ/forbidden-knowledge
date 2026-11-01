@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Versegraph</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,6 +16,10 @@
   --rubric: #b23a24;
   --violet: #4b3f9e;
   --hit: #f6dd8f;
+  --ok: #2f6b4f;
+  --sea: #d3dfec;
+  --land: #fbfbfc;
+  --river: #7d9cc0;
   --display: "IM Fell English SC", "Iowan Old Style", Georgia, serif;
   --scripture: "Literata", Georgia, "Times New Roman", serif;
   --ui: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -24,11 +29,13 @@
   :root:not([data-theme="light"]) {
     --bg: #0d1220; --surface: #151c2e; --ink: #e7e4da; --muted: #9097a8; --rule: #263049;
     --gold: #d9b45a; --rubric: #e0664c; --violet: #8f86e8; --hit: #5a4a17; color-scheme: dark;
+    --ok: #6cc39a; --sea: #0a1120; --land: #1b2338; --river: #35537d;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0d1220; --surface: #151c2e; --ink: #e7e4da; --muted: #9097a8; --rule: #263049;
   --gold: #d9b45a; --rubric: #e0664c; --violet: #8f86e8; --hit: #5a4a17; color-scheme: dark;
+  --ok: #6cc39a; --sea: #0a1120; --land: #1b2338; --river: #35537d;
 }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font-family: var(--ui); font-size: 15px; line-height: 1.5; }
@@ -108,6 +115,58 @@ ul.hits button[aria-pressed="true"] { border-color: var(--gold); color: var(--go
 footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--muted); }
 footer a { color: inherit; }
 .loading { padding: 60px 0; text-align: center; color: var(--muted); font-family: var(--scripture); font-style: italic; }
+.goal { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 6px 0 18px; }
+.goal > div { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; min-width: 0; }
+.goal .r { font-family: var(--display); font-size: 19px; color: var(--rubric); }
+.goal p { font-family: var(--scripture); margin: 4px 0 0; }
+.choices { display: grid; gap: 6px; margin-top: 10px; }
+.choices button { display: grid; grid-template-columns: 9.5em minmax(0, 1fr) auto; gap: 12px; text-align: left; font-weight: 400; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); align-items: baseline; }
+.choices button:hover { border-color: var(--gold); }
+.choices button.hint { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold) inset; }
+.choices b { font-weight: 600; }
+.choices .snip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 560px) { .choices button { grid-template-columns: minmax(0, 1fr) auto; } .choices button .snip { grid-column: 1 / -1; grid-row: 2; white-space: normal; } }
+.win { border: 1px solid var(--gold); background: var(--surface); border-radius: 10px; padding: 14px 16px; margin: 12px 0; display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; margin-top: 14px; }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.card h4 { font-family: var(--scripture); font-size: 17px; font-weight: 600; margin: 0; text-wrap: balance; }
+.card p { margin: 0; }
+.card .q { font-family: var(--scripture); font-size: 14px; border-left: 2px solid var(--rule); padding-left: 10px; color: var(--ink); }
+.card .q b { color: var(--rubric); font-weight: 600; font-family: var(--ui); font-size: 12px; }
+.card .ev { font-size: 12px; color: var(--muted); }
+.card ul { margin: 0; padding-left: 18px; }
+.v-myth { color: var(--rubric); border-color: var(--rubric); }
+.v-part { color: var(--gold); border-color: var(--gold); }
+.v-true { color: var(--ok); border-color: var(--ok); }
+.checker { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; margin: 6px 0 10px; }
+.checker form { display: flex; flex-wrap: wrap; gap: 10px; }
+.checker input { flex: 1 1 260px; }
+.checker .ans { font-family: var(--display); font-size: 20px; margin: 12px 0 4px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; margin-top: 10px; }
+.facts div { background: var(--surface); padding: 12px 14px; display: grid; gap: 2px; min-width: 0; }
+.facts .k { font-size: 12px; color: var(--muted); }
+.facts .val { font-family: var(--display); font-size: 22px; line-height: 1.15; }
+.facts .s { font-size: 13px; color: var(--muted); font-family: var(--scripture); }
+section h2.sub { margin-top: 36px; }
+.chart { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 12px; overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 560px; height: auto; }
+.stack { display: grid; gap: 14px; margin-top: 10px; }
+.stack .row { display: grid; gap: 6px; }
+.stack .bars { display: flex; height: 22px; border-radius: 4px; overflow: hidden; background: var(--rule); }
+.stack .bars span { display: block; height: 100%; }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.mapgrid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 16px; align-items: start; }
+@media (max-width: 860px) { .mapgrid { grid-template-columns: 1fr; } }
+.mapbox { position: relative; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; touch-action: none; cursor: grab; }
+.mapbox canvas { height: 520px; }
+.zoom { position: absolute; top: 10px; right: 10px; display: grid; gap: 4px; }
+.zoom button { width: 32px; height: 32px; padding: 0; background: var(--surface); color: var(--ink); border: 1px solid var(--rule); font-size: 18px; line-height: 1; }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; min-width: 0; }
+.panel h4 { font-family: var(--display); font-weight: 400; font-size: 22px; margin: 0; }
+.panel ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; font-size: 14px; }
+.cand { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; }
+.cand .bar { grid-column: 1 / -1; background: var(--rubric); }
+.cand button.ref { justify-self: start; text-align: left; }
 @media (max-width: 480px) { .mark { font-size: 32px; } .verse-hero blockquote { font-size: 18px; } }
 @media (prefers-reduced-motion: reduce) { .progress div { transition: none; } }
 </style>
@@ -123,6 +182,11 @@ footer a { color: inherit; }
     <a href="#arcs" data-view="arcs">Arcs</a>
     <a href="#verse" data-view="verse">Verse</a>
     <a href="#path" data-view="path">Path</a>
+    <a href="#ladder" data-view="ladder">Ladder</a>
+    <a href="#myths" data-view="myths">Myths</a>
+    <a href="#theories" data-view="theories">Theories</a>
+    <a href="#map" data-view="map">Map</a>
+    <a href="#canon" data-view="canon">Beyond the Canon</a>
     <a href="#codes" data-view="codes">Code Breaker</a>
   </nav>
 
@@ -167,6 +231,75 @@ footer a { color: inherit; }
     <div id="path-out"></div>
   </section>
 
+  <section id="v-ladder" hidden>
+    <h2>Verse Ladder</h2>
+    <p class="lede">Climb from the start verse to the goal using only cross-references with 5 or more votes. Today's ladder is the same for everyone. Par is the shortest possible route.</p>
+    <div class="controls">
+      <span class="status" id="lad-label"></span>
+      <button type="button" class="ghost" id="lad-today">Today's ladder</button>
+      <button type="button" class="ghost" id="lad-new">Random ladder</button>
+      <button type="button" class="ghost" id="lad-hint">Hint</button>
+      <button type="button" class="ghost" id="lad-undo">Undo</button>
+    </div>
+    <div class="goal" id="lad-goal"></div>
+    <div id="lad-win"></div>
+    <h3>Your route</h3>
+    <div class="chain" id="lad-trail"></div>
+    <h3 style="margin-top:18px">Next rung</h3>
+    <div class="choices" id="lad-choices"></div>
+  </section>
+
+  <section id="v-myths" hidden>
+    <h2>Myths and misconceptions</h2>
+    <p class="lede">Popular beliefs about what the Bible says, checked against the King James text. The counts on each card are computed live from the text on this page.</p>
+    <div class="checker">
+      <h3>Is that in the Bible?</h3>
+      <form id="chk-form"><input type="text" id="chk-in" value="God helps those who help themselves" autocomplete="off" aria-label="Phrase to check"><button type="submit">Check</button></form>
+      <div id="chk-out"></div>
+    </div>
+    <div class="cards" id="myth-cards"></div>
+    <h2 class="sub">By the numbers</h2>
+    <p class="lede">Computed from the 1769 King James text used throughout this page.</p>
+    <div class="facts" id="facts"></div>
+    <h2 class="sub">Where words live</h2>
+    <p class="lede">Each tick is a verse containing the word, laid out from Genesis to Revelation.</p>
+    <form class="controls" id="disp-form"><label class="f">Words, comma separated <input type="text" id="disp-in" value="lamb, love, grace, faith, king, temple, sea" autocomplete="off" style="width:min(420px,80vw)"></label><button type="submit">Plot</button></form>
+    <div class="canvasbox"><canvas id="disp" aria-label="Word dispersion plot"></canvas></div>
+  </section>
+
+  <section id="v-theories" hidden>
+    <h2>Two divine names in Genesis</h2>
+    <p class="lede">Hebrew Genesis uses two main names for God: YHWH and Elohim. The American Standard Version (1901) keeps them apart as "Jehovah" and "God". Chapter 1 never uses YHWH, and chapter 2 switches to "Jehovah God". In the 1700s and 1800s, shifts like this led scholars to propose that the first five books combine older sources. The best-known form, the documentary hypothesis, was set out by Julius Wellhausen in 1878.</p>
+    <div class="chart" id="names-chart"></div>
+    <p class="status">The pattern is real. Whether it shows separate written sources is still debated, and many scholars today prefer other models of how the books were composed. Counts of whole words in the ASV; "Lord" (Adonai) is not counted.</p>
+    <h2 class="sub">The synoptic problem</h2>
+    <p class="lede">Matthew, Mark and Luke share a great deal of material, often word for word. The most common explanation is that Mark was written first and Matthew and Luke both used it. Matthew and Luke also share material that is not in Mark, which scholars attribute to a lost source called "Q".</p>
+    <div class="stack" id="syn"></div>
+    <p class="status" id="syn-note"></p>
+  </section>
+
+  <section id="v-map" hidden>
+    <h2>Places of the Bible</h2>
+    <p class="lede">Every place the text names, with its most likely modern location. Pick a book to see where it happens, or a disputed site to see every location scholars have proposed for it.</p>
+    <div class="controls">
+      <label class="f">Show <select id="map-mode"><option value="book">Places in a book</option><option value="disputed">A disputed site</option></select></label>
+      <label class="f" id="map-book-f">Book <select id="map-book"></select></label>
+      <label class="f" id="map-trace-f"><span><input type="checkbox" id="map-trace"> Trace in reading order</span></label>
+      <label class="f" id="map-site-f" hidden>Site <select id="map-site"></select></label>
+    </div>
+    <div class="mapgrid">
+      <div class="mapbox"><canvas id="map" aria-label="Map of places"></canvas><div class="tip" id="map-tip" hidden></div>
+        <div class="zoom"><button type="button" id="map-in" aria-label="Zoom in">+</button><button type="button" id="map-out" aria-label="Zoom out">−</button><button type="button" id="map-fit" aria-label="Reset view" style="font-size:12px">⤢</button></div></div>
+      <div class="panel" id="map-panel"></div>
+    </div>
+  </section>
+
+  <section id="v-canon" hidden>
+    <h2>Beyond the Canon</h2>
+    <p class="lede">Many ancient texts about the same figures never made it into most Bibles. Some are quoted inside the Bible itself. Some are genuine ancient writings that attract modern myths, and one famous papyrus is a modern forgery.</p>
+    <div class="cards" id="canon-cards"></div>
+  </section>
+
   <section id="v-codes" hidden>
     <h2>Code Breaker</h2>
     <p class="lede">"Bible codes" are equidistant letter sequences (ELS). Strip out spaces and punctuation, then read every <em>n</em>th letter, forward or backward. Search a word below. The same search also runs on <em>Moby Dick</em> and on the Bible's own letters shuffled at random, and each count sits next to the number expected by pure chance from letter frequencies.</p>
@@ -184,7 +317,7 @@ footer a { color: inherit; }
   </section>
 
   <footer>
-    Cross-references from <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY), based on the <em>Treasury of Scripture Knowledge</em> with reader votes. King James Version text and <em>Moby Dick</em> (Project Gutenberg) are in the public domain. Built by Nobler Works.
+    Cross-references from <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY), based on the <em>Treasury of Scripture Knowledge</em> with reader votes. Place identifications from <a href="https://github.com/openbibleinfo/Bible-Geocoding-Data" target="_blank" rel="noopener">OpenBible.info Bible Geocoding Data</a> (CC BY 4.0). Map shapes from <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>. The King James Version, American Standard Version and <em>Moby Dick</em> (Project Gutenberg) are in the public domain. Built by Nobler Works.
   </footer>
 </div>
 
@@ -197,6 +330,8 @@ let D = null; // loaded data and indexes
 
 // ---------- data ----------
 async function load() {
+  const getJSON = (f) => fetch("data/" + f).then((r) => { if (!r.ok) throw new Error(f + " " + r.status); return r.json(); });
+  const [places, land, theories] = await Promise.all(["places.json", "land.json", "theories.json"].map(getJSON));
   const [bible, xr, moby] = await Promise.all([
     fetch("data/bible.json").then((r) => { if (!r.ok) throw new Error("bible.json " + r.status); return r.json(); }),
     fetch("data/xrefs.json").then((r) => { if (!r.ok) throw new Error("xrefs.json " + r.status); return r.json(); }),
@@ -223,7 +358,7 @@ async function load() {
   for (let v = 0; v < N; v++) outEdge.subarray(outOff[v], outOff[v + 1]).sort((a, b) => votes[b] - votes[a]);
   const inVotes = new Float64Array(N), inCount = new Int32Array(N);
   for (let e = 0; e < E; e++) { inVotes[to[e]] += votes[e]; inCount[to[e]]++; }
-  D = { books: bible.books, text: bible.text, N, E, bookOf, chOf, vOf, bookStart, chapStart, from, to, span, votes, outOff, outEdge, inVotes, inCount, moby };
+  D = { books: bible.books, text: bible.text, N, E, bookOf, chOf, vOf, bookStart, chapStart, from, to, span, votes, outOff, outEdge, inVotes, inCount, moby, places, land, theories };
 }
 
 const ref = (i) => `${D.books[D.bookOf[i]][1]} ${D.chOf[i]}:${D.vOf[i]}`;
@@ -245,15 +380,16 @@ function parseRef(s) {
 }
 
 // ---------- routing ----------
-const VIEWS = ["arcs", "verse", "path", "codes"];
+const VIEWS = ["arcs", "verse", "path", "ladder", "myths", "theories", "map", "canon", "codes"];
 const rendered = {};
 function route() {
   const name = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "arcs";
   document.querySelectorAll("nav.tabs a").forEach((a) => { if (a.dataset.view === name) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
   if (!D) return;
   VIEWS.forEach((v) => { $("v-" + v).hidden = v !== name; });
-  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, codes: runCodes })[name](); }
+  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, codes: runCodes })[name](); }
   else if (name === "arcs") drawArcs();
+  else if (name === "map") drawMap();
 }
 window.addEventListener("hashchange", route);
 function go(view) { if (location.hash !== "#" + view) location.hash = view; else route(); }
@@ -381,7 +517,8 @@ $("verse-form").onsubmit = (ev) => { ev.preventDefault(); showVerse(parseRef($("
 $("verse-rand").onclick = () => { const v = Math.floor(Math.random() * D.N); $("verse-in").value = ref(v); showVerse(v); };
 
 // ---------- path ----------
-let undirected = null;
+const graphs = {};
+const getGraph = (minV) => graphs[minV] || (graphs[minV] = buildUndirected(minV));
 function buildUndirected(minV) {
   const N = D.N, off = new Int32Array(N + 1);
   for (let e = 0; e < D.E; e++) if (D.votes[e] >= minV) { off[D.from[e] + 1]++; off[D.to[e] + 1]++; }
@@ -401,8 +538,7 @@ function runPath() {
   const a = parseRef($("path-a").value), b = parseRef($("path-b").value), minV = +$("path-votes").value;
   $("path-err").textContent = "";
   if (a == null || b == null) { $("path-err").textContent = `Couldn't read the ${a == null ? "From" : "To"} reference.`; return; }
-  if (!undirected || undirected.minV !== minV) undirected = buildUndirected(minV);
-  const { off, nb, ev } = undirected, prev = new Int32Array(D.N).fill(-1), via = new Int32Array(D.N);
+  const { off, nb, ev } = getGraph(minV), prev = new Int32Array(D.N).fill(-1), via = new Int32Array(D.N);
   prev[a] = a; const q = [a];
   for (let h = 0; h < q.length && prev[b] < 0; h++) {
     const u = q[h];
@@ -523,6 +659,370 @@ function renderGrid(r, [start, d]) {
   $("code-grid").innerHTML = `<h3>${r.c.name}: skip ${d}${where}</h3><p class="status">Rows are ${fmt(step)} letters long, so the word reads straight down.</p><div class="matrixwrap"><div class="matrix" style="grid-template-columns:repeat(${cols},auto)">${cells}</div></div>`;
 }
 $("code-form").onsubmit = (ev) => { ev.preventDefault(); runCodes(); };
+
+// ---------- shared helpers ----------
+const bookIdx = (osis) => D.books.findIndex((b) => b[0] === osis);
+const vi = (osis, ch, v) => D.chapStart[bookIdx(osis)][ch - 1] + v - 1;
+const quote = (osis, ch, v) => { const i = vi(osis, ch, v); return `<div class="q"><button class="ref" data-v="${i}">${ref(i)}</button> ${esc(D.text[i])}</div>`; };
+function countRx(rx, osis, ch) {
+  let s = 0, e = D.N;
+  if (osis) { const b = bookIdx(osis); s = D.bookStart[b]; e = D.bookStart[b + 1]; if (ch) { s = D.chapStart[b][ch - 1]; e = s + D.books[b][2][ch - 1]; } }
+  let n = 0;
+  for (let i = s; i < e; i++) { const m = D.text[i].match(rx); if (m) n += m.length; }
+  return n;
+}
+function mulberry(seed) { let s = seed >>> 0; return () => { s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function hashStr(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+const pill = ([label, cls]) => `<span class="pill v-${cls}" style="justify-self:start">${label}</span>`;
+function card(m) {
+  const body = typeof m.b === "function" ? m.b() : m.b;
+  const ev = m.e ? `<div class="ev">${m.e[0]}: <strong class="num">${fmt(countRx(m.e[1], m.e[2], m.e[3]))}</strong></div>` : "";
+  return `<div class="card">${pill(m.v)}<h4>${m.c}</h4><p>${body}</p>${m.list ? `<ul>${m.list.map((x) => `<li>${x}</li>`).join("")}</ul>` : ""}${(m.r || []).map((r) => quote(...r)).join("")}${ev}</div>`;
+}
+
+// ---------- ladder ----------
+const LAD_MIN = 5;
+let LAD = null, ladPool = null;
+function bfsFrom(g, s) {
+  const dist = new Int32Array(D.N).fill(-1); dist[s] = 0; const q = [s];
+  for (let h = 0; h < q.length; h++) { const u = q[h]; for (let k = g.off[u]; k < g.off[u + 1]; k++) { const w = g.nb[k]; if (dist[w] < 0) { dist[w] = dist[u] + 1; q.push(w); } } }
+  return dist;
+}
+function todayKey() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
+function makeLadder(label, seed) {
+  const g = getGraph(LAD_MIN), rnd = mulberry(seed);
+  if (!ladPool) ladPool = Array.from({ length: D.N }, (_, i) => i).sort((a, b) => D.inVotes[b] - D.inVotes[a]).slice(0, 3000);
+  for (let tries = 0; tries < 200; tries++) {
+    const start = ladPool[Math.floor(rnd() * ladPool.length)], dist = bfsFrom(g, start);
+    const ok = ladPool.filter((v) => dist[v] >= 4 && dist[v] <= 6 && (D.bookOf[v] < 39) !== (D.bookOf[start] < 39));
+    if (!ok.length) continue;
+    const goal = ok[Math.floor(rnd() * ok.length)];
+    LAD = { label, start, goal, trail: [start], toGoal: dist, par: dist[goal], hint: -1, hints: 0, showAll: false };
+    renderLadder(); return;
+  }
+  $("lad-label").textContent = "Couldn't build a ladder. Try a random one.";
+}
+function ladNeighbors(v) {
+  const g = getGraph(LAD_MIN), seen = new Set(), out = [];
+  for (let k = g.off[v]; k < g.off[v + 1]; k++) { const w = g.nb[k]; if (!seen.has(w)) { seen.add(w); out.push([w, D.votes[g.ev[k]]]); } }
+  return out;
+}
+function renderLadder() {
+  const L = LAD, cur = L.trail[L.trail.length - 1], done = cur === L.goal, hops = L.trail.length - 1;
+  $("lad-label").textContent = `${L.label} · par ${L.par}`;
+  const box = (title, v) => `<div><h3>${title}</h3><div class="r">${ref(v)}</div><p>${esc(D.text[v])}</p></div>`;
+  $("lad-goal").innerHTML = box("Start", L.start) + box("Goal", L.goal);
+  $("lad-trail").innerHTML = L.trail.map((v, k) => `<div class="link"><div class="rail"><span class="dot"></span><span class="line"></span></div><div class="card" style="border:0;background:none;padding:10px 0"><button class="ref" data-v="${v}">${ref(v)}</button>${k ? `<span class="edge">rung ${k}</span>` : ""}<p class="snip">${esc(D.text[v])}</p></div></div>`).join("");
+  if (done) {
+    const share = `Versegraph Ladder ${L.label.includes("Today") ? todayKey() : "(random)"}: ${hops} hops, par ${L.par}${L.hints ? `, ${L.hints} hint${L.hints > 1 ? "s" : ""}` : ""}\n${ref(L.start)} → ${ref(L.goal)}`;
+    $("lad-win").innerHTML = `<div class="win"><span class="h2" style="font-family:var(--display);font-size:22px">${hops <= L.par ? "Par! " : ""}Reached in ${hops} hops. Par is ${L.par}.</span><button type="button" id="lad-copy">Copy result</button><span class="status" id="lad-copied" role="status"></span></div>`;
+    $("lad-copy").onclick = () => navigator.clipboard.writeText(share).then(() => { $("lad-copied").textContent = "Copied"; }, () => { $("lad-copied").textContent = share; });
+    $("lad-choices").innerHTML = `<p class="status">Done. Try a random ladder for another round.</p>`;
+    return;
+  }
+  $("lad-win").innerHTML = "";
+  const nbs = ladNeighbors(cur), shown = L.showAll ? nbs : nbs.slice(0, 12);
+  $("lad-choices").innerHTML = shown.map(([w, votes]) => `<button type="button" data-lv="${w}" class="${w === L.hint ? "hint" : ""}"><b>${ref(w)}</b><span class="snip">${esc(D.text[w])}</span><span class="num status">${fmt(votes)}</span></button>`).join("") +
+    (nbs.length > shown.length ? `<button type="button" class="ghost" id="lad-more" style="display:block">Show all ${nbs.length} references</button>` : "");
+  $("lad-choices").querySelectorAll("button[data-lv]").forEach((b) => { b.onclick = () => { L.trail.push(+b.dataset.lv); L.hint = -1; L.showAll = false; renderLadder(); }; });
+  if ($("lad-more")) $("lad-more").onclick = () => { L.showAll = true; renderLadder(); };
+}
+function initLadder() {
+  $("lad-today").onclick = () => makeLadder("Today's ladder", hashStr(todayKey()));
+  $("lad-new").onclick = () => makeLadder("Random ladder", Math.floor(Math.random() * 2 ** 32));
+  $("lad-undo").onclick = () => { if (LAD && LAD.trail.length > 1) { LAD.trail.pop(); LAD.hint = -1; renderLadder(); } };
+  $("lad-hint").onclick = () => {
+    if (!LAD) return;
+    const cur = LAD.trail[LAD.trail.length - 1];
+    if (cur === LAD.goal) return;
+    const nbs = ladNeighbors(cur), k = nbs.findIndex(([w]) => LAD.toGoal[w] === LAD.toGoal[cur] - 1);
+    if (k < 0) return;
+    LAD.hint = nbs[k][0]; LAD.hints++; if (k >= 12) LAD.showAll = true; renderLadder();
+  };
+  makeLadder("Today's ladder", hashStr(todayKey()));
+}
+
+// ---------- myths ----------
+const MYTHS = [
+  { c: "Eve ate an apple", v: ["Myth", "myth"], b: "Genesis 3 only says “the fruit of the tree”. The apple came later in Western art, probably helped by a Latin pun: <em>malum</em> means both “evil” and “apple”.", r: [["Gen", 3, 6]], e: ["“apple” in Genesis", /\bapples?\b/gi, "Gen"] },
+  { c: "Three wise men visited Jesus at the manger", v: ["Myth", "myth"], b: "Matthew counts the gifts, not the visitors, and the wise men find the child in a house. The number three comes from the three gifts.", r: [["Matt", 2, 11]], e: ["“three” in Matthew 2", /\bthree\b/gi, "Matt", 2] },
+  { c: "Noah took two of every animal", v: ["Partly true", "part"], b: "Genesis 6 says two of every sort. Genesis 7 then says seven pairs of every clean beast and of the birds.", r: [["Gen", 6, 19], ["Gen", 7, 2]], e: ["“by sevens” in Genesis 7", /by sevens/gi, "Gen", 7] },
+  { c: "“Money is the root of all evil”", v: ["Misquote", "part"], b: "The verse says the <em>love</em> of money.", r: [["1Tim", 6, 10]], e: ["“love of money” in the Bible", /love of money/gi] },
+  { c: "Jonah was swallowed by a whale", v: ["Depends on the verse", "part"], b: "The book of Jonah says “a great fish”. Jesus' retelling in the KJV says “whale”, translating the Greek <em>kētos</em>, a sea monster.", r: [["Jonah", 1, 17], ["Matt", 12, 40]], e: ["“whale” in the book of Jonah", /\bwhale/gi, "Jonah"] },
+  { c: "Mary Magdalene was a prostitute", v: ["Myth", "myth"], b: "No verse says so. The idea comes from a sermon by Pope Gregory I in 591 that merged her with the unnamed sinful woman of Luke 7. The Catholic Church dropped that reading from its calendar in 1969.", r: [["Luke", 8, 2]], e: ["Verses naming Magdalene, none calling her a harlot", /Magdalene/g] },
+  { c: "“God helps those who help themselves”", v: ["Not in the Bible", "myth"], b: "It appears in Algernon Sidney's <em>Discourses Concerning Government</em> (published 1698), and Benjamin Franklin made it famous in <em>Poor Richard's Almanack</em> in 1736.", e: ["“help themselves” in the Bible", /help themselves/gi] },
+  { c: "“Cleanliness is next to godliness”", v: ["Not in the Bible", "myth"], b: "John Wesley made it famous in an 18th-century sermon, quoting it as an existing saying.", e: ["“cleanliness” in the Bible", /cleanliness/gi] },
+  { c: "“Spare the rod, spoil the child”", v: ["Misquote", "part"], b: "Proverbs has the idea, not the words. The phrasing comes from Samuel Butler's poem <em>Hudibras</em> (1663).", r: [["Prov", 13, 24]], e: ["“spoil the child” in the Bible", /spoil the child/gi] },
+  { c: "“Pride comes before a fall”", v: ["Misquote", "part"], b: "Close. The verse puts pride before destruction, and a haughty spirit before a fall.", r: [["Prov", 16, 18]], e: ["“pride goeth” in Proverbs", /pride goeth/gi, "Prov"] },
+  { c: "Moses had horns", v: ["Translation slip", "part"], b: "The Hebrew says his face shone, using a verb related to the word for horn. Jerome's Latin Vulgate rendered it <em>cornuta</em>, “horned”, which is why Michelangelo's Moses has horns.", r: [["Exod", 34, 29]], e: ["“horn” in Exodus 34", /\bhorn/gi, "Exod", 34] },
+  { c: "Lucifer is Satan's name", v: ["Later reading", "part"], b: "The word appears once, in a taunt addressed to the king of Babylon. It is Latin for “light-bringer”, the morning star. Later Christian readers applied it to Satan.", r: [["Isa", 14, 12]], e: ["“Lucifer” in the whole Bible", /Lucifer/g] },
+  { c: "There are no unicorns in the Bible", v: ["Myth", "myth"], b: "The KJV mentions unicorns. The Hebrew word <em>re'em</em> most likely means the wild ox.", r: [["Num", 23, 22]], e: ["“unicorn” in the KJV", /unicorns?\b/gi] },
+  { c: "Psalm 118:8 is the exact middle verse", v: ["Myth", "myth"], b: () => { const mid = D.N / 2; return `The KJV has ${fmt(D.N)} verses, an even number, so no single verse is in the middle. The middle falls between ${ref(mid - 1)} and ${ref(mid)}. Psalm 118:8 is verse number ${fmt(vi("Ps", 118, 8) + 1)}.`; }, r: [["Ps", 118, 8]] },
+  { c: "Jesus was born on December 25", v: ["Not in the Bible", "myth"], b: "No gospel gives a date. The earliest record of a December 25 celebration is a Roman calendar from 354.", e: ["“December” in the Bible", /December/gi] },
+];
+const STOPW = new Set("the and of to that in he shall unto for i his a they be is him not them it with all thou thy was which my me but ye their have thee from as are when this out were by upon there then so said on what one into an those who".split(" "));
+let inv = null, normText = null;
+const norm = (s) => s.toLowerCase().replace(/[^a-z' ]+/g, " ").replace(/\s+/g, " ").trim();
+function checkPhrase(q) {
+  if (!inv) {
+    inv = new Map(); normText = D.text.map(norm);
+    normText.forEach((t, i) => { for (const w of new Set(t.split(" "))) { let a = inv.get(w); if (!a) inv.set(w, a = []); a.push(i); } });
+  }
+  const nq = norm(q);
+  if (!nq) return "";
+  const exact = [];
+  for (let i = 0; i < D.N && exact.length < 5; i++) if (normText[i].includes(nq)) exact.push(i);
+  const all = [...new Set(nq.split(" "))], content = all.filter((w) => !STOPW.has(w)), qw = content.length ? content : all;
+  const score = new Float64Array(D.N); let total = 0;
+  for (const w of qw) { const post = inv.get(w); const idf = Math.log((D.N + 1) / ((post ? post.length : 0) + 1)); total += idf; if (post) for (const i of post) score[i] += idf; }
+  const top = Array.from({ length: D.N }, (_, i) => i).sort((a, b) => score[b] - score[a]).slice(0, 5).filter((i) => score[i] > 0);
+  const best = top.length ? score[top[0]] / total : 0;
+  const ans = exact.length ? "Yes. It's in the KJV word for word." : best >= 0.8 ? "Close, but not word for word." : "Not in the Bible as written.";
+  const list = (exact.length ? exact : top).map((i) => `<li><button class="ref" data-v="${i}">${ref(i)}</button> <span class="snip">${esc(D.text[i])}</span>${exact.length ? "" : ` <span class="num status">${Math.round(score[i] / total * 100)}% of the key words</span>`}</li>`).join("");
+  return `<div class="ans">${ans}</div>${list ? `<p class="status">${exact.length ? "Found in:" : "Closest verses:"}</p><ul class="cands" style="display:grid;gap:6px;padding-left:18px;margin:0">${list}</ul>` : ""}`;
+}
+function initMyths() {
+  $("myth-cards").innerHTML = MYTHS.map(card).join("");
+  $("chk-form").onsubmit = (ev) => { ev.preventDefault(); $("chk-out").innerHTML = checkPhrase($("chk-in").value); };
+  $("chk-out").innerHTML = checkPhrase($("chk-in").value);
+  // facts
+  const wc = D.text.map((t) => t.split(/\s+/).length), bookWords = D.books.map((_, b) => { let s = 0; for (let i = D.bookStart[b]; i < D.bookStart[b + 1]; i++) s += wc[i]; return s; });
+  const words = bookWords.reduce((a, b) => a + b, 0), byLen = Array.from({ length: D.N }, (_, i) => i).sort((a, b) => D.text[a].length - D.text[b].length);
+  const bw = bookWords.map((w, b) => [w, b]).sort((a, b) => b[0] - a[0]);
+  const names = ["Jesus", "David", "Moses", "Jacob", "Abraham", "Saul", "Aaron", "Solomon", "Joseph", "Peter", "Paul", "Joshua"].map((n) => [n, countRx(new RegExp(`\\b${n}\\b`, "g"))]).sort((a, b) => b[1] - a[1]);
+  const topCited = Array.from({ length: D.N }, (_, i) => i).reduce((a, b) => (D.inVotes[b] > D.inVotes[a] ? b : a), 0);
+  const chapters = D.books.reduce((a, b) => a + b[2].length, 0);
+  const F = [
+    ["Books · chapters", `66 · ${fmt(chapters)}`, ""],
+    ["Verses", fmt(D.N), `${fmt(words)} words`],
+    ["Shortest verse", ref(byLen[0]), D.text[byLen[0]]],
+    ["Longest verse", ref(byLen[D.N - 1]), `${wc[byLen[D.N - 1]]} words`],
+    ["Longest book (words)", D.books[bw[0][1]][1], `${fmt(bw[0][0])} words`],
+    ["Shortest book (words)", D.books[bw[bw.length - 1][1]][1], `${fmt(bw[bw.length - 1][0])} words`],
+    ["Most chapters", "Psalms", `${D.books[bookIdx("Ps")][2].length} chapters`],
+    ["Most-named person", names[0][0], names.slice(0, 4).map(([n, c]) => `${n} ${fmt(c)}`).join(" · ")],
+    ["“God” / “Lord”", `${fmt(countRx(/\bGod\b/g))} / ${fmt(countRx(/\bLord\b/g))}`, "Whole-word occurrences"],
+    ["Middle of the Bible", `${ref(D.N / 2 - 1)}–${D.vOf[D.N / 2]}`, "The two verses either side of the halfway point"],
+    ["Most-cited verse", ref(topCited), `${fmt(D.inVotes[topCited])} cross-reference votes`],
+    ["Cross-references", fmt(D.E), "Reader-voted links between verses"],
+  ];
+  $("facts").innerHTML = F.map(([k, v, s]) => `<div><span class="k">${k}</span><span class="val">${esc(v)}</span>${s ? `<span class="s">${esc(s)}</span>` : ""}</div>`).join("");
+  $("disp-form").onsubmit = (ev) => { ev.preventDefault(); drawDispersion(); };
+  drawDispersion();
+}
+function drawDispersion() {
+  const ws = $("disp-in").value.split(",").map((w) => w.trim().toLowerCase()).filter((w) => /^[a-z' ]+$/.test(w)).slice(0, 12);
+  const cv = $("disp"), dpr = window.devicePixelRatio || 1, W = cv.parentElement.clientWidth, labW = 86, cntW = 56, rowH = 30, H = ws.length * rowH + 30;
+  cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + "px";
+  const ctx = cv.getContext("2d"); ctx.scale(dpr, dpr);
+  ctx.fillStyle = token("--surface"); ctx.fillRect(0, 0, W, H);
+  const x0 = labW, w = W - labW - cntW, X = (i) => x0 + i / D.N * w;
+  D.books.forEach((_, b) => { if (b % 2) { ctx.fillStyle = token("--bg"); ctx.fillRect(X(D.bookStart[b]), 0, X(D.bookStart[b + 1]) - X(D.bookStart[b]), ws.length * rowH); } });
+  ctx.strokeStyle = token("--muted"); ctx.beginPath(); ctx.moveTo(X(D.bookStart[39]), 0); ctx.lineTo(X(D.bookStart[39]), ws.length * rowH); ctx.stroke();
+  ctx.font = "13px 'IBM Plex Sans', system-ui, sans-serif"; ctx.textBaseline = "middle";
+  ws.forEach((word, r) => {
+    const rx = new RegExp(`\\b${word}\\b`, "i"), y = r * rowH;
+    let n = 0; ctx.fillStyle = token("--rubric");
+    for (let i = 0; i < D.N; i++) if (rx.test(D.text[i])) { n++; ctx.fillRect(X(i), y + 6, 1, rowH - 12); }
+    ctx.fillStyle = token("--ink"); ctx.textAlign = "left"; ctx.fillText(word, 4, y + rowH / 2);
+    ctx.fillStyle = token("--muted"); ctx.textAlign = "right"; ctx.fillText(fmt(n), W - 4, y + rowH / 2);
+  });
+  ctx.fillStyle = token("--muted"); ctx.font = "11px 'IBM Plex Sans', system-ui, sans-serif"; ctx.textBaseline = "top";
+  [["Gen", "left"], ["Ps", "center"], ["Matt", "center"], ["Rev", "right"]].forEach(([o, al]) => {
+    const b = bookIdx(o); ctx.textAlign = al; ctx.fillText(D.books[b][1], al === "right" ? X(D.N) : X(D.bookStart[b]), ws.length * rowH + 8);
+  });
+}
+
+// ---------- theories ----------
+function initTheories() {
+  const J = D.theories.genesis.jehovah, G = D.theories.genesis.god, W = 800, H = 290, x0 = 70, cw = (W - x0 - 10) / J.length, base = 140, max = Math.max(...J, ...G), sc = 112 / max;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Jehovah and God per chapter of Genesis">`;
+  s += `<line x1="${x0}" x2="${W - 10}" y1="${base}" y2="${base}" style="stroke:var(--rule)"/>`;
+  J.forEach((j, i) => {
+    const x = x0 + i * cw + 1;
+    if (j) s += `<rect x="${x}" y="${base - j * sc}" width="${cw - 2}" height="${j * sc}" style="fill:var(--gold)"><title>Genesis ${i + 1}: Jehovah ×${j}</title></rect>`;
+    if (G[i]) s += `<rect x="${x}" y="${base + 1}" width="${cw - 2}" height="${G[i] * sc}" style="fill:var(--violet)"><title>Genesis ${i + 1}: God ×${G[i]}</title></rect>`;
+  });
+  [1, 10, 20, 30, 40, 50].forEach((c) => { s += `<text x="${x0 + (c - 0.5) * cw}" y="${H - 6}" text-anchor="middle" font-size="11" style="fill:var(--muted)">${c}</text>`; });
+  s += `<text x="${x0 - 8}" y="${base - 112 + 4}" text-anchor="end" font-size="11" style="fill:var(--muted)">${max}</text><text x="${x0 - 8}" y="${base + 112}" text-anchor="end" font-size="11" style="fill:var(--muted)">${max}</text>`;
+  s += `<text x="4" y="24" font-size="13" font-weight="600" style="fill:var(--gold)">Jehovah</text><text x="4" y="40" font-size="11" style="fill:var(--muted)">(YHWH)</text>`;
+  s += `<text x="4" y="${base + 24}" font-size="13" font-weight="600" style="fill:var(--violet)">God</text><text x="4" y="${base + 40}" font-size="11" style="fill:var(--muted)">(Elohim)</text>`;
+  s += `<text x="${x0 + cw * 1.6}" y="${base + G[0] * sc - 4}" font-size="11" style="fill:var(--ink)">Genesis 1: God ×${G[0]}, Jehovah ×${J[0]}</text>`;
+  s += `<text x="${W / 2}" y="${H - 22}" text-anchor="middle" font-size="11" style="fill:var(--muted)">Chapter of Genesis</text></svg>`;
+  $("names-chart").innerHTML = s;
+  // synoptic
+  const C = D.theories.synoptic.counts, NAME = { Matt: "Matthew", Mark: "Mark", Luke: "Luke" }, COL = { both: "var(--gold)", Matt: "var(--rubric)", Mark: "var(--ok)", Luke: "var(--violet)", none: "var(--rule)" };
+  const pct = (n, t) => Math.round(n / t * 100) + "%";
+  $("syn").innerHTML = ["Mark", "Matt", "Luke"].map((g) => {
+    const c = C[g], others = Object.keys(NAME).filter((o) => o !== g), segs = [["both", c.both], [others[0], c[others[0]]], [others[1], c[others[1]]], ["none", c.none]];
+    const lbl = { both: `both ${NAME[others[0]]} and ${NAME[others[1]]}`, none: `only in ${NAME[g]}` };
+    return `<div class="row"><strong>${NAME[g]} <span class="status num">${fmt(c.total)} verses</span></strong><div class="bars">${segs.map(([k, n]) => `<span style="width:${n / c.total * 100}%;background:${COL[k]}" title="${n} verses"></span>`).join("")}</div>
+      <div class="legend" style="margin:0">${segs.map(([k, n]) => `<span><span class="swatch" style="background:${COL[k]}"></span>${k === "none" ? lbl.none : k === "both" ? "shared with " + lbl.both : "shared with " + NAME[k] + " only"} <span class="num">${pct(n, c.total)}</span></span>`).join("")}</div></div>`;
+  }).join("");
+  const mk = C.Mark;
+  $("syn-note").textContent = `${pct(mk.total - mk.none, mk.total)} of Mark's verses have a parallel in Matthew or Luke. ${fmt(C.Matt.Luke)} verses of Matthew are shared with Luke but not Mark, the "double tradition" scholars assign to Q. Method: a verse counts as a parallel when OpenBible lists a cross-reference to the other gospel and at least 10% of the meaningful words overlap. That is rough, but it lands near published estimates.`;
+}
+
+// ---------- map ----------
+const COSL = Math.cos(32 * Math.PI / 180);
+const MAP = { lon: 35.5, lat: 31.8, k: 60, pts: [], sel: null, drag: null, moved: false, items: null, trace: null };
+const pname = (n) => n.replace(/ \d+$/, "");
+const FEATURED = ["Mount Sinai", "Red Sea 1", "Eden 1", "Sodom", "Gomorrah", "Ophir", "Tarshish 1", "Emmaus", "Golgotha", "Bethsaida 1", "Ai 1", "Kadesh-barnea"];
+function mapSize() { const cv = $("map"); return [cv.parentElement.clientWidth, cv.parentElement.clientHeight || 520]; }
+function fitMap(coords) {
+  const [W, H] = mapSize();
+  if (!coords.length) coords = [[34, 29.5], [37, 33.5]];
+  const lons = coords.map((c) => c[0]), lats = coords.map((c) => c[1]);
+  const lo0 = Math.min(...lons), lo1 = Math.max(...lons), la0 = Math.min(...lats), la1 = Math.max(...lats);
+  MAP.lon = (lo0 + lo1) / 2; MAP.lat = (la0 + la1) / 2;
+  MAP.k = Math.min(W / (Math.max(lo1 - lo0, 1.2) * COSL), H / Math.max(la1 - la0, 1.2)) * 0.82;
+}
+function bookItems(b) {
+  const s = D.bookStart[b], e = D.bookStart[b + 1], items = [], events = [];
+  D.places.forEach((p) => {
+    const vs = p.v.filter((v) => v >= s && v < e);
+    if (!vs.length) return;
+    items.push({ p, n: vs.length, vs });
+    if (["settlement", "island", "campsite"].includes(p.t)) vs.forEach((v) => events.push([v, p]));
+  });
+  events.sort((a, b) => a[0] - b[0]);
+  const trace = [];
+  events.forEach(([, p]) => { if (trace[trace.length - 1] !== p) trace.push(p); });
+  items.sort((a, b) => a.n - b.n);
+  return { items, trace };
+}
+function setMapMode() {
+  const mode = $("map-mode").value;
+  $("map-book-f").hidden = $("map-trace-f").hidden = mode !== "book"; $("map-site-f").hidden = mode !== "disputed";
+  MAP.sel = null;
+  if (mode === "book") { const r = bookItems(+$("map-book").value); MAP.items = r.items; MAP.trace = r.trace; fitMap(r.items.map((it) => [it.p.c[0][1], it.p.c[0][2]])); }
+  else { const p = D.places[+$("map-site").value]; MAP.sel = p; fitMap(p.c.map((c) => [c[1], c[2]])); }
+  drawMap(); renderMapPanel();
+}
+function drawMap() {
+  const cv = $("map"), dpr = window.devicePixelRatio || 1, [W, H] = mapSize();
+  cv.width = W * dpr; cv.height = H * dpr;
+  const ctx = cv.getContext("2d"); ctx.scale(dpr, dpr);
+  const P = (lon, lat) => [(lon - MAP.lon) * MAP.k * COSL + W / 2, (MAP.lat - lat) * MAP.k + H / 2];
+  ctx.fillStyle = token("--sea"); ctx.fillRect(0, 0, W, H);
+  const shape = (rings, close) => { const path = new Path2D(); rings.forEach((r) => { r.forEach(([lon, lat], i) => { const [x, y] = P(lon, lat); i ? path.lineTo(x, y) : path.moveTo(x, y); }); if (close) path.closePath(); }); return path; };
+  const land = shape(D.land.land, true);
+  ctx.fillStyle = token("--land"); ctx.fill(land); ctx.strokeStyle = token("--rule"); ctx.lineWidth = 0.8; ctx.stroke(land);
+  ctx.fillStyle = token("--sea"); ctx.fill(shape(D.land.lakes, true));
+  ctx.strokeStyle = token("--river"); ctx.lineWidth = 1.2; ctx.stroke(shape(D.land.rivers, false));
+  MAP.pts = [];
+  const halo = (text, x, y) => { ctx.lineWidth = 3; ctx.strokeStyle = token("--land"); ctx.strokeText(text, x, y); ctx.fillStyle = token("--ink"); ctx.fillText(text, x, y); };
+  ctx.font = "12px 'IBM Plex Sans', system-ui, sans-serif"; ctx.textBaseline = "middle"; ctx.textAlign = "left";
+  if ($("map-mode").value === "book" && MAP.items) {
+    if ($("map-trace").checked && MAP.trace.length > 1) {
+      ctx.strokeStyle = token("--gold"); ctx.globalAlpha = 0.6; ctx.lineWidth = 1.3; ctx.beginPath();
+      MAP.trace.forEach((p, i) => { const [x, y] = P(p.c[0][1], p.c[0][2]); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+      ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    MAP.items.forEach((it) => {
+      const [x, y] = P(it.p.c[0][1], it.p.c[0][2]), r = 2.5 + Math.sqrt(it.n) * 1.6;
+      ctx.beginPath(); ctx.arc(x, y, r, 0, 2 * Math.PI); ctx.fillStyle = token("--rubric"); ctx.globalAlpha = 0.8; ctx.fill(); ctx.globalAlpha = 1;
+      if (it.p === MAP.sel) { ctx.lineWidth = 2.5; ctx.strokeStyle = token("--gold"); ctx.stroke(); }
+      MAP.pts.push({ x, y, r: Math.max(r, 6), it, label: `${pname(it.p.n)} · ${it.n} verse${it.n > 1 ? "s" : ""}` });
+    });
+    MAP.items.slice(-14).forEach((it) => { const [x, y] = P(it.p.c[0][1], it.p.c[0][2]); halo(pname(it.p.n), x + 4 + Math.sqrt(it.n) * 1.6, y); });
+  } else if (MAP.sel) {
+    const tot = MAP.sel.c.reduce((a, c) => a + Math.max(c[3], 1), 0);
+    MAP.sel.c.slice().reverse().forEach((c) => {
+      const [x, y] = P(c[1], c[2]), share = Math.max(c[3], 1) / tot, r = 4 + 16 * Math.sqrt(share);
+      ctx.beginPath(); ctx.arc(x, y, r, 0, 2 * Math.PI); ctx.fillStyle = token("--rubric"); ctx.globalAlpha = 0.7; ctx.fill(); ctx.globalAlpha = 1;
+      halo(`${c[0]} ${Math.round(share * 100)}%`, x + r + 3, y);
+      MAP.pts.push({ x, y, r: Math.max(r, 6), label: `${c[0]} · ${Math.round(share * 100)}%` });
+    });
+  }
+}
+function renderMapPanel() {
+  const mode = $("map-mode").value, b = +$("map-book").value, verses = (vs, n) => `<ul>${vs.slice(0, n).map((v) => `<li><button class="ref" data-v="${v}">${ref(v)}</button> <span class="snip">${esc(D.text[v].slice(0, 90))}${D.text[v].length > 90 ? "…" : ""}</span></li>`).join("")}</ul>`;
+  if (mode === "disputed") {
+    const p = MAP.sel, tot = p.c.reduce((a, c) => a + Math.max(c[3], 1), 0);
+    $("map-panel").innerHTML = `<h4>${esc(pname(p.n))}</h4><p class="status">${p.c.length} proposed locations, sized by OpenBible's confidence score for each. Named in ${fmt(p.v.length)} verse${p.v.length > 1 ? "s" : ""}.</p>
+      <ul>${p.c.map((c) => `<li class="cand"><span>${esc(c[0])}</span><span class="num status">${Math.round(Math.max(c[3], 1) / tot * 100)}%</span><span class="bar" style="width:${Math.max(2, Math.max(c[3], 1) / tot * 100)}%"></span></li>`).join("")}</ul><h3 style="margin-top:6px">Mentioned in</h3>${verses(p.v, 5)}`;
+    return;
+  }
+  if (!MAP.sel) {
+    const top = MAP.items.slice(-8).reverse(), total = MAP.items.reduce((a, it) => a + it.n, 0);
+    $("map-panel").innerHTML = `<h4>${D.books[b][1]}</h4><p class="status">${fmt(MAP.items.length)} places named ${fmt(total)} times. ${$("map-trace").checked ? "The gold line joins towns in the order the text mentions them." : ""} Click a dot for details.</p><h3>Most named</h3><ul>${top.map((it) => `<li class="cand"><button class="ref" data-pi="${D.places.indexOf(it.p)}">${esc(pname(it.p.n))}</button><span class="num status">${it.n}</span></li>`).join("")}</ul>`;
+  } else {
+    const it = MAP.items.find((x) => x.p === MAP.sel), p = MAP.sel;
+    $("map-panel").innerHTML = `<h4>${esc(pname(p.n))}</h4><p class="status">${esc(p.t)} · usually identified as ${esc(p.c[0][0])}${p.c.length > 1 ? `, one of ${p.c.length} proposed locations` : ""}.</p>
+      ${p.c.length > 1 ? `<button type="button" class="ghost" id="map-dispute" style="justify-self:start">Show all proposed sites</button>` : ""}
+      <h3>In ${D.books[b][1]} (${it ? it.n : 0})</h3>${verses(it ? it.vs : [], 8)}<p class="status">${fmt(p.v.length)} verses in the whole Bible.</p><button type="button" class="ghost" id="map-clear" style="justify-self:start">Back to ${D.books[b][1]}</button>`;
+    if ($("map-dispute")) $("map-dispute").onclick = () => { $("map-mode").value = "disputed"; ensureSiteOption(p); $("map-site").value = D.places.indexOf(p); setMapMode(); };
+    $("map-clear").onclick = () => { MAP.sel = null; drawMap(); renderMapPanel(); };
+  }
+  $("map-panel").querySelectorAll("button[data-pi]").forEach((btn) => { btn.onclick = () => { MAP.sel = D.places[+btn.dataset.pi]; drawMap(); renderMapPanel(); }; });
+}
+function ensureSiteOption(p) {
+  const i = D.places.indexOf(p), sel = $("map-site");
+  if (![...sel.options].some((o) => +o.value === i)) sel.add(new Option(pname(p.n), i));
+}
+function initMap() {
+  D.books.forEach(([, name], b) => $("map-book").add(new Option(name, b)));
+  $("map-book").value = bookIdx("Acts");
+  const sel = $("map-site"), feat = document.createElement("optgroup"), rest = document.createElement("optgroup");
+  feat.label = "Famous"; rest.label = "All places with 3 or more proposed sites";
+  FEATURED.forEach((n) => { const i = D.places.findIndex((p) => p.n === n); if (i >= 0 && D.places[i].c.length > 1) feat.appendChild(new Option(pname(n), i)); });
+  D.places.map((p, i) => [p, i]).filter(([p]) => p.c.length >= 3 && !FEATURED.includes(p.n)).sort((a, b) => a[0].n.localeCompare(b[0].n)).forEach(([p, i]) => rest.appendChild(new Option(pname(p.n), i)));
+  sel.append(feat, rest);
+  $("map-mode").onchange = setMapMode; $("map-book").onchange = setMapMode; $("map-site").onchange = setMapMode;
+  $("map-trace").onchange = () => { drawMap(); renderMapPanel(); };
+  const cv = $("map"), tip = $("map-tip");
+  const hit = (ev) => { const r = cv.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top; let best = null, bd = 1e9; MAP.pts.forEach((p) => { const d = Math.hypot(p.x - x, p.y - y); if (d <= p.r + 3 && d < bd) { bd = d; best = p; } }); return [best, x, y]; };
+  const zoomAt = (f, x, y) => {
+    const [W, H] = mapSize(), lon = MAP.lon + (x - W / 2) / (MAP.k * COSL), lat = MAP.lat - (y - H / 2) / MAP.k;
+    MAP.k = Math.min(4000, Math.max(6, MAP.k * f));
+    MAP.lon = lon - (x - W / 2) / (MAP.k * COSL); MAP.lat = lat + (y - H / 2) / MAP.k; drawMap();
+  };
+  cv.addEventListener("pointerdown", (ev) => { MAP.drag = { x: ev.clientX, y: ev.clientY, lon: MAP.lon, lat: MAP.lat }; MAP.moved = false; cv.setPointerCapture(ev.pointerId); });
+  cv.addEventListener("pointermove", (ev) => {
+    if (MAP.drag) {
+      const dx = ev.clientX - MAP.drag.x, dy = ev.clientY - MAP.drag.y;
+      if (Math.abs(dx) + Math.abs(dy) > 3) MAP.moved = true;
+      if (MAP.moved) { MAP.lon = MAP.drag.lon - dx / (MAP.k * COSL); MAP.lat = MAP.drag.lat + dy / MAP.k; tip.hidden = true; drawMap(); }
+      return;
+    }
+    const [p, x, y] = hit(ev);
+    if (!p) { tip.hidden = true; return; }
+    tip.textContent = p.label; tip.hidden = false;
+    tip.style.left = Math.max(4, Math.min(x + 12, cv.clientWidth - tip.offsetWidth - 4)) + "px"; tip.style.top = Math.max(4, y - 28) + "px";
+  });
+  cv.addEventListener("pointerup", (ev) => {
+    const wasDrag = MAP.moved; MAP.drag = null;
+    if (wasDrag) return;
+    const [p] = hit(ev);
+    if (p && p.it) { MAP.sel = p.it.p; drawMap(); renderMapPanel(); }
+  });
+  cv.addEventListener("pointerleave", () => { tip.hidden = true; });
+  cv.addEventListener("wheel", (ev) => { ev.preventDefault(); const r = cv.getBoundingClientRect(); zoomAt(ev.deltaY < 0 ? 1.25 : 0.8, ev.clientX - r.left, ev.clientY - r.top); }, { passive: false });
+  $("map-in").onclick = () => { const [W, H] = mapSize(); zoomAt(1.5, W / 2, H / 2); };
+  $("map-out").onclick = () => { const [W, H] = mapSize(); zoomAt(1 / 1.5, W / 2, H / 2); };
+  $("map-fit").onclick = setMapMode;
+  let t; window.addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => { if (!$("v-map").hidden) drawMap(); }, 150); });
+  const rerender = () => { if (!$("v-map").hidden) drawMap(); };
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rerender);
+  new MutationObserver(rerender).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  setMapMode();
+}
+
+// ---------- beyond the canon ----------
+const CANON = [
+  { c: "1 Enoch", v: ["Quoted in the Bible", "true"], b: "An ancient Jewish book credited to Enoch, Noah's great-grandfather. Its oldest part, the Book of the Watchers, is usually dated to the 3rd century BC. It expands Genesis 6: angels called Watchers take human wives, father giants and teach forbidden arts. The letter of Jude quotes it almost word for word (1 Enoch 1:9).", r: [["Jude", 1, 14], ["Gen", 6, 4]] },
+  { c: "Was the Book of Enoch banned?", v: ["Myth", "myth"], b: "No council banned it. It never entered the Jewish canon, and most churches stopped copying it after the 4th century. The full text survives only in Ge'ez because the Ethiopian Orthodox Tewahedo Church kept it in its Bible. Aramaic fragments of most of the book turned up among the Dead Sea Scrolls at Qumran. Its fallen angels are echoed in 2 Peter.", r: [["2Pet", 2, 4]] },
+  { c: "The Nag Hammadi library", v: ["Real, ancient", "true"], b: "In December 1945 farmers near Nag Hammadi in Egypt dug up a jar of papyrus books bound in leather, written in Coptic. They hold 52 texts copied in the 4th century, many of them gnostic, teaching that salvation comes through secret knowledge (<em>gnōsis</em>). The books were buried in antiquity, not hidden by a later church." },
+  { c: "The Gospel of Thomas", v: ["Real, ancient", "true"], b: "A list of 114 sayings attributed to Jesus, with no birth story, miracles or crucifixion. About half the sayings have parallels in Matthew, Mark or Luke. The complete text is the Coptic copy from Nag Hammadi; Greek fragments found at Oxyrhynchus date to around 200 AD. When it was first written is debated, from the late 1st to the 2nd century." },
+  { c: "The Gospel of Mary", v: ["Real, ancient", "true"], b: "A genuine early text, but much of what is said about it is wrong. The main copy is a 5th-century Coptic book (Berlin Codex 8502) bought in Cairo in 1896 and published in 1955; two Greek fragments date to the 3rd century. Pages 1–6 and 11–14 are lost, about half the text. In what survives, Mary comforts the disciples and shares a vision; Peter and Andrew doubt her, and Levi defends her.",
+    list: ["<b>Myth:</b> Mary Magdalene wrote it. It is named after her, not written by her, and was probably composed in the 2nd century.", "<b>Myth:</b> It was found at Nag Hammadi. It surfaced 50 years earlier, in a separate find.", "<b>Myth:</b> It says she was Jesus' wife. Peter says the Savior loved her more than other women; nothing says they married."] },
+  { c: "The Gospel of Philip and the kiss", v: ["Contested reading", "part"], b: "This Nag Hammadi text calls Mary Magdalene Jesus' <em>koinōnos</em>, “companion”, and says he kissed her often. The manuscript has a hole exactly where it says where he kissed her. “On the mouth” is a modern guess filling the gap." },
+  { c: "The Gospel of Jesus' Wife", v: ["Forgery", "myth"], b: "A papyrus scrap announced in 2012 with the line “Jesus said to them, ‘My wife…’”. In 2016 journalist Ariel Sabar traced it to a dealer, Walter Fritz, whose story of where it came from fell apart. Karen King, the Harvard scholar who published it, then said the evidence pointed to forgery." },
+  { c: "The Gospel of Judas", v: ["Contested reading", "part"], b: "A real Coptic text from the 3rd or 4th century, published by National Geographic in 2006 as showing Judas as Jesus' most loyal disciple. Other scholars, including April DeConick, argued that the first translation misread key lines and that the text calls Judas a demon (<em>daimōn</em>)." },
+  { c: "The Council of Nicaea chose the books of the Bible", v: ["Myth", "myth"], b: "The council of 325 argued over whether Jesus was fully divine and when to celebrate Easter. It made no list of books. The first surviving list matching today's 27 New Testament books is from Athanasius in 367. Fiction such as <em>The Da Vinci Code</em> spread the myth." },
+];
+function initCanon() { $("canon-cards").innerHTML = CANON.map(card).join(""); }
 
 // ---------- boot ----------
 load().then(() => { $("loading").hidden = true; route(); }).catch((err) => {

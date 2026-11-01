@@ -6,7 +6,11 @@ Sources (cached in ~/.cache/versegraph):
   - KJV text (public domain) via scrollmapper/bible_databases
   - Moby Dick (public domain) via Project Gutenberg, header/footer stripped
 
-Writes site/data/{bible.json,xrefs.json,moby.txt}. Fails loudly if any
+  - Bible geocoding (CC BY 4.0): https://github.com/openbibleinfo/Bible-Geocoding-Data
+  - ASV text (public domain) for divine-name counts - it renders YHWH as "Jehovah"
+  - Natural Earth coastlines, lakes and rivers (public domain)
+
+Writes site/data/{bible.json,xrefs.json,moby.txt,places.json,land.json,theories.json}. Fails loudly if any
 cross-reference does not resolve to a KJV verse beyond a small, known tolerance.
 """
 import io, json, pathlib, re, sys, urllib.request, zipfile
@@ -19,7 +23,17 @@ SOURCES = {
     "xrefs.zip": "https://a.openbible.info/data/cross-references.zip",
     "kjv.json": "https://raw.githubusercontent.com/scrollmapper/bible_databases/master/formats/json/KJV.json",
     "moby.txt": "https://www.gutenberg.org/cache/epub/2701/pg2701.txt",
+    "asv.json": "https://raw.githubusercontent.com/scrollmapper/bible_databases/master/formats/json/ASV.json",
+    "geo/ancient.jsonl": "https://raw.githubusercontent.com/openbibleinfo/Bible-Geocoding-Data/main/data/ancient.jsonl",
 }
+NE = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/"
+for _layer in ("ne_50m_land", "ne_10m_lakes", "ne_50m_rivers_lake_centerlines"):
+    SOURCES[f"geo/{_layer}.geojson"] = f"{NE}{_layer}.geojson"
+
+BBOX = (8.0, 18.0, 56.0, 45.0)  # lon0, lat0, lon1, lat1 - Rome to Persia, Nubia to the Black Sea
+LAKES = {"Sea of Galilee", "Dead Sea", "Lake Van", "Lake Urmia", "Lake Tuz", "Lake Sevan", "Great Bitter Lake", "Lake Hammar"}
+RIVERS = {"Nile", "Jordan", "Euphrates", "Firat", "Al Furat", "Tigris", "Dicle", "Shatt al Arab", "Damietta Branch", "Rosetta Branch"}
+STOP = set("the and of to that in he shall unto for i his a they be is him not them it with all thou thy was which my me but ye their have thee from as are when this out were by upon there then so said on what one into an".split())
 
 # OSIS code, display name - in canonical order, matching the KJV file.
 BOOKS = [
@@ -44,7 +58,7 @@ MAX_UNRESOLVED = 50  # versification differences between OpenBible and this KJV 
 def fetch(name):
     path = CACHE / name
     if not path.exists():
-        CACHE.mkdir(parents=True, exist_ok=True)
+        path.parent.mkdir(parents=True, exist_ok=True)
         print(f"downloading {SOURCES[name]}")
         req = urllib.request.Request(SOURCES[name], headers={"User-Agent": "versegraph-build"})
         path.write_bytes(urllib.request.urlopen(req, timeout=60).read())
@@ -93,12 +107,124 @@ def main():
     start = moby.index("CHAPTER 1. Loomings.", moby.index("CHAPTER 1. Loomings.") + 1)
     end = moby.index("*** END OF THE PROJECT GUTENBERG")
 
+    places = build_places(index)
+    land = build_land()
+    theories = build_theories(books, text, rows)
+
     OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / "places.json").write_text(json.dumps(places, separators=(",", ":")))
+    (OUT / "land.json").write_text(json.dumps(land, separators=(",", ":")))
+    (OUT / "theories.json").write_text(json.dumps(theories, separators=(",", ":")))
     (OUT / "bible.json").write_text(json.dumps({"books": books, "text": text}, separators=(",", ":")))
     (OUT / "xrefs.json").write_text(json.dumps(rows, separators=(",", ":")))
     (OUT / "moby.txt").write_text(moby[start:end].strip() + "\n")
     print(f"{len(text)} verses, {len(rows)//4} cross-references kept, "
           f"{dropped_votes} with votes < 1 dropped, {unresolved} unresolved")
+    print(f"{len(places)} mapped places, {sum(len(x) for x in land.values())} map shapes, "
+          f"synoptic: {theories['synoptic']['counts']}")
+
+
+def tag_free(html):
+    return re.sub(r"<[^>]+>", "", html).strip()
+
+
+def build_places(index):
+    """Ancient places with every proposed modern identification, best first."""
+    out, missing = [], 0
+    for line in fetch("geo/ancient.jsonl").decode().splitlines():
+        rec = json.loads(line)
+        cands = []
+        for ident in rec.get("identifications", []):
+            res = (ident.get("resolutions") or [{}])[0]
+            if not res.get("lonlat"):
+                continue
+            lon, lat = (round(float(x), 4) for x in res["lonlat"].split(","))
+            cands.append([tag_free(ident["description"]), lon, lat, ident["score"].get("vote_total", 0)])
+        verses = sorted({index[v["osis"]] for v in rec.get("verses", []) if v["osis"] in index})
+        if not cands or not verses:
+            missing += 1
+            continue
+        cands.sort(key=lambda c: -c[3])
+        out.append({"n": rec["friendly_id"], "t": (rec.get("types") or ["place"])[0], "c": cands, "v": verses})
+    if len(out) < 1000:
+        sys.exit(f"only {len(out)} places resolved ({missing} skipped) - geocoding format changed?")
+    return out
+
+
+def build_land():
+    """Coastlines, natural lakes and major rivers inside BBOX, rounded to ~1 km."""
+    lon0, lat0, lon1, lat1 = BBOX
+
+    def ring(coords):
+        pts, last = [], None
+        for x, y in coords:
+            pt = [round(x, 2), round(y, 2)]
+            if pt != last:
+                pts.append(pt)
+                last = pt
+        return pts if any(lon0 - 5 < x < lon1 + 5 and lat0 - 5 < y < lat1 + 5 for x, y in pts) else None
+
+    def shapes(layer, keep=lambda props: True, holes=True):
+        out = []
+        for ft in json.loads(fetch(f"geo/{layer}.geojson"))["features"]:
+            if not keep(ft["properties"]):
+                continue
+            g = ft["geometry"]
+            parts = {"Polygon": [g["coordinates"]], "MultiPolygon": g["coordinates"],
+                     "LineString": [[g["coordinates"]]], "MultiLineString": [[c] for c in g["coordinates"]]}[g["type"]]
+            for part in parts:
+                for r in part[: None if holes else 1]:
+                    r2 = ring(r)
+                    if r2 and len(r2) > 1:
+                        out.append(r2)
+        return out
+
+    return {
+        "land": shapes("ne_50m_land", holes=False),
+        "lakes": shapes("ne_10m_lakes", lambda p: p.get("name") in LAKES, holes=False),
+        "rivers": shapes("ne_50m_rivers_lake_centerlines", lambda p: p.get("name") in RIVERS),
+    }
+
+
+def words(t):
+    return {w for w in re.findall(r"[a-z]+", t.lower()) if len(w) > 2 and w not in STOP}
+
+
+def build_theories(books, text, rows):
+    # Divine names in Genesis, ASV: "Jehovah" = YHWH, "God" = Elohim
+    asv = json.loads(fetch("asv.json"))["books"][0]["chapters"]
+    jehovah = [sum(len(re.findall(r"\bJehovah\b", v["text"])) for v in c["verses"]) for c in asv]
+    god = [sum(len(re.findall(r"\bGod\b", v["text"])) for v in c["verses"]) for c in asv]
+
+    # Synoptic parallels: a cross-reference between two synoptic gospels whose wording overlaps
+    book_of = []
+    for b, (_, _, counts) in enumerate(books):
+        book_of += [b] * sum(counts)
+    names = {"Matt": 39, "Mark": 40, "Luke": 41}
+    if [books[i][0] for i in names.values()] != list(names):
+        sys.exit("synoptic book indexes moved")
+    syn = set(names.values())
+    par = {}
+    for e in range(0, len(rows), 4):
+        a, b = rows[e], rows[e + 1]
+        if book_of[a] in syn and book_of[b] in syn and book_of[a] != book_of[b]:
+            wa, wb = words(text[a]), words(text[b])
+            if wa and wb and len(wa & wb) / len(wa | wb) >= 0.10:  # tuned: ~81% of Mark, ~234 Matt-Luke-only verses
+                par.setdefault(a, set()).add(book_of[b])
+                par.setdefault(b, set()).add(book_of[a])
+    counts = {}
+    for name, b in names.items():
+        others = [o for o in names.values() if o != b]
+        label = {o: books[o][0] for o in others}
+        c = {"total": 0, "both": 0, label[others[0]]: 0, label[others[1]]: 0, "none": 0}
+        for v in range(len(text)):
+            if book_of[v] != b:
+                continue
+            c["total"] += 1
+            p = par.get(v, set())
+            c["both" if all(o in p for o in others) else next((label[o] for o in others if o in p), "none")] += 1
+        counts[name] = c
+    return {"genesis": {"jehovah": jehovah, "god": god}, "synoptic": {"counts": counts}}
 
 
 if __name__ == "__main__":
