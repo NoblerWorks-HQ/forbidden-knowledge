@@ -13,6 +13,9 @@ Data exploration over the 341,282 reader-voted cross-references between the
 - **Beyond the Canon** - 1 Enoch, Nag Hammadi, Thomas, Mary, Philip, Judas, the Gospel of Jesus' Wife forgery;
   Enoch-Bible parallels; full readers for 1 Enoch, Thomas and Mary with "closest Bible verses" per passage.
 - **History** - papal succession by century (Wikidata) with antipopes; Shroud, Eucharistic miracles, Templars, Pope Joan, the arks.
+- **People** - lifespans parsed from the text, Matthew vs Luke genealogies, family explorer (Theographic).
+- **Translations** - KJV, Webster, YLT, Darby, ASV and WEB side by side with differences marked; the 16 verses newer Bibles drop.
+- **Numbers** - number-word frequencies, a gematria coincidence machine, Atbash and the alphabet acrostics.
 - **Code Breaker** - equidistant letter sequence search run on the KJV, *Moby Dick* and the
   KJV's letters shuffled, each next to the count expected from letter frequencies alone.
 
@@ -25,6 +28,12 @@ python3 scripts/build_data.py   # downloads sources to ~/.cache/versegraph, writ
 python3 -m http.server -d site  # then open http://localhost:8000
 ```
 
+## Public site
+
+`scripts/deploy-pages.sh` rebuilds the data, builds `dist/` (the app plus one indexable page per
+chapter, sitemap, CNAME) and commits it to the `gh-pages` branch, which GitHub Pages serves at
+https://versegraph.noblerworks.com. `--dry-run` builds without pushing.
+
 ## Sources and licenses
 
 - Cross-references: [OpenBible.info](https://www.openbible.info/labs/cross-references/), CC BY
@@ -36,4 +45,7 @@ python3 -m http.server -d site  # then open http://localhost:8000
 - Popes and antipopes: Wikidata, CC0.
 - 1 Enoch: R. H. Charles translation (1917), public domain, via Wikisource.
 - Gospels of Thomas and Mary: Mark M. Mattison's translations, dedicated to the public domain (gospels.net).
+- Translations: ASV, YLT, Darby and Webster via scrollmapper/bible_databases; World English Bible from ebible.org. All public domain.
+- People: [Theographic Bible Metadata](https://github.com/robertrouse/theographic-bible-metadata), CC BY-SA 4.0 (so `site/data/people.json` is CC BY-SA too).
+- Sentiment: VADER lexicon, MIT.
 - Code: MIT.
