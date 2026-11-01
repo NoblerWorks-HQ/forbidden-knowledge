@@ -1,0 +1,532 @@
+<title>Versegraph</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap">
+<style>
+/* Layout: one reading column with a full-width instrument (the arc canvas) on top; tabs switch the instrument below a rubricated masthead. */
+:root {
+  --bg: #eef1f5;
+  --surface: #ffffff;
+  --ink: #141a2a;
+  --muted: #5b6478;
+  --rule: #d5dae3;
+  --gold: #8a6a12;
+  --rubric: #b23a24;
+  --violet: #4b3f9e;
+  --hit: #f6dd8f;
+  --display: "IM Fell English SC", "Iowan Old Style", Georgia, serif;
+  --scripture: "Literata", Georgia, "Times New Roman", serif;
+  --ui: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1220; --surface: #151c2e; --ink: #e7e4da; --muted: #9097a8; --rule: #263049;
+    --gold: #d9b45a; --rubric: #e0664c; --violet: #8f86e8; --hit: #5a4a17; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1220; --surface: #151c2e; --ink: #e7e4da; --muted: #9097a8; --rule: #263049;
+  --gold: #d9b45a; --rubric: #e0664c; --violet: #8f86e8; --hit: #5a4a17; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--ui); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header.mast { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; border-bottom: 1px solid var(--rule); padding-bottom: 14px; }
+.mark { font-family: var(--display); font-size: 40px; line-height: 1; margin: 0; letter-spacing: .01em; }
+.mark span { color: var(--rubric); }
+.tagline { color: var(--muted); margin: 6px 0 0; max-width: 60ch; }
+nav.tabs { display: flex; flex-wrap: wrap; gap: 4px; margin: 18px 0 22px; }
+nav.tabs a { font-family: var(--ui); font-weight: 500; color: var(--muted); text-decoration: none; padding: 7px 14px; border-radius: 999px; border: 1px solid transparent; }
+nav.tabs a:hover { color: var(--ink); border-color: var(--rule); }
+nav.tabs a[aria-current="page"] { color: var(--ink); background: var(--surface); border-color: var(--rule); }
+nav.tabs a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+h2 { font-family: var(--display); font-weight: 400; font-size: 26px; margin: 0 0 4px; text-wrap: balance; }
+h3 { font-family: var(--ui); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 10px; font-weight: 600; }
+p.lede { color: var(--muted); max-width: 68ch; margin: 0 0 18px; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: end; margin-bottom: 14px; }
+label.f { display: grid; gap: 4px; font-size: 12px; color: var(--muted); font-weight: 500; }
+input[type=text], select { font: inherit; font-size: 15px; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 7px 10px; min-width: 0; }
+input[type=range] { accent-color: var(--gold); width: 180px; max-width: 100%; }
+button { font: inherit; font-weight: 600; color: var(--bg); background: var(--ink); border: 0; border-radius: 6px; padding: 8px 16px; cursor: pointer; }
+button.ghost { background: transparent; color: var(--ink); border: 1px solid var(--rule); font-weight: 500; }
+button:disabled { opacity: .5; cursor: wait; }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.status { font-size: 13px; color: var(--muted); }
+.canvasbox { position: relative; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+canvas { display: block; width: 100%; }
+.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bg); font-size: 12px; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--muted); margin-top: 8px; align-items: center; }
+.ramp { width: 140px; height: 8px; border-radius: 4px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; margin-top: 28px; }
+.grid2 > * { min-width: 0; }
+ol.rank { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+ol.rank li { display: grid; grid-template-columns: 1.6em minmax(0, 1fr) auto; gap: 10px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--rule); }
+ol.rank .i { color: var(--rubric); font-family: var(--mono); font-size: 12px; }
+ol.rank .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+a.ref, button.ref { font: inherit; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; font-weight: 600; }
+a.ref:hover, button.ref:hover { text-decoration-color: var(--gold); }
+.snip { color: var(--muted); font-family: var(--scripture); font-size: 14px; }
+.verse-hero { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 22px 24px; margin-bottom: 22px; }
+.verse-hero .r { font-family: var(--display); font-size: 22px; color: var(--rubric); }
+.verse-hero blockquote { font-family: var(--scripture); font-size: 21px; line-height: 1.55; margin: 8px 0 10px; max-width: 62ch; }
+.verse-hero blockquote::first-letter { font-family: var(--display); color: var(--rubric); font-size: 2.6em; float: left; line-height: .85; padding: 4px 8px 0 0; }
+.meta { font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 16px; }
+ul.xr { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; }
+ul.xr li { display: grid; grid-template-columns: 9.5em minmax(0, 1fr) 64px; gap: 12px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--rule); }
+ul.xr .votes { display: grid; gap: 2px; justify-items: end; font-size: 12px; color: var(--muted); }
+.bar { height: 4px; background: var(--gold); border-radius: 2px; }
+@media (max-width: 560px) { ul.xr li { grid-template-columns: minmax(0, 1fr) 54px; } ul.xr li .snip { grid-column: 1 / -1; grid-row: 2; } }
+.chain { display: grid; gap: 0; margin-top: 8px; }
+.link { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; }
+.link .rail { display: flex; flex-direction: column; align-items: center; }
+.link .dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--rubric); background: var(--surface); margin-top: 18px; flex: none; }
+.link .line { flex: 1; width: 2px; background: var(--rule); }
+.link:last-child .line { display: none; }
+.link .card { padding: 12px 0 14px; border-bottom: 1px dashed var(--rule); }
+.link .card p { font-family: var(--scripture); margin: 4px 0 0; max-width: 70ch; }
+.edge { font-size: 12px; color: var(--muted); margin-left: 8px; }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
+td.n, th.n { text-align: right; }
+.pill { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--rule); }
+.pill.ok { color: var(--gold); border-color: var(--gold); }
+.verdict { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--rubric); border-radius: 6px; padding: 14px 16px; margin: 16px 0; max-width: 78ch; }
+.matrixwrap { overflow-x: auto; margin-top: 10px; }
+.matrix { font-family: var(--mono); font-size: 14px; line-height: 1.25; display: inline-grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+.matrix span { display: block; width: 1.5em; text-align: center; background: var(--surface); color: var(--muted); }
+.matrix span.on { background: var(--hit); color: var(--ink); font-weight: 600; }
+ul.hits { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+ul.hits button { font-weight: 500; font-size: 13px; padding: 4px 10px; }
+ul.hits button[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); }
+.progress { height: 3px; background: var(--rule); border-radius: 2px; overflow: hidden; margin: 8px 0; max-width: 420px; }
+.progress div { height: 100%; width: 0; background: var(--gold); transition: width .15s; }
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--muted); }
+footer a { color: inherit; }
+.loading { padding: 60px 0; text-align: center; color: var(--muted); font-family: var(--scripture); font-style: italic; }
+@media (max-width: 480px) { .mark { font-size: 32px; } .verse-hero blockquote { font-size: 18px; } }
+@media (prefers-reduced-motion: reduce) { .progress div { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div>
+      <h1 class="mark">Verse<span>graph</span></h1>
+      <p class="tagline">Explore 341,282 cross-references between the 31,102 verses of the King James Bible, then test the "Bible code" claims against a whale novel.</p>
+    </div>
+  </header>
+  <nav class="tabs" aria-label="Views">
+    <a href="#arcs" data-view="arcs">Arcs</a>
+    <a href="#verse" data-view="verse">Verse</a>
+    <a href="#path" data-view="path">Path</a>
+    <a href="#codes" data-view="codes">Code Breaker</a>
+  </nav>
+
+  <div id="loading" class="loading">Loading 31,102 verses and 341,282 cross-references…</div>
+
+  <section id="v-arcs" hidden>
+    <h2>Every cross-reference, Genesis to Revelation</h2>
+    <p class="lede">Each arc joins two verses that readers have voted as cross-references. The bar along the bottom is the Bible in canonical order, one segment per book. Arc color shows how far the reference travels. Click a book on the bar to isolate its links.</p>
+    <div class="controls">
+      <label class="f">Minimum votes <span><input type="range" id="arc-votes" min="2" max="100" value="15"> <span class="num" id="arc-votes-v">15</span></span></label>
+      <label class="f">Book <select id="arc-book"><option value="-1">All books</option></select></label>
+      <span class="status num" id="arc-count"></span>
+    </div>
+    <div class="canvasbox"><canvas id="arcs" aria-label="Arc diagram of Bible cross-references"></canvas><div class="tip" id="arc-tip" hidden></div></div>
+    <div class="legend"><span>Short reach</span><canvas class="ramp" id="ramp" width="140" height="8"></canvas><span>Spans the whole Bible</span></div>
+    <div class="grid2">
+      <div><h3>Most cited verses</h3><p class="status">Total votes on references pointing at the verse.</p><ol class="rank" id="top-verses"></ol></div>
+      <div><h3>Strongest links between books</h3><p class="status">Total votes on references between two different books.</p><ol class="rank" id="top-pairs"></ol></div>
+    </div>
+  </section>
+
+  <section id="v-verse" hidden>
+    <form class="controls" id="verse-form">
+      <label class="f">Reference <input type="text" id="verse-in" value="John 1:1" autocomplete="off" spellcheck="false" placeholder="e.g. Romans 8:28"></label>
+      <button type="submit">Look up</button>
+      <button type="button" class="ghost" id="verse-rand">Random verse</button>
+      <span class="status" id="verse-err" role="status"></span>
+    </form>
+    <div id="verse-out"></div>
+  </section>
+
+  <section id="v-path" hidden>
+    <h2>Shortest path between two verses</h2>
+    <p class="lede">The fewest cross-reference hops from one verse to another. Links with fewer votes than the minimum are ignored. At each hop the strongest link wins a tie.</p>
+    <form class="controls" id="path-form">
+      <label class="f">From <input type="text" id="path-a" value="Genesis 3:15" autocomplete="off" spellcheck="false"></label>
+      <label class="f">To <input type="text" id="path-b" value="Revelation 12:9" autocomplete="off" spellcheck="false"></label>
+      <label class="f">Minimum votes <select id="path-votes"><option>2</option><option selected>5</option><option>10</option><option>20</option></select></label>
+      <button type="submit">Find path</button>
+      <span class="status" id="path-err" role="status"></span>
+    </form>
+    <div id="path-out"></div>
+  </section>
+
+  <section id="v-codes" hidden>
+    <h2>Code Breaker</h2>
+    <p class="lede">"Bible codes" are equidistant letter sequences (ELS). Strip out spaces and punctuation, then read every <em>n</em>th letter, forward or backward. Search a word below. The same search also runs on <em>Moby Dick</em> and on the Bible's own letters shuffled at random, and each count sits next to the number expected by pure chance from letter frequencies.</p>
+    <form class="controls" id="code-form">
+      <label class="f">Word <input type="text" id="code-word" value="MESSIAH" maxlength="14" autocomplete="off" spellcheck="false"></label>
+      <label class="f">Largest skip <select id="code-skip"><option>100</option><option>500</option><option selected>1000</option><option>3000</option></select></label>
+      <button type="submit" id="code-go">Search</button>
+      <span class="status" id="code-err" role="status"></span>
+    </form>
+    <div class="progress" aria-hidden="true"><div id="code-prog"></div></div>
+    <div id="code-out"></div>
+    <div class="verdict">
+      <strong>Background.</strong> In 1994 Witztum, Rips and Rosenberg reported ELS patterns in the Hebrew text of Genesis in <em>Statistical Science</em>. In 1999 McKay, Bar-Natan, Bar-Hillel and Kalai showed in the same journal that the result came from choices made during the experiment, and found matching "codes" in a Hebrew <em>War and Peace</em>. When Michael Drosnin said critics should find assassinations encoded in <em>Moby Dick</em>, McKay found several. Searches like this one find what letter frequencies predict, in any long text.
+    </div>
+  </section>
+
+  <footer>
+    Cross-references from <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY), based on the <em>Treasury of Scripture Knowledge</em> with reader votes. King James Version text and <em>Moby Dick</em> (Project Gutenberg) are in the public domain. Built by Nobler Works.
+  </footer>
+</div>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => n.toLocaleString("en-US");
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+let D = null; // loaded data and indexes
+
+// ---------- data ----------
+async function load() {
+  const [bible, xr, moby] = await Promise.all([
+    fetch("data/bible.json").then((r) => { if (!r.ok) throw new Error("bible.json " + r.status); return r.json(); }),
+    fetch("data/xrefs.json").then((r) => { if (!r.ok) throw new Error("xrefs.json " + r.status); return r.json(); }),
+    fetch("data/moby.txt").then((r) => { if (!r.ok) throw new Error("moby.txt " + r.status); return r.text(); }),
+  ]);
+  const N = bible.text.length;
+  const bookOf = new Uint8Array(N), chOf = new Uint16Array(N), vOf = new Uint16Array(N);
+  const bookStart = [], chapStart = [];
+  let i = 0;
+  bible.books.forEach(([, , counts], b) => {
+    bookStart.push(i); chapStart.push([]);
+    counts.forEach((c, ci) => { chapStart[b].push(i); for (let v = 1; v <= c; v++, i++) { bookOf[i] = b; chOf[i] = ci + 1; vOf[i] = v; } });
+  });
+  bookStart.push(N);
+  const E = xr.length / 4;
+  const from = new Int32Array(E), to = new Int32Array(E), span = new Int32Array(E), votes = new Int32Array(E);
+  for (let e = 0; e < E; e++) { from[e] = xr[4 * e]; to[e] = xr[4 * e + 1]; span[e] = xr[4 * e + 2]; votes[e] = xr[4 * e + 3]; }
+  // outgoing CSR, sorted by votes
+  const outOff = new Int32Array(N + 1);
+  for (let e = 0; e < E; e++) outOff[from[e] + 1]++;
+  for (let v = 0; v < N; v++) outOff[v + 1] += outOff[v];
+  const outEdge = new Int32Array(E), fill = outOff.slice(0, N);
+  for (let e = 0; e < E; e++) outEdge[fill[from[e]]++] = e;
+  for (let v = 0; v < N; v++) outEdge.subarray(outOff[v], outOff[v + 1]).sort((a, b) => votes[b] - votes[a]);
+  const inVotes = new Float64Array(N), inCount = new Int32Array(N);
+  for (let e = 0; e < E; e++) { inVotes[to[e]] += votes[e]; inCount[to[e]]++; }
+  D = { books: bible.books, text: bible.text, N, E, bookOf, chOf, vOf, bookStart, chapStart, from, to, span, votes, outOff, outEdge, inVotes, inCount, moby };
+}
+
+const ref = (i) => `${D.books[D.bookOf[i]][1]} ${D.chOf[i]}:${D.vOf[i]}`;
+const refRange = (i, len) => len ? `${ref(i)}–${D.chOf[i + len] === D.chOf[i] ? D.vOf[i + len] : D.chOf[i + len] + ":" + D.vOf[i + len]}` : ref(i);
+
+function parseRef(s) {
+  const m = s.trim().match(/^(.+?)\s*(\d+)\s*[:.]\s*(\d+)$/) || s.trim().match(/^(.+?)\s+(\d+)$/);
+  if (!m) return null;
+  const key = m[1].replace(/^(I{1,3})\s+/i, (r, n) => String(n.length)).toLowerCase().replace(/[\s.]/g, "").replace(/^psalm$/, "psalms");
+  let b = D.books.findIndex(([osis, name]) => name.toLowerCase().replace(/\s/g, "") === key || osis.toLowerCase() === key);
+  if (b < 0) b = D.books.findIndex(([, name]) => name.toLowerCase().replace(/\s/g, "").startsWith(key));
+  if (b < 0) return null;
+  const ch = +m[2], v = m[3] ? +m[3] : 1;
+  const cs = D.chapStart[b];
+  if (ch < 1 || ch > cs.length) return null;
+  const count = D.books[b][2][ch - 1];
+  if (v < 1 || v > count) return null;
+  return cs[ch - 1] + v - 1;
+}
+
+// ---------- routing ----------
+const VIEWS = ["arcs", "verse", "path", "codes"];
+const rendered = {};
+function route() {
+  const name = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "arcs";
+  document.querySelectorAll("nav.tabs a").forEach((a) => { if (a.dataset.view === name) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+  if (!D) return;
+  VIEWS.forEach((v) => { $("v-" + v).hidden = v !== name; });
+  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, codes: runCodes })[name](); }
+  else if (name === "arcs") drawArcs();
+}
+window.addEventListener("hashchange", route);
+function go(view) { if (location.hash !== "#" + view) location.hash = view; else route(); }
+
+// ---------- arcs ----------
+let arcBook = -1, arcGeom = null;
+const token = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function isDark() { return token("--bg").toLowerCase() === "#0d1220"; }
+function rampColors() { return [token("--gold"), token("--rubric"), token("--violet")]; }
+function mix(a, b, t) {
+  const p = (h) => [1, 3, 5].map((k) => parseInt(h.slice(k, k + 2), 16));
+  const x = p(a), y = p(b);
+  return `rgb(${x.map((v, k) => Math.round(v + (y[k] - v) * t)).join(",")})`;
+}
+function rampAt(t) { const [a, b, c] = rampColors(); return t < 0.5 ? mix(a, b, t * 2) : mix(b, c, (t - 0.5) * 2); }
+
+function initArcs() {
+  const sel = $("arc-book");
+  D.books.forEach(([, name], b) => sel.add(new Option(name, b)));
+  sel.onchange = () => { arcBook = +sel.value; drawArcs(); };
+  $("arc-votes").oninput = (e) => { $("arc-votes-v").textContent = e.target.value; drawArcs(); };
+  const cv = $("arcs"), tip = $("arc-tip");
+  const bookAt = (ev) => {
+    if (!arcGeom) return -1;
+    const r = cv.getBoundingClientRect(), x = ev.clientX - r.left;
+    const i = Math.floor((x - arcGeom.pad) / arcGeom.w * D.N);
+    return i >= 0 && i < D.N ? D.bookOf[i] : -1;
+  };
+  cv.onmousemove = (ev) => {
+    const b = bookAt(ev), r = cv.getBoundingClientRect();
+    if (b < 0) { tip.hidden = true; return; }
+    tip.textContent = D.books[b][1]; tip.hidden = false;
+    tip.style.left = Math.min(ev.clientX - r.left + 12, r.width - tip.offsetWidth - 4) + "px";
+    tip.style.top = (ev.clientY - r.top - 28) + "px";
+  };
+  cv.onmouseleave = () => { tip.hidden = true; };
+  cv.onclick = (ev) => { const b = bookAt(ev); arcBook = b === arcBook ? -1 : b; sel.value = arcBook; drawArcs(); };
+  let t; window.addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => { if (!$("v-arcs").hidden) drawArcs(); }, 150); });
+  const rerender = () => { if (!$("v-arcs").hidden) drawArcs(); };
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rerender);
+  new MutationObserver(rerender).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  drawArcs();
+  renderRanks();
+}
+
+function drawArcs() {
+  const cv = $("arcs"), dpr = window.devicePixelRatio || 1;
+  const W = cv.parentElement.clientWidth, pad = 10, w = W - 2 * pad, barH = 14, H = Math.round(w / 2) + barH + 26;
+  cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + "px";
+  const ctx = cv.getContext("2d"); ctx.scale(dpr, dpr);
+  ctx.fillStyle = token("--surface"); ctx.fillRect(0, 0, W, H);
+  arcGeom = { pad, w };
+  const base = H - barH - 22, minV = +$("arc-votes").value, X = (i) => pad + (i + 0.5) / D.N * w;
+  const BUCKETS = 8, paths = Array.from({ length: BUCKETS }, () => new Path2D());
+  let n = 0;
+  for (let e = 0; e < D.E; e++) {
+    if (D.votes[e] < minV) continue;
+    const a = D.from[e], b = D.to[e];
+    if (arcBook >= 0 && D.bookOf[a] !== arcBook && D.bookOf[b] !== arcBook) continue;
+    const x1 = X(Math.min(a, b)), x2 = X(Math.max(a, b)), r = (x2 - x1) / 2;
+    if (r < 0.2) continue;
+    const k = Math.min(BUCKETS - 1, Math.floor(Math.sqrt((x2 - x1) / w) * BUCKETS));
+    paths[k].moveTo(x1, base); paths[k].arc(x1 + r, base, r, Math.PI, 2 * Math.PI);
+    n++;
+  }
+  const dark = isDark();
+  ctx.globalCompositeOperation = dark ? "lighter" : "source-over";
+  ctx.lineWidth = 0.6;
+  ctx.globalAlpha = Math.max(0.05, Math.min(0.5, 1800 / Math.max(n, 1))) * (dark ? 0.9 : 1.1);
+  paths.forEach((p, k) => { ctx.strokeStyle = rampAt(k / (BUCKETS - 1)); ctx.stroke(p); });
+  ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
+  // book bar
+  const ink = token("--ink"), muted = token("--muted"), rule = token("--rule");
+  D.books.forEach(([osis], b) => {
+    const x1 = pad + D.bookStart[b] / D.N * w, x2 = pad + D.bookStart[b + 1] / D.N * w;
+    ctx.fillStyle = b === arcBook ? token("--rubric") : (b % 2 ? muted : rule);
+    ctx.fillRect(x1, base + 4, Math.max(1, x2 - x1 - 0.5), barH);
+  });
+  ctx.fillStyle = muted; ctx.font = "11px 'IBM Plex Sans', system-ui, sans-serif"; ctx.textBaseline = "top";
+  const ntX = pad + D.bookStart[39] / D.N * w;
+  ctx.textAlign = "left"; ctx.fillText("Genesis", pad, base + barH + 8);
+  ctx.textAlign = "center"; ctx.fillText("Old Testament | New Testament", ntX, base + barH + 8);
+  ctx.textAlign = "right"; ctx.fillText("Revelation", pad + w, base + barH + 8);
+  if (arcBook >= 0) { ctx.fillStyle = ink; ctx.textAlign = "left"; ctx.font = "16px 'IM Fell English SC', Georgia, serif"; ctx.fillText(D.books[arcBook][1], pad + 4, 10); }
+  $("arc-count").textContent = `${fmt(n)} arcs`;
+  const rc = $("ramp").getContext("2d");
+  for (let x = 0; x < 140; x++) { rc.fillStyle = rampAt(x / 139); rc.fillRect(x, 0, 1, 8); }
+}
+
+function renderRanks() {
+  const idx = Array.from({ length: D.N }, (_, i) => i).sort((a, b) => D.inVotes[b] - D.inVotes[a]).slice(0, 10);
+  $("top-verses").innerHTML = idx.map((v, k) => `<li><span class="i">${k + 1}</span><span class="t"><button class="ref" data-v="${v}">${ref(v)}</button> <span class="snip">${esc(D.text[v])}</span></span><span class="num status">${fmt(D.inVotes[v])}</span></li>`).join("");
+  const pair = new Map();
+  for (let e = 0; e < D.E; e++) {
+    let a = D.bookOf[D.from[e]], b = D.bookOf[D.to[e]];
+    if (a === b) continue;
+    if (a > b) [a, b] = [b, a];
+    const k = a * 100 + b; pair.set(k, (pair.get(k) || 0) + D.votes[e]);
+  }
+  const top = [...pair].sort((x, y) => y[1] - x[1]).slice(0, 10);
+  $("top-pairs").innerHTML = top.map(([k, v], i) => `<li><span class="i">${i + 1}</span><span class="t">${D.books[Math.floor(k / 100)][1]} ↔ ${D.books[k % 100][1]}</span><span class="num status">${fmt(v)}</span></li>`).join("");
+}
+
+document.addEventListener("click", (ev) => {
+  const b = ev.target.closest("button.ref[data-v]");
+  if (!b) return;
+  const v = +b.dataset.v;
+  $("verse-in").value = ref(v); rendered.verse = true; showVerse(v); go("verse"); window.scrollTo({ top: 0 });
+});
+
+// ---------- verse ----------
+function showVerse(v) {
+  $("verse-err").textContent = "";
+  if (v == null) { $("verse-err").textContent = "Couldn't read that reference. Try a form like Romans 8:28."; return; }
+  const o0 = D.outOff[v], o1 = D.outOff[v + 1], out = D.outEdge.subarray(o0, o1);
+  const maxV = out.length ? D.votes[out[0]] : 1;
+  const rows = Array.from(out.slice(0, 60), (e) => `<li><button class="ref" data-v="${D.to[e]}">${refRange(D.to[e], D.span[e])}</button><span class="snip">${esc(D.text[D.to[e]])}${D.span[e] ? " …" : ""}</span><span class="votes"><span class="num">${fmt(D.votes[e])}</span><span class="bar" style="width:${Math.max(4, D.votes[e] / maxV * 60)}px"></span></span></li>`).join("");
+  $("verse-out").innerHTML = `
+    <div class="verse-hero"><div class="r">${ref(v)}</div><blockquote>${esc(D.text[v])}</blockquote>
+      <div class="meta"><span><span class="num">${fmt(out.length)}</span> outgoing references</span><span>cited by <span class="num">${fmt(D.inCount[v])}</span> verses</span><span><span class="num">${fmt(D.inVotes[v])}</span> votes received</span></div></div>
+    <h3>Cross-references, strongest first${out.length > 60 ? " (top 60)" : ""}</h3>
+    ${out.length ? `<ul class="xr">${rows}</ul>` : `<p class="status">No outgoing cross-references for this verse.</p>`}`;
+}
+$("verse-form").onsubmit = (ev) => { ev.preventDefault(); showVerse(parseRef($("verse-in").value)); };
+$("verse-rand").onclick = () => { const v = Math.floor(Math.random() * D.N); $("verse-in").value = ref(v); showVerse(v); };
+
+// ---------- path ----------
+let undirected = null;
+function buildUndirected(minV) {
+  const N = D.N, off = new Int32Array(N + 1);
+  for (let e = 0; e < D.E; e++) if (D.votes[e] >= minV) { off[D.from[e] + 1]++; off[D.to[e] + 1]++; }
+  for (let v = 0; v < N; v++) off[v + 1] += off[v];
+  const nb = new Int32Array(off[N]), ev = new Int32Array(off[N]), f = off.slice(0, N);
+  for (let e = 0; e < D.E; e++) if (D.votes[e] >= minV) { const a = D.from[e], b = D.to[e]; nb[f[a]] = b; ev[f[a]++] = e; nb[f[b]] = a; ev[f[b]++] = e; }
+  for (let v = 0; v < N; v++) {
+    const s = off[v], t = off[v + 1];
+    if (t - s < 2) continue;
+    const ord = Array.from({ length: t - s }, (_, k) => s + k).sort((x, y) => D.votes[ev[y]] - D.votes[ev[x]]);
+    const n2 = ord.map((k) => nb[k]), e2 = ord.map((k) => ev[k]);
+    nb.set(n2, s); ev.set(e2, s);
+  }
+  return { minV, off, nb, ev };
+}
+function runPath() {
+  const a = parseRef($("path-a").value), b = parseRef($("path-b").value), minV = +$("path-votes").value;
+  $("path-err").textContent = "";
+  if (a == null || b == null) { $("path-err").textContent = `Couldn't read the ${a == null ? "From" : "To"} reference.`; return; }
+  if (!undirected || undirected.minV !== minV) undirected = buildUndirected(minV);
+  const { off, nb, ev } = undirected, prev = new Int32Array(D.N).fill(-1), via = new Int32Array(D.N);
+  prev[a] = a; const q = [a];
+  for (let h = 0; h < q.length && prev[b] < 0; h++) {
+    const u = q[h];
+    for (let k = off[u]; k < off[u + 1]; k++) { const w = nb[k]; if (prev[w] < 0) { prev[w] = u; via[w] = ev[k]; q.push(w); } }
+  }
+  if (prev[b] < 0) { $("path-out").innerHTML = `<p class="status">No path at ${minV}+ votes. Lower the minimum and try again.</p>`; return; }
+  const chain = [b]; while (chain[chain.length - 1] !== a) chain.push(prev[chain[chain.length - 1]]);
+  chain.reverse();
+  $("path-out").innerHTML = `<p class="status"><span class="num">${chain.length - 1}</span> hops, searched <span class="num">${fmt(q.length)}</span> verses.</p><div class="chain">` +
+    chain.map((v, k) => `<div class="link"><div class="rail"><span class="dot"></span><span class="line"></span></div><div class="card"><button class="ref" data-v="${v}">${ref(v)}</button>${k ? `<span class="edge num">${fmt(D.votes[via[v]])} votes</span>` : ""}<p>${esc(D.text[v])}</p></div></div>`).join("") + "</div>";
+}
+$("path-form").onsubmit = (ev) => { ev.preventDefault(); runPath(); };
+
+// ---------- code breaker ----------
+function letters(str) {
+  const out = new Uint8Array(str.length); let n = 0;
+  for (let i = 0; i < str.length; i++) { let c = str.charCodeAt(i); if (c >= 97 && c <= 122) c -= 32; if (c >= 65 && c <= 90) out[n++] = c - 65; }
+  return out.slice(0, n);
+}
+let corpora = null, worker = null;
+function buildCorpora() {
+  const verseLetterStart = new Int32Array(D.N + 1); let total = 0;
+  const parts = D.text.map((t, i) => { verseLetterStart[i] = total; const l = letters(t); total += l.length; return l; });
+  verseLetterStart[D.N] = total;
+  const kjv = new Uint8Array(total); let p = 0; parts.forEach((l) => { kjv.set(l, p); p += l.length; });
+  const shuf = kjv.slice(); let s = 20261101;
+  const rnd = () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  for (let i = shuf.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); const x = shuf[i]; shuf[i] = shuf[j]; shuf[j] = x; }
+  corpora = [
+    { key: "kjv", name: "King James Bible", data: kjv },
+    { key: "moby", name: "Moby Dick", data: letters(D.moby) },
+    { key: "shuf", name: "Bible letters, shuffled", data: shuf },
+  ];
+  corpora.forEach((c) => { const f = new Float64Array(26); c.data.forEach((x) => f[x]++); c.freq = f.map((x) => x / c.data.length); });
+  corpora.verseLetterStart = verseLetterStart;
+  const src = `onmessage = (m) => {
+    const { data, word, maxSkip, id } = m.data, L = word.length, N = data.length, hits = []; let count = 0;
+    const dirs = [word]; const rev = word.slice().reverse();
+    if (rev.join() !== word.join()) dirs.push(rev);
+    dirs.forEach((w, di) => {
+      const c0 = w[0];
+      for (let i = 0; i < N; i++) {
+        if ((i & 0x3ffff) === 0) postMessage({ id, progress: (di + i / N) / dirs.length });
+        if (data[i] !== c0) continue;
+        const dMax = Math.min(maxSkip, Math.floor((N - 1 - i) / (L - 1)));
+        for (let d = 2; d <= dMax; d++) {
+          let k = 1; while (k < L && data[i + k * d] === w[k]) k++;
+          if (k === L) { count++; if (hits.length < 400) hits.push(di ? [i + (L - 1) * d, -d] : [i, d]); }
+        }
+      }
+    });
+    postMessage({ id, done: true, count, hits, dirs: dirs.length });
+  };`;
+  worker = new Worker(URL.createObjectURL(new Blob([src], { type: "text/javascript" })));
+}
+function search(c, word, maxSkip, onProg) {
+  return new Promise((res) => {
+    const id = Math.random();
+    worker.onmessage = (m) => { if (m.data.id !== id) return; if (m.data.done) res(m.data); else onProg(m.data.progress); };
+    worker.postMessage({ data: c.data, word, maxSkip, id });
+  });
+}
+function expected(c, word, maxSkip, dirs) {
+  const N = c.data.length, L = word.length;
+  let p = 1; word.forEach((x) => { p *= c.freq[x]; });
+  let starts = 0; for (let d = 2; d <= maxSkip; d++) starts += Math.max(0, N - (L - 1) * d);
+  return starts * p * dirs;
+}
+const letterVerse = (pos) => { const s = corpora.verseLetterStart; let lo = 0, hi = D.N - 1; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (s[m] <= pos) lo = m; else hi = m - 1; } return lo; };
+
+let codeBusy = false, codeResults = null;
+async function runCodes() {
+  if (codeBusy) return;
+  const raw = $("code-word").value.toUpperCase().replace(/[^A-Z]/g, ""), maxSkip = +$("code-skip").value;
+  $("code-err").textContent = "";
+  if (raw.length < 3) { $("code-err").textContent = "Use a word of at least 3 letters."; return; }
+  if (!corpora) buildCorpora();
+  codeBusy = true; $("code-go").disabled = true;
+  const word = Array.from(raw, (ch) => ch.charCodeAt(0) - 65), results = [];
+  for (let k = 0; k < corpora.length; k++) {
+    const c = corpora[k];
+    const r = await search(c, word, maxSkip, (p) => { $("code-prog").style.width = ((k + p) / corpora.length * 100) + "%"; });
+    results.push({ c, ...r, exp: expected(c, word, maxSkip, r.dirs) });
+  }
+  $("code-prog").style.width = "100%";
+  codeBusy = false; $("code-go").disabled = false;
+  codeResults = { raw, word, maxSkip, results };
+  renderCodes(0, 0);
+}
+function renderCodes(ci, hi) {
+  const { raw, maxSkip, results } = codeResults;
+  const rows = results.map((r) => {
+    const ratio = r.exp > 0 ? r.count / r.exp : 0;
+    return `<tr><td>${r.c.name}</td><td class="n num">${fmt(r.c.data.length)}</td><td class="n num"><strong>${fmt(r.count)}</strong></td><td class="n num">${r.exp < 10 ? r.exp.toFixed(2) : fmt(Math.round(r.exp))}</td><td class="n num">${r.exp > 0 ? ratio.toFixed(2) + "×" : "–"}</td></tr>`;
+  }).join("");
+  const sel = results[ci];
+  const hitBtns = results.map((r, k) => r.hits.length ? `<div><h3>${r.c.name}${r.count > r.hits.length ? ` (first ${r.hits.length})` : ""}</h3><ul class="hits">${r.hits.slice(0, 24).map((h, j) => `<li><button class="ghost" data-ci="${k}" data-hi="${j}" aria-pressed="${k === ci && j === hi}">skip ${h[1]}${k === 0 ? " · " + ref(letterVerse(h[0])) : ""}</button></li>`).join("")}</ul></div>` : `<div><h3>${r.c.name}</h3><p class="status">No hits.</p></div>`).join("");
+  $("code-out").innerHTML = `
+    <div class="tablewrap"><table><thead><tr><th>Text</th><th class="n">Letters</th><th class="n">Hits</th><th class="n">Expected by chance</th><th class="n">Hits ÷ expected</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="status">${raw}, skips 2 to ${fmt(maxSkip)}, forward and backward. "Expected" multiplies each text's letter frequencies over every possible start and skip. A ratio near 1× means the hits are what chance predicts.</p>
+    <div class="grid2" style="margin-top:12px"><div>${hitBtns}</div><div id="code-grid"></div></div>`;
+  $("code-out").querySelectorAll("button[data-ci]").forEach((b) => { b.onclick = () => renderCodes(+b.dataset.ci, +b.dataset.hi); });
+  if (sel.hits.length) renderGrid(sel, sel.hits[Math.min(hi, sel.hits.length - 1)]);
+  else $("code-grid").innerHTML = "";
+}
+function renderGrid(r, [start, d]) {
+  const L = codeResults.word.length, data = r.c.data, step = Math.abs(d);
+  const first = d > 0 ? start : start + (L - 1) * d; // lowest letter position
+  const cols = Math.min(step, 25), half = Math.floor(cols / 2), rows = L + 4;
+  const on = new Set(Array.from({ length: L }, (_, k) => start + k * d));
+  let cells = "";
+  for (let y = -2; y < rows - 2; y++) for (let x = -half; x < cols - half; x++) {
+    const pos = first + y * step + x;
+    const ch = pos >= 0 && pos < data.length ? String.fromCharCode(65 + data[pos]) : " ";
+    cells += `<span class="${on.has(pos) ? "on" : ""}">${ch}</span>`;
+  }
+  const where = r.c.key === "kjv" ? ` starting in ${ref(letterVerse(start))}` : "";
+  $("code-grid").innerHTML = `<h3>${r.c.name}: skip ${d}${where}</h3><p class="status">Rows are ${fmt(step)} letters long, so the word reads straight down.</p><div class="matrixwrap"><div class="matrix" style="grid-template-columns:repeat(${cols},auto)">${cells}</div></div>`;
+}
+$("code-form").onsubmit = (ev) => { ev.preventDefault(); runCodes(); };
+
+// ---------- boot ----------
+load().then(() => { $("loading").hidden = true; route(); }).catch((err) => {
+  $("loading").textContent = `Couldn't load the data (${err.message}). Reload the page to try again.`;
+});
+route();
+</script>
