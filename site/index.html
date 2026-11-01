@@ -126,6 +126,31 @@ footer a { color: inherit; }
 .choices b { font-weight: 600; }
 .choices .snip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (max-width: 560px) { .choices button { grid-template-columns: minmax(0, 1fr) auto; } .choices button .snip { grid-column: 1 / -1; grid-row: 2; white-space: normal; } }
+#end-dates .t, #lost-books .t, #pharaohs .t { white-space: normal; }
+.tl { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 28px; align-items: start; margin-top: 10px; }
+.tl-stage { position: sticky; top: 12px; height: calc(100vh - 24px); max-height: 860px; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 8px; }
+.tl-map { position: relative; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--sea); }
+.tl-map canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tl-year { position: absolute; left: 16px; top: 12px; font: 400 44px/1 var(--display); color: var(--ink); text-shadow: 0 0 8px var(--land), 0 0 3px var(--land); pointer-events: none; font-variant-numeric: tabular-nums; }
+.tl-era { position: absolute; left: 18px; top: 62px; font: 600 12px var(--ui); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); text-shadow: 0 0 6px var(--land); pointer-events: none; }
+.tl-axis { position: relative; height: 34px; margin: 0 10px; }
+.tl-axis .line { position: absolute; left: 0; right: 0; top: 8px; height: 2px; background: var(--rule); }
+.tl-axis .tick { position: absolute; top: 5px; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: var(--muted); opacity: 0.6; }
+.tl-axis .lab { position: absolute; top: 18px; transform: translateX(-50%); font-size: 11px; color: var(--muted); white-space: nowrap; }
+.tl-axis .mark { position: absolute; top: 1px; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: var(--rubric); border: 2px solid var(--surface); }
+.tl-step { min-height: 82vh; display: flex; align-items: center; }
+.tl-step:first-child { min-height: 60vh; }
+.tl-step:last-child { min-height: 90vh; }
+.tl-step .card { width: 100%; opacity: 0.35; transform: translateY(10px); transition: opacity 0.35s, transform 0.35s, border-color 0.35s; }
+.tl-step.on .card { opacity: 1; transform: none; border-color: var(--gold); }
+.tl-step .when { font: 600 13px var(--ui); color: var(--rubric); }
+@media (prefers-reduced-motion: reduce) { .tl-step .card { transition: none; transform: none; } }
+@media (max-width: 820px) {
+  .tl { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .tl-stage { order: -1; top: 0; height: 46vh; z-index: 2; background: var(--bg); padding-bottom: 6px; }
+  .tl-step { min-height: 62vh; }
+  .tl-year { font-size: 30px; } .tl-era { top: 46px; }
+}
 .qopt.right { border-color: var(--ok); color: var(--ok); }
 .qopt.wrong { border-color: var(--rubric); color: var(--rubric); }
 .win { border: 1px solid var(--gold); background: var(--surface); border-radius: 10px; padding: 14px 16px; margin: 12px 0; display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
@@ -201,6 +226,7 @@ table.gen td { font-family: var(--scripture); }
   </header>
   <nav class="tabs" aria-label="Views">
     <a href="#arcs" data-view="arcs">Arcs</a>
+    <a href="#timeline" data-view="timeline">Timeline</a>
     <a href="#verse" data-view="verse">Verse</a>
     <a href="#path" data-view="path">Path</a>
     <a href="#ladder" data-view="ladder">Ladder</a>
@@ -238,6 +264,14 @@ table.gen td { font-family: var(--scripture); }
     <div id="heat-out"></div>
   </section>
 
+  <section id="v-timeline" hidden>
+    <h2>Four thousand years, scrolled</h2>
+    <p class="lede">From the pyramids to the Dead Sea Scrolls. Scroll down and the map follows: it flies between places, journeys draw themselves in, and the year runs with you. Dates before about 900 BC are traditional or disputed, and each card says so.</p>
+    <div class="tl">
+      <div class="tl-steps" id="tl-steps"></div>
+      <div class="tl-stage"><div class="tl-map"><canvas id="tl-map" aria-label="Map following the timeline"></canvas><div class="tl-year" id="tl-year"></div><div class="tl-era" id="tl-era"></div></div><div class="tl-axis" id="tl-axis"></div></div>
+    </div>
+  </section>
   <section id="v-verse" hidden>
     <form class="controls" id="verse-form">
       <label class="f">Reference <input type="text" id="verse-in" value="John 1:1" autocomplete="off" spellcheck="false" placeholder="e.g. Romans 8:28"></label>
@@ -524,7 +558,7 @@ function parseRef(s) {
 }
 
 // ---------- routing ----------
-const VIEWS = ["arcs", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
+const VIEWS = ["arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
 const rendered = {};
 function route() {
   const [h, arg] = location.hash.slice(1).split("/"), name = VIEWS.includes(h) ? h : "arcs";
@@ -532,10 +566,11 @@ function route() {
   if (!D) return;
   VIEWS.forEach((v) => { $("v-" + v).hidden = v !== name; });
   if (name === "verse" && arg) { const v = parseRef(decodeURIComponent(arg)); rendered.verse = true; $("verse-in").value = v == null ? decodeURIComponent(arg) : ref(v); showVerse(v); }
-  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes })[name](); }
+  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, timeline: initTimeline, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes })[name](); }
   else if (name === "arcs") drawArcs();
   else if (name === "history") drawPopes();
   else if (name === "map") drawMap();
+  else if (name === "timeline") tlUpdate();
 }
 window.addEventListener("hashchange", route);
 function go(view) { if (location.hash !== "#" + view) location.hash = view; else route(); }
@@ -1260,6 +1295,130 @@ function initMap() {
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rerender);
   new MutationObserver(rerender).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
   setMapMode();
+}
+
+// ---------- timeline ----------
+// Each step: when (number for the scrubber), d (label), era, title, body, pins [name, lon, lat], optional route, verses, books for faint place dots
+const STEPS = [
+  { y: -2560, d: "c. 2560 BC", era: "Egypt", t: "The Great Pyramid", b: "Pharaoh Khufu's pyramid rises at Giza, more than a thousand years before any date proposed for the Exodus. The Bible never mentions pyramids, and the builders were Egyptian work crews housed in a town beside the site.", pins: [["Giza", 31.134, 29.979]], span: 9, go: ["mysteries", "Egypt in the Bible"] },
+  { y: -1900, d: "c. 2000–1800 BC (traditional)", era: "The patriarchs", t: "Abraham leaves Ur", b: "Genesis follows Abram from Ur of the Chaldees to Harran, into Canaan, and down to Egypt in a famine. The date comes from adding up the ages in Genesis; no inscription names Abraham.", pins: [["Ur", 46.103, 30.962], ["Harran", 39.031, 36.865], ["Shechem", 35.281, 32.213], ["Egypt", 31.3, 30.1]], route: true, r: [["Gen", 12, 1], ["Gen", 12, 10]], books: ["Gen"] },
+  { y: -1700, d: "Traditional date", era: "The patriarchs", t: "Joseph in Egypt", b: "Sold by his brothers, Joseph rises to govern Egypt, takes an Egyptian name and marries the daughter of a priest of On, the city of the sun god. His father is embalmed in the Egyptian way. No Egyptian record names him.", pins: [["On (Heliopolis)", 31.307, 30.129], ["Goshen", 31.9, 30.55], ["Hebron", 35.099, 31.529]], r: [["Gen", 41, 45], ["Gen", 50, 3]] },
+  { y: -1350, d: "c. 1350 BC", era: "Egypt", t: "Akhenaten's one god", b: "At his new capital, Amarna, Pharaoh Akhenaten worships a single god, the sun disk Aten. A hymn found in a tomb there runs through the same scenes as Psalm 104. Freud later guessed that Moses was his follower; nothing links them.", pins: [["Amarna", 30.896, 27.645]], span: 6, r: [["Ps", 104, 24]] },
+  { y: -1250, d: "c. 1446 BC or 1200s BC (disputed)", era: "The Exodus", t: "Out of Egypt", b: "Israel builds the store cities Pithom and Raamses, leaves Egypt, receives the law at Sinai and wanders to the edge of Canaan. 1 Kings implies about 1446 BC; the city of Raamses points to the 1200s. No Egyptian record mentions it, and both the route and the mountain are disputed.", pins: [["Raamses", 31.836, 30.799], ["Mount Sinai (traditional)", 33.975, 28.539], ["Kadesh-barnea", 34.42, 30.69], ["Mount Nebo", 35.725, 31.768]], route: true, r: [["Exod", 1, 11], ["Exod", 14, 21]], books: ["Exod", "Num"] },
+  { y: -1208, d: "c. 1208 BC", era: "Egypt", t: "Israel carved in stone", b: "Pharaoh Merneptah's victory stele lists Israel among his defeated enemies: “Israel is laid waste; his seed is not.” Found at Thebes in 1896, it is the oldest mention of Israel outside the Bible.", pins: [["Thebes", 32.64, 25.72], ["Israel", 35.25, 32.1]] },
+  { y: -1000, d: "c. 1000 BC", era: "The kingdom", t: "David takes Jerusalem", b: "David captures the stronghold of Zion and makes Jerusalem his capital. A stone from Tel Dan, carved about 150 years later, mentions the “House of David”.", pins: [["Jerusalem", 35.235, 31.778], ["Hebron", 35.099, 31.529], ["Tel Dan", 35.652, 33.248]], r: [["2Sam", 5, 7]], books: ["1Sam", "2Sam"] },
+  { y: -960, d: "c. 960 BC", era: "The kingdom", t: "Solomon's Temple", b: "Solomon builds the Temple with cedar from Hiram, king of Tyre, and bronze cast by another Hiram, a widow's son from Tyre. Its two pillars, Jachin and Boaz, now stand in Masonic lodges. Solomon also marries Pharaoh's daughter.", pins: [["Jerusalem", 35.235, 31.778], ["Tyre", 35.195, 33.271]], span: 3, r: [["1Kgs", 7, 21], ["1Kgs", 3, 1]], go: ["mysteries", "The Bible in the Masonic lodge"] },
+  { y: -925, d: "c. 925 BC", era: "The kingdom", t: "Shishak invades", b: "Five years after Solomon's death, Pharaoh Shoshenq I raids Judah and Israel. He listed the towns he took on a gate at Karnak, and part of his victory stele was dug up at Megiddo.", pins: [["Karnak", 32.657, 25.719], ["Megiddo", 35.184, 32.585], ["Jerusalem", 35.235, 31.778]], route: true, r: [["1Kgs", 14, 25]] },
+  { y: -722, d: "722 BC", era: "Empires", t: "Assyria takes Samaria", b: "Assyria destroys the northern kingdom of Israel and deports its people, the origin of the “ten lost tribes”. About twenty years later Sennacherib besieges Jerusalem.", pins: [["Nineveh", 43.152, 36.359], ["Samaria", 35.19, 32.276], ["Jerusalem", 35.235, 31.778]], r: [["2Kgs", 17, 6], ["2Kgs", 19, 9]] },
+  { y: -586, d: "586 BC", era: "Empires", t: "Babylon burns the Temple", b: "Nebuchadnezzar destroys Jerusalem and its Temple and carries its people into exile. The Ark of the Covenant is never mentioned again; Jeremiah says it will not be missed.", pins: [["Jerusalem", 35.235, 31.778], ["Babylon", 44.421, 32.536]], route: true, r: [["2Kgs", 25, 9], ["Jer", 3, 16]], go: ["history", "The arks"] },
+  { y: -538, d: "538 BC", era: "Empires", t: "The return", b: "Cyrus of Persia takes Babylon and lets the exiles go home. Zerubbabel leads the rebuilding of the Temple, the story Freemasonry's Royal Arch degree retells.", pins: [["Babylon", 44.421, 32.536], ["Jerusalem", 35.235, 31.778]], route: true, r: [["Ezra", 1, 1], ["Ezra", 3, 8]] },
+  { y: -250, d: "3rd century BC", era: "Second Temple", t: "The Septuagint and Enoch", b: "Jewish scholars in Alexandria translate the Law into Greek, the Septuagint. Around the same time the Book of the Watchers, the oldest part of 1 Enoch, expands Genesis 6's story of angels and giants.", pins: [["Alexandria", 29.919, 31.2], ["Jerusalem", 35.235, 31.778]], r: [["Gen", 6, 4]], go: ["canon", "Beyond the Canon"] },
+  { y: -125, d: "c. 125 BC", era: "Second Temple", t: "The Great Isaiah Scroll", b: "A scribe copies all of Isaiah on a scroll that ends up hidden in a cave by Qumran, on the Dead Sea. It is about a thousand years older than the Hebrew manuscripts behind the KJV, and agrees closely with them.", pins: [["Qumran", 35.459, 31.741]], span: 0.7, r: [["Isa", 40, 8]], go: ["mysteries", "What the Dead Sea Scrolls changed"] },
+  { y: -4, d: "c. 4 BC – AD 30", era: "Jesus", t: "Jesus of Nazareth", b: "Born in Bethlehem late in Herod the Great's reign, raised in Nazareth, teaching around the Sea of Galilee, crucified in Jerusalem under Pontius Pilate. The Gospels give no birth date; 25 December came later.", pins: [["Bethlehem", 35.202, 31.705], ["Nazareth", 35.297, 32.699], ["Capernaum", 35.575, 32.881], ["Jerusalem", 35.235, 31.778]], route: true, r: [["Luke", 2, 4], ["Matt", 4, 13]], books: ["Matt", "Mark", "Luke", "John"] },
+  { y: 50, d: "AD 46–62", era: "The church", t: "Paul's journeys", b: "Paul carries the new faith from Antioch through Asia Minor and Greece, and finally reaches Rome as a prisoner. His letters are the oldest writings in the New Testament.", pins: [["Antioch", 36.161, 36.202], ["Ephesus", 27.341, 37.941], ["Philippi", 24.286, 41.012], ["Corinth", 22.879, 37.906], ["Rome", 12.484, 41.891]], route: true, r: [["Acts", 13, 4], ["Acts", 28, 16]], books: ["Acts"] },
+  { y: 70, d: "AD 70", era: "The church", t: "The Temple falls", b: "Roman legions under Titus destroy Jerusalem and the Second Temple. The Arch of Titus in Rome still shows the Temple's menorah carried in his triumph.", pins: [["Jerusalem", 35.235, 31.778], ["Rome", 12.484, 41.891]], r: [["Matt", 24, 2]] },
+  { y: 95, d: "c. AD 95", era: "The church", t: "Revelation on Patmos", b: "Exiled on the island of Patmos, John writes Revelation, with its beast whose number is 666, or 616 in some early copies.", pins: [["Patmos", 26.547, 37.31]], span: 3, r: [["Rev", 1, 9], ["Rev", 13, 18]], go: ["numbers", "666, or 616?"] },
+  { y: 325, d: "AD 325 and 367", era: "The empire", t: "Nicaea, and the list of books", b: "The Council of Nicaea argues over whether Jesus is fully divine and when to keep Easter; it does not choose the books of the Bible. In 367 Athanasius of Alexandria writes the first surviving list of today's 27 New Testament books.", pins: [["Nicaea", 29.72, 40.43], ["Alexandria", 29.919, 31.2]] },
+  { y: 380, d: "4th century", era: "The empire", t: "Books buried at Nag Hammadi", b: "Someone buries a jar of leather-bound Coptic books near Nag Hammadi in Upper Egypt, among them the Gospel of Thomas. Farmers dig it up in December 1945.", pins: [["Nag Hammadi", 32.242, 26.049]], span: 5, go: ["canon", "Beyond the Canon"] },
+  { y: 405, d: "c. AD 405", era: "The empire", t: "Jerome's Vulgate", b: "Working in Bethlehem, Jerome finishes his Latin translation from the Hebrew and Greek. His word <em>lucifer</em>, “light-bringer”, in Isaiah 14:12 passes into the KJV as a name.", pins: [["Bethlehem", 35.202, 31.705]], span: 2, r: [["Isa", 14, 12]], go: ["translations", "Lucifer"] },
+  { y: 1119, d: "1119–1312", era: "Middle Ages", t: "The Knights Templar", b: "Founded in Jerusalem to protect pilgrims, the Templars become Europe's bankers. On Friday 13 October 1307 Philip IV of France arrests every Templar in his kingdom; the pope dissolves the order in 1312.", pins: [["Jerusalem", 35.235, 31.778], ["Paris", 2.352, 48.857]], route: true, go: ["history", "Relics, orders and legends"] },
+  { y: 1355, d: "1350s; carbon-dated 1260–1390", era: "Middle Ages", t: "The Shroud appears", b: "The Shroud of Turin's first secure record is at Lirey in France in the 1350s. It reaches Turin in 1578, and radiocarbon tests in 1988 dated the linen to 1260–1390.", pins: [["Lirey", 4.04, 48.18], ["Turin", 7.686, 45.07]], route: true },
+  { y: 1611, d: "1611", era: "Print", t: "The King James Version", b: "Six committees of scholars, two each at Westminster, Oxford and Cambridge, finish the Authorized Version. Shakespeare had turned 46 the year before, which is all the Psalm 46 “code” needs.", pins: [["Westminster", -0.127, 51.5], ["Oxford", -1.257, 51.752], ["Cambridge", 0.119, 52.205]], r: [["Ps", 46, 3]], go: ["mysteries", "The Rosicrucians"] },
+  { y: 1615, d: "1614–1616", era: "Print", t: "The Rosicrucian manifestos", b: "Pamphlets printed in Kassel announce a secret Brotherhood of the Rosy Cross. Europe goes looking and never finds it; Johann Valentin Andreae of Tübingen later calls his part a joke.", pins: [["Kassel", 9.479, 51.312], ["Tübingen", 9.056, 48.52]] },
+  { y: 1717, d: "1717", era: "Enlightenment", t: "The first Grand Lodge", b: "Four London lodges meet at the Goose and Gridiron tavern and form the first Grand Lodge of Freemasonry. Its rituals retell the building of Solomon's Temple.", pins: [["London", -0.098, 51.513]], span: 4, r: [["1Kgs", 7, 21]] },
+  { y: 1946, d: "1945–1947", era: "Discovery", t: "The great finds", b: "In December 1945 farmers dig up the Nag Hammadi books. Over the winter of 1946–47 Bedouin shepherds find the first Dead Sea Scrolls in a cave above Qumran, and by 1956 eleven caves have given up about a thousand manuscripts.", pins: [["Qumran", 35.459, 31.741], ["Nag Hammadi", 32.242, 26.049]] },
+  { y: 2026, d: "Today", era: "Now", t: "Every place in one picture", b: "", all: true, pins: [], cam: [36, 33, 34] },
+];
+const TL = { land: null, dots: [], cams: [], raf: 0 };
+const tlYear = (y) => (y >= 2026 ? "Today" : y < 0 ? `${Math.abs(Math.round(y))} BC` : `AD ${Math.round(y)}`);
+function tlCam(s) {
+  if (s.cam) return { lon: s.cam[0], lat: s.cam[1], span: s.cam[2] };
+  const lons = s.pins.map((p) => p[1]), lats = s.pins.map((p) => p[2]);
+  const lo0 = Math.min(...lons), lo1 = Math.max(...lons), la0 = Math.min(...lats), la1 = Math.max(...lats);
+  return { lon: (lo0 + lo1) / 2, lat: (la0 + la1) / 2, span: Math.max(s.span || 2.5, (lo1 - lo0) * COSL * 1.5, (la1 - la0) * 1.5) };
+}
+function initTimeline() {
+  STEPS[STEPS.length - 1].b = `The ${fmt(D.places.length)} places the Bible names, each at its most likely modern location. Scroll back up to travel again, or open any tab to explore.`;
+  $("tl-steps").innerHTML = STEPS.map((s, k) => `<div class="tl-step" data-k="${k}"><div class="card"><span class="when">${s.d}</span><h4>${s.t}</h4><p>${s.b}</p>${(s.r || []).map((r) => quote(...r)).join("")}${s.go ? `<button type="button" class="ghost" data-go="${s.go[0]}" style="justify-self:start">More: ${s.go[1]}</button>` : ""}</div></div>`).join("");
+  $("tl-steps").querySelectorAll("button[data-go]").forEach((b) => { b.onclick = () => { go(b.dataset.go); window.scrollTo({ top: 0 }); }; });
+  // Land in raw lon/lat, projected by the canvas transform, so a frame costs one fill
+  const path = (rings, close) => { const p = new Path2D(); rings.forEach((r) => { r.forEach(([lon, lat], i) => (i ? p.lineTo(lon, lat) : p.moveTo(lon, lat))); if (close) p.closePath(); }); return p; };
+  TL.land = { land: path(D.land.land, true), lakes: path(D.land.lakes, true), rivers: path(D.land.rivers, false) };
+  TL.cams = STEPS.map(tlCam);
+  TL.dots = STEPS.map((s) => {
+    if (s.all) return D.places.map((p) => [p.c[0][1], p.c[0][2]]);
+    if (!s.books) return [];
+    const bs = s.books.map(bookIdx);
+    return D.places.filter((p) => p.v.some((v) => bs.includes(D.bookOf[v]))).map((p) => [p.c[0][1], p.c[0][2]]);
+  });
+  const lo = -2700, hi = 2050, X = (y) => ((y - lo) / (hi - lo)) * 100;
+  $("tl-axis").innerHTML = `<div class="line"></div>${STEPS.map((s) => `<span class="tick" style="left:${X(s.y)}%"></span>`).join("")}${[-2500, -1500, -500, 500, 1500].map((y) => `<span class="lab" style="left:${X(y)}%">${tlYear(y)}</span>`).join("")}<span class="mark" id="tl-mark"></span>`;
+  TL.X = X;
+  const tick = () => { if (!TL.raf && !$("v-timeline").hidden) TL.raf = requestAnimationFrame(() => { TL.raf = 0; tlUpdate(); }); };
+  window.addEventListener("scroll", tick, { passive: true });
+  window.addEventListener("resize", tick);
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", tick);
+  new MutationObserver(tick).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  tlUpdate();
+}
+const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
+function tlUpdate() {
+  const steps = [...$("tl-steps").children], stage = document.querySelector(".tl-stage").getBoundingClientRect();
+  // The reading line: middle of the viewport, or of the space under the pinned map on narrow screens
+  const narrow = matchMedia("(max-width: 820px)").matches, top = narrow ? Math.max(0, stage.bottom) : 0, f = top + (innerHeight - top) / 2;
+  const cy = steps.map((el) => { const r = el.getBoundingClientRect(); return r.top + r.height / 2; });
+  let i = 0;
+  while (i < steps.length - 1 && cy[i + 1] <= f) i++;
+  const j = Math.min(i + 1, steps.length - 1), t = j === i || f <= cy[i] ? 0 : Math.min(1, (f - cy[i]) / (cy[j] - cy[i])), e = ease(t);
+  const act = t < 0.5 ? i : j;
+  steps.forEach((el, k) => el.classList.toggle("on", k === act));
+  const a = TL.cams[i], b = TL.cams[j], dist = Math.hypot((b.lon - a.lon) * COSL, b.lat - a.lat);
+  // Fly: when the next place is far away, zoom out on the way
+  const peak = Math.max(a.span, b.span, dist * 1.3), lerp = (p, q, s) => p + (q - p) * s;
+  const span = Math.exp(peak > Math.max(a.span, b.span) * 1.05 ? (e < 0.5 ? lerp(Math.log(a.span), Math.log(peak), e * 2) : lerp(Math.log(peak), Math.log(b.span), e * 2 - 1)) : lerp(Math.log(a.span), Math.log(b.span), e));
+  const cam = { lon: lerp(a.lon, b.lon, e), lat: lerp(a.lat, b.lat, e), span };
+  const y = lerp(STEPS[i].y, STEPS[j].y, e);
+  $("tl-year").textContent = t < 0.12 || t > 0.88 ? tlYear(STEPS[act].y) : tlYear(Math.abs(STEPS[j].y - STEPS[i].y) > 200 ? Math.round(y / 10) * 10 : y);
+  $("tl-era").textContent = STEPS[act].era;
+  $("tl-mark").style.left = TL.X(y) + "%";
+  drawTL(cam, i, j, t);
+}
+function drawTL(cam, i, j, t) {
+  const cv = $("tl-map"), dpr = window.devicePixelRatio || 1, W = cv.parentElement.clientWidth, H = cv.parentElement.clientHeight;
+  if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  const ctx = cv.getContext("2d"), k = Math.min(W, H) / cam.span;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = token("--sea"); ctx.fillRect(0, 0, W, H);
+  ctx.setTransform(k * COSL * dpr, 0, 0, -k * dpr, (W / 2 - cam.lon * k * COSL) * dpr, (cam.lat * k + H / 2) * dpr);
+  ctx.fillStyle = token("--land"); ctx.fill(TL.land.land);
+  ctx.lineWidth = 0.8 / k; ctx.strokeStyle = token("--rule"); ctx.stroke(TL.land.land);
+  ctx.fillStyle = token("--sea"); ctx.fill(TL.land.lakes);
+  ctx.lineWidth = 1.2 / k; ctx.strokeStyle = token("--river"); ctx.stroke(TL.land.rivers);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const P = (lon, lat) => [(lon - cam.lon) * k * COSL + W / 2, (cam.lat - lat) * k + H / 2];
+  const layer = (s, alpha, grow) => {
+    if (alpha <= 0.02) return;
+    ctx.globalAlpha = alpha * 0.55; ctx.fillStyle = token("--gold");
+    TL.dots[s].forEach(([lon, lat]) => { const [x, y] = P(lon, lat); if (x > -5 && x < W + 5 && y > -5 && y < H + 5) ctx.fillRect(x - 1.5, y - 1.5, 3, 3); });
+    const st = STEPS[s], pts = st.pins.map((p) => P(p[1], p[2]));
+    if (st.route && pts.length > 1) {
+      // Journeys draw in as the step scrolls into view
+      const segs = pts.slice(1).map((p, n) => Math.hypot(p[0] - pts[n][0], p[1] - pts[n][1])), total = segs.reduce((x, y) => x + y, 0);
+      let left = total * grow;
+      ctx.globalAlpha = alpha; ctx.strokeStyle = token("--rubric"); ctx.lineWidth = 2.5; ctx.setLineDash([6, 5]); ctx.beginPath(); ctx.moveTo(...pts[0]);
+      for (let n = 0; n < segs.length && left > 0; n++) { const f2 = Math.min(1, left / segs[n]); ctx.lineTo(pts[n][0] + (pts[n + 1][0] - pts[n][0]) * f2, pts[n][1] + (pts[n + 1][1] - pts[n][1]) * f2); left -= segs[n]; }
+      ctx.stroke(); ctx.setLineDash([]);
+    }
+    ctx.font = "600 13px 'IBM Plex Sans', system-ui, sans-serif"; ctx.textBaseline = "middle"; ctx.textAlign = "left";
+    pts.forEach(([x, y], n) => {
+      ctx.globalAlpha = alpha;
+      ctx.beginPath(); ctx.arc(x, y, 6, 0, 2 * Math.PI); ctx.fillStyle = token("--rubric"); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = token("--surface"); ctx.stroke();
+      ctx.lineWidth = 3.5; ctx.strokeStyle = token("--land"); ctx.strokeText(st.pins[n][0], x + 10, y); ctx.fillStyle = token("--ink"); ctx.fillText(st.pins[n][0], x + 10, y);
+    });
+    ctx.globalAlpha = 1;
+  };
+  layer(i, j === i ? 1 : 1 - t, 1);
+  if (j !== i) layer(j, t, Math.min(1, t * 1.4));
 }
 
 // ---------- beyond the canon ----------
