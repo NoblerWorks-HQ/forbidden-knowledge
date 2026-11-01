@@ -204,6 +204,7 @@ table.gen td { font-family: var(--scripture); }
     <a href="#map" data-view="map">Map</a>
     <a href="#canon" data-view="canon">Beyond the Canon</a>
     <a href="#history" data-view="history">History</a>
+    <a href="#mysteries" data-view="mysteries">Mysteries</a>
     <a href="#people" data-view="people">People</a>
     <a href="#translations" data-view="translations">Translations</a>
     <a href="#numbers" data-view="numbers">Numbers</a>
@@ -396,6 +397,23 @@ table.gen td { font-family: var(--scripture); }
     <div class="cards" id="legend-cards"></div>
   </section>
 
+  <section id="v-mysteries" hidden>
+    <h2>Egypt in the Bible</h2>
+    <p class="lede">Egypt is the foreign country the Bible names most: the place of Joseph's rise, the Exodus, Solomon's marriage alliance and Jesus' flight as a child. Some of its kings can be matched to Egyptian records, and some of its wisdom literature has an older Egyptian twin.</p>
+    <div class="grid2">
+      <div><h3>Books that mention Egypt most</h3><ol class="rank" id="egypt-books"></ol><p class="status" id="egypt-note"></p></div>
+      <div><h3>Pharaohs the Bible names</h3><ol class="rank" id="pharaohs"></ol><p class="status">The pharaohs of Joseph and the Exodus are never named, which is why their dates are still argued over.</p></div>
+    </div>
+    <div class="cards" id="egypt-cards"></div>
+    <h2 class="sub">The Bible in the Masonic lodge</h2>
+    <p class="lede">Organized Freemasonry dates from 1717, when four London lodges formed the first Grand Lodge. Its rituals are built around the building of Solomon's Temple, an open Bible (or another holy book) lies on the lodge altar, and many of its words come straight from the King James Version. In the American ritual each of the three degrees has its own Bible reading.</p>
+    <div class="cards" id="lodge-cards"></div>
+    <div class="cards" id="mason-cards"></div>
+    <h2 class="sub">The Rosicrucians</h2>
+    <p class="lede">Between 1614 and 1616 three anonymous pamphlets announced a secret brotherhood of the Rosy Cross. Europe went looking for it and never found it, but the legend fed Freemasonry, occult societies and one famous claim about Shakespeare and the King James Bible.</p>
+    <div class="cards" id="rosy-cards"></div>
+  </section>
+
   <section id="v-codes" hidden>
     <h2>Code Breaker</h2>
     <p class="lede">"Bible codes" are equidistant letter sequences (ELS). Strip out spaces and punctuation, then read every <em>n</em>th letter, forward or backward. Search a word below. The same search also runs on <em>Moby Dick</em> and on the Bible's own letters shuffled at random, and each count sits next to the number expected by pure chance from letter frequencies.</p>
@@ -476,14 +494,14 @@ function parseRef(s) {
 }
 
 // ---------- routing ----------
-const VIEWS = ["arcs", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "people", "translations", "numbers", "codes"];
+const VIEWS = ["arcs", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
 const rendered = {};
 function route() {
   const name = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "arcs";
   document.querySelectorAll("nav.tabs a").forEach((a) => { if (a.dataset.view === name) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
   if (!D) return;
   VIEWS.forEach((v) => { $("v-" + v).hidden = v !== name; });
-  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes })[name](); }
+  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes })[name](); }
   else if (name === "arcs") drawArcs();
   else if (name === "history") drawPopes();
   else if (name === "map") drawMap();
@@ -1268,6 +1286,68 @@ function renderPopePanel() {
   const p = POPE.sel; if (!p) return;
   const d = reignDays(p), early = +p[2].slice(0, 4) < 200;
   $("pope-panel").innerHTML = `<h4>${esc(p[1])}</h4><p class="status">${p[4] ? "Antipope: a rival claimant not recognized by the Church" : `No. ${p[0]} in the official list`} · ${yr(p[2])}–${yr(p[3])} · ${p[3] ? reignLen(d) : reignLen(d) + " so far"}${early ? " · traditional dates" : ""}</p><a class="ref" href="https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent((p[4] ? "Antipope " : "Pope ") + p[1])}" target="_blank" rel="noopener" style="justify-self:start">Read more on Wikipedia</a>`;
+}
+
+// ---------- mysteries ----------
+const PHARAOHS = [
+  ["Shishak", ["1Kgs", 14, 25], "Shoshenq I, c. 925 BC"],
+  ["So", ["2Kgs", 17, 4], "Uncertain: perhaps Osorkon IV, c. 725 BC"],
+  ["Tirhakah", ["2Kgs", 19, 9], "Taharqa, Kushite king of Egypt, reigned 690–664 BC"],
+  ["Pharaoh-nechoh", ["2Kgs", 23, 29], "Necho II, 609 BC"],
+  ["Pharaoh-hophra", ["Jer", 44, 30], "Apries (Wahibre), reigned 589–570 BC"],
+];
+const EGYPT = [
+  { c: "Proverbs and the Instruction of Amenemope", v: ["Close parallel", "true"], b: "An Egyptian book of advice, the <em>Instruction of Amenemope</em>, was published from a British Museum papyrus in 1923. A year later Adolf Erman showed that Proverbs 22:17–24:22 follows it closely, in order: “incline your ear”, don't move the boundary stone, don't wear yourself out to get rich, because riches fly away like birds. Amenemope has 30 chapters, and the Hebrew word the KJV renders “excellent things” is read by most modern translations as “thirty sayings”. Most scholars think the Hebrew writer adapted the older Egyptian text.", r: [["Prov", 22, 17], ["Prov", 22, 20], ["Prov", 23, 5]] },
+  { c: "Psalm 104 and the Great Hymn to the Aten", v: ["Debated parallel", "part"], b: "A hymn to the sun disk written under Akhenaten in the 14th century BC, found in the tomb of Ay at Amarna, describes night falling while lions leave their dens, ships sailing, and the variety of creatures, ending in wonder at how many are the god's works. Psalm 104 runs through the same scenes. Scholars disagree over whether the psalm borrows from the hymn or both draw on a shared tradition of creation hymns.", r: [["Ps", 104, 20], ["Ps", 104, 24]] },
+  { c: "The Merneptah Stele", v: ["Earliest mention of Israel", "true"], b: "A granite victory monument of Pharaoh Merneptah, about 1208 BC, found by Flinders Petrie at Thebes in 1896. Among the defeated it lists “Israel is laid waste; his seed is not”. The hieroglyph attached to the name marks Israel as a people rather than a city or land. It is the oldest reference to Israel outside the Bible." },
+  { c: "Shishak's invasion", v: ["Confirmed", "true"], b: "Kings says Shishak of Egypt attacked Jerusalem in Rehoboam's fifth year and carried off the Temple treasures. Shoshenq I, founder of Egypt's 22nd dynasty, carved a list of the towns he took in Canaan on a gateway at Karnak, and a piece of his victory stele was dug up at Megiddo.", r: [["1Kgs", 14, 25]] },
+  { c: "Joseph's Egyptian details", v: ["Egyptian colour, no record", "part"], b: "Joseph gets an Egyptian name and marries the daughter of a priest of On (Heliopolis, city of the sun god). He has his father embalmed over 40 days, followed by 70 days of mourning; the Greek historian Herodotus also gives 70 days for an Egyptian burial. No Egyptian record names Joseph.", r: [["Gen", 41, 45], ["Gen", 50, 3]] },
+  { c: "Moses' name", v: ["Probably Egyptian", "part"], b: "Exodus explains the name in Hebrew, from <em>mashah</em>, “to draw out”. Many scholars connect it instead with the Egyptian <em>ms</em>, “born of”, the ending of pharaohs' names such as Thutmose and Ramesses. Acts says Moses was trained in all the wisdom of Egypt.", r: [["Exod", 2, 10], ["Acts", 7, 22]] },
+  { c: "The Exodus", v: ["No Egyptian record", "part"], b: "Exodus has the Israelites build the store cities Pithom and Raamses, and Pi-Ramesses was the capital of Ramesses II in the 13th century BC. 1 Kings counts 480 years from the Exodus to Solomon's Temple, which points to about 1446 BC instead. No Egyptian text mentions the plagues, the Exodus or the loss of an army, and scholars still argue over whether a smaller departure lies behind the story.", r: [["Exod", 1, 11], ["1Kgs", 6, 1]] },
+  { c: "Hebrew slaves built the pyramids", v: ["Myth", "myth"], b: "The Great Pyramid was built around 2560 BC, more than a thousand years before any proposed date for the Exodus, and the Bible never mentions pyramids; the Israelites make bricks for store cities. Excavations at Giza led by Mark Lehner and Zahi Hawass found the workers' town, bakeries and tombs of organized Egyptian labour crews who were fed and buried with honour." },
+  { c: "Jesus was copied from Horus", v: ["Myth", "myth"], b: "The claim that Horus was born of a virgin on 25 December, had 12 disciples, was crucified and rose after three days was spread by Gerald Massey in the 19th century and the 2007 film <em>Zeitgeist</em>. In Egyptian sources Isis conceives Horus from the dead Osiris, whom she has magically restored, and there are no disciples and no crucifixion. The Gospels give no birth date at all." },
+  { c: "Moses was Akhenaten's disciple", v: ["Speculation", "part"], b: "Sigmund Freud's <em>Moses and Monotheism</em> (1939) proposed that Moses was an Egyptian follower of Akhenaten, the pharaoh who worshipped one god, the sun disk Aten. Akhenaten's reform is real, but nothing links him to Moses, and Egyptologists and biblical scholars generally reject the idea." },
+];
+const DEGREES = [
+  ["Entered Apprentice", "Psalm 133, on brothers living in unity, is read as the candidate is led around the lodge.", [["Ps", 133, 1]]],
+  ["Fellowcraft", "Amos's plumb line, a builder's tool for checking that a wall stands true.", [["Amos", 7, 7], ["Amos", 7, 8]]],
+  ["Master Mason", "Ecclesiastes 12:1–7 on old age and death, before the candidate acts out the death of Hiram Abiff.", [["Eccl", 12, 1], ["Eccl", 12, 7]]],
+];
+const MASONS = [
+  { c: "Words from the King James Bible", v: ["In the text", "true"], b: "Masonic ritual borrows many of its words from the KJV. Lodges place two pillars named Jachin and Boaz, after Solomon's porch. Tubal-cain, the first metalworker, is a password, and Shibboleth, the word the Ephraimites could not pronounce, is used in the second degree. The Royal Arch degree retells Zerubbabel's rebuilding of the Temple.", r: [["1Kgs", 7, 21], ["Gen", 4, 22], ["Judg", 12, 6]] },
+  { c: "Hiram Abiff", v: ["Legend, not scripture", "part"], b: "The Bible's Hiram is a widow's son from Tyre who casts the bronze work for Solomon's Temple. Chronicles calls him <em>Huram-abi</em>, “Huram my father”, which is where “Abiff” comes from. The Masonic story of his murder by three workmen who wanted the master's secret word is not in the Bible; its first printed version is Samuel Prichard's 1730 exposé <em>Masonry Dissected</em>.", r: [["1Kgs", 7, 13], ["1Kgs", 7, 14], ["2Chr", 2, 13]] },
+  { c: "Masons descend from the Templars or ancient Egypt", v: ["Myth", "myth"], b: "Andrew Michael Ramsay's 1737 oration gave Masonry crusader origins, and German lodges added Templar degrees in the 1750s. In the 1780s Cagliostro's “Egyptian Rite” claimed roots in Egypt. Historians trace the lodges to Scottish and English stonemasons' organizations of the late 1500s and 1600s, such as the Schaw Statutes of 1598, which gentlemen began to join as non-working members." },
+  { c: "The eye and pyramid on the dollar are Masonic", v: ["Myth", "myth"], b: "The eye over an unfinished pyramid is the reverse of the Great Seal of the United States, adopted in 1782. Its designers, William Barton and Charles Thomson, were not Masons. The Eye of Providence, a Christian symbol of God watching over people, was first suggested in 1776 by the artist Pierre Eugène du Simitière, also not a Mason. Masons began using the all-seeing eye in their emblems in the 1790s. The seal went onto the $1 bill in 1935, under Franklin Roosevelt and Henry Wallace, who were both Masons." },
+  { c: "The Founding Fathers were Masons", v: ["Some were", "part"], b: "George Washington was a Mason and took the oath of office in 1789 on a Bible borrowed from St. John's Lodge in New York. Benjamin Franklin was Grand Master of Pennsylvania. Masonic researchers count about 9 of the 56 signers of the Declaration of Independence as Masons. Most of the founders were not." },
+  { c: "Masons worship Lucifer", v: ["Hoax", "myth"], b: "The charge comes largely from Léo Taxil, a French writer who, from 1885, published lurid “exposés” of satanic Masonic rites, including a fake instruction from the American Mason Albert Pike calling Lucifer God. In 1897 Taxil told a Paris audience he had invented the whole thing, but the fake Pike quotation still circulates." },
+];
+const ROSY = [
+  { c: "The Rosicrucian manifestos", v: ["Real texts", "true"], b: "The <em>Fama Fraternitatis</em> (1614), <em>Confessio Fraternitatis</em> (1615) and <em>Chymical Wedding of Christian Rosenkreutz</em> (1616) describe Christian Rosenkreutz, born 1378, who learned secret wisdom in Damascus and Fez, founded a brotherhood and died aged 106. His tomb is opened 120 years later, lit by an artificial sun. Hundreds of pamphlets asked to join; no one ever found the brotherhood." },
+  { c: "Christian Rosenkreutz was a real man", v: ["Fiction", "myth"], b: "No record of him exists outside the manifestos. The Lutheran theologian Johann Valentin Andreae wrote the <em>Chymical Wedding</em> as a young man and later called it a <em>ludibrium</em>, a joke or play. Most historians think the manifestos came from Andreae's circle of friends at Tübingen." },
+  { c: "Rosicrucians began in ancient Egypt", v: ["Myth", "myth"], b: "AMORC, founded in New York in 1915 by H. Spencer Lewis, teaches that its tradition began in the mystery schools of Pharaoh Thutmose III and continued under Akhenaten. No evidence of a Rosicrucian movement exists before the 1614 <em>Fama</em>. AMORC does run a real Egyptian museum, the Rosicrucian Egyptian Museum in San Jose, California." },
+  { c: "Rosicrucians and Freemasons", v: ["Real link", "true"], b: "Freemasonry absorbed the Rosicrucian legend in the 1700s. The 18th degree of the Scottish Rite is the Knight Rose Croix, and the Societas Rosicruciana in Anglia, founded in 1865, admits only Master Masons." },
+];
+// The Psalm 46 "Shakespeare" count, computed from the text so the conditions it needs are visible
+function psalm46() {
+  const b = bookIdx("Ps"), s = D.chapStart[b][45], n = D.books[b][2][45], all = [];
+  for (let k = 0; k < n; k++) (D.text[s + k].match(/[A-Za-z'’]+/g) || []).forEach((w) => all.push([w, k]));
+  const titleLen = D.text[s].slice(0, D.text[s].indexOf("Alamoth.") + 8).match(/[A-Za-z'’]+/g).length;
+  const body = all.slice(titleLen).filter(([w]) => w !== "Selah");
+  const mark = (k, w) => { const t = D.text[s + k], m = t.search(new RegExp(`\\b${w}\\b`)); return `<div class="q"><button class="ref" data-v="${s + k}">${ref(s + k)}</button> ${esc(t.slice(0, m))}<mark>${esc(w)}</mark>${esc(t.slice(m + w.length))}</div>`; };
+  const [a, ak] = body[45], [z, zk] = body[body.length - 46];
+  return { a, z, html: mark(ak, a) + mark(zk, z), raw: [all[45][0], all[all.length - 46][0]], selahs: all.length - titleLen - body.length, titleLen };
+}
+function initMysteries() {
+  const rx = /\bEgypt(?:ians?)?\b/g, per = D.books.map((_, b) => [countRx(rx, D.books[b][0]), b]).sort((x, y) => y[0] - x[0]);
+  $("egypt-books").innerHTML = per.slice(0, 8).map(([c, b], i) => `<li><span class="i">${i + 1}</span><span class="t">${esc(D.books[b][1])}</span><span class="num status">${fmt(c)}</span></li>`).join("");
+  $("egypt-note").textContent = `Whole-word “Egypt”, “Egyptian” or “Egyptians” in the KJV: ${fmt(countRx(rx))} times in ${per.filter(([c]) => c).length} books. “Pharaoh” appears ${fmt(countRx(/\bPharaoh/g))} times.`;
+  $("pharaohs").innerHTML = PHARAOHS.map(([n, r, id], i) => `<li><span class="i">${i + 1}</span><span class="t"><button class="ref" data-v="${vi(...r)}">${esc(n)}</button> <span class="status">${esc(id)}</span></span><span class="num status">${ref(vi(...r))}</span></li>`).join("");
+  $("egypt-cards").innerHTML = EGYPT.map(card).join("");
+  $("lodge-cards").innerHTML = DEGREES.map(([deg, note, rs]) => `<div class="card">${pill(["Read in the degree", "true"])}<h4>${deg}</h4><p>${note}</p>${rs.map((r) => quote(...r)).join("")}</div>`).join("");
+  $("mason-cards").innerHTML = MASONS.map(card).join("");
+  const p = psalm46();
+  const shake = { c: "Shakespeare hidden in Psalm 46", v: ["Coincidence", "myth"], b: `In the KJV of Psalm 46 the 46th word is “${esc(p.a)}” and the 46th word from the end is “${esc(p.z)}”, and Shakespeare turned 46 in 1610, the year before the KJV appeared. The claim usually comes with the theory that Francis Bacon, supposedly a Rosicrucian, wrote Shakespeare's plays and edited the KJV. The count only works if you skip the psalm's ${p.titleLen}-word title and the ${p.selahs} “Selah”s; count them and the words are “${esc(p.raw[0])}” and “${esc(p.raw[1])}”. Both words translate the Hebrew directly (<em>ra'ash</em>, “quake”, and <em>chanit</em>, “spear”), and the KJV's six committees of named scholars left no record of Shakespeare or Bacon.` };
+  $("rosy-cards").innerHTML = ROSY.map(card).join("") + card(shake).replace(/<\/div>$/, p.html + "</div>");
 }
 
 // ---------- translations ----------
