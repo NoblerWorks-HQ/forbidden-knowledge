@@ -24,14 +24,14 @@ XREFS_PER_VERSE = 3
 MIN_VOTES = 5
 
 PAGE_CSS = """
-:root { --bg:#eef1f5; --surface:#fff; --ink:#141a2a; --muted:#5b6478; --rule:#d5dae3; --rubric:#b23a24; --gold:#8a6a12; }
-@media (prefers-color-scheme: dark) { :root { --bg:#0d1220; --surface:#151c2e; --ink:#e7e4da; --muted:#9097a8; --rule:#263049; --rubric:#e0664c; --gold:#d9b45a; color-scheme: dark; } }
+:root { --bg:#fafafa; --surface:#fff; --ink:#0a0a0a; --muted:#6b6b6b; --rule:#e5e5e5; --rubric:#c2410c; --gold:#f97316; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0a0a0a; --surface:#171717; --ink:#fafafa; --muted:#a3a3a3; --rule:#2a2a2a; --rubric:#fb923c; --gold:#f97316; color-scheme: dark; } }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.65 Literata, Georgia, serif; }
 main { max-width: 760px; margin: 0 auto; padding: 28px max(16px, env(safe-area-inset-left)) 64px; }
 a { color: inherit; text-decoration-color: var(--rule); text-underline-offset: 3px; }
 a:hover { text-decoration-color: var(--gold); }
-header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid var(--rule); padding-bottom: 10px; font: 500 14px system-ui, sans-serif; }
+header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid var(--rule); padding-bottom: 10px; font: 500 14px Geist, system-ui, sans-serif; }
 header .mark { font: 26px "IM Fell English SC", Georgia, serif; text-decoration: none; }
 header .mark span { color: var(--rubric); }
 h1 { font: 400 34px "IM Fell English SC", Georgia, serif; margin: 22px 0 4px; }
