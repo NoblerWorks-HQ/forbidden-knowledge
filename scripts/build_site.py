@@ -132,7 +132,7 @@ def main():
         canonical = f"{BASE}/read/{slug(name)}/{c}.html"
         body = (f'<main><header><a class="mark" href="/">Verse<span>graph</span></a><a href="/read/">All books</a></header>'
                 f'<h1>{html.escape(name)} {c}</h1><p class="sub">King James Version · {n} verses · '
-                f'<a href="/#verse">Explore cross-references interactively</a></p>{"".join(rows)}'
+                f'<a href="/#verse/{books[b][0]}.{c}.1">Explore cross-references interactively</a></p>{"".join(rows)}'
                 f'<nav class="pn">{prev_l}{next_l}</nav>{FOOTER}</main>')
         page = DIST / "read" / slug(name) / f"{c}.html"
         page.parent.mkdir(parents=True, exist_ok=True)

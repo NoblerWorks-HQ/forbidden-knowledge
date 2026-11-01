@@ -126,6 +126,8 @@ footer a { color: inherit; }
 .choices b { font-weight: 600; }
 .choices .snip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (max-width: 560px) { .choices button { grid-template-columns: minmax(0, 1fr) auto; } .choices button .snip { grid-column: 1 / -1; grid-row: 2; white-space: normal; } }
+.qopt.right { border-color: var(--ok); color: var(--ok); }
+.qopt.wrong { border-color: var(--rubric); color: var(--rubric); }
 .win { border: 1px solid var(--gold); background: var(--surface); border-radius: 10px; padding: 14px 16px; margin: 12px 0; display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; margin-top: 14px; }
 .card { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
@@ -230,6 +232,10 @@ table.gen td { font-family: var(--scripture); }
       <div><h3>Most cited verses</h3><p class="status">Total votes on references pointing at the verse.</p><ol class="rank" id="top-verses"></ol></div>
       <div><h3>Strongest links between books</h3><p class="status">Total votes on references between two different books.</p><ol class="rank" id="top-pairs"></ol></div>
     </div>
+    <h2 class="sub">Which books cite which</h2>
+    <p class="lede">Every book against every other: a row is the book a reference starts in, a column the book it points to. Darker squares carry more votes. Click a square for its strongest references.</p>
+    <div class="chart" id="heat"></div>
+    <div id="heat-out"></div>
   </section>
 
   <section id="v-verse" hidden>
@@ -271,6 +277,9 @@ table.gen td { font-family: var(--scripture); }
     <div class="chain" id="lad-trail"></div>
     <h3 style="margin-top:18px">Next rung</h3>
     <div class="choices" id="lad-choices"></div>
+    <h2 class="sub">Daily quiz</h2>
+    <p class="lede">Five questions, the same for everyone today, and every answer is worked out from the text.</p>
+    <div id="quiz"></div>
   </section>
 
   <section id="v-myths" hidden>
@@ -303,6 +312,9 @@ table.gen td { font-family: var(--scripture); }
     <h2 class="sub">"That it might be fulfilled"</h2>
     <p class="lede">Matthew repeatedly says an event happened to fulfil a prophecy. Here is each of those passages next to the Old Testament verse it draws on, using the highest-voted cross-reference. Some fit cleanly; for others the source or the reading is debated, and the note says how.</p>
     <div class="cards" id="fulfil"></div>
+    <h2 class="sub">Kings and Chronicles disagree</h2>
+    <p class="lede">Chronicles retells much of Samuel and Kings, often word for word, so where the two give a different number for the same thing it stands out. Each pair below is checked against the text when the data is built. Many differences are a factor of ten or a confusion between similar-looking numbers, the kind of slip copyists make, and some modern translations correct a few of them from other manuscripts.</p>
+    <div class="tablewrap"><table id="par-table"></table></div>
     <h2 class="sub">The mood of each book</h2>
     <p class="lede">Average emotional tone per word, scored with the VADER sentiment word list. Bars above the line are more positive, bars below more negative. Click a bar to see that book chapter by chapter.</p>
     <div class="chart" id="mood-chart"></div>
@@ -334,6 +346,11 @@ table.gen td { font-family: var(--scripture); }
     <div id="tr-dropped"></div>
     <h2 class="sub">How far each translation drifts from the KJV</h2>
     <div class="stack" id="tr-drift"></div>
+    <h2 class="sub">Where “hell” comes from</h2>
+    <p class="lede">The KJV uses one English word for four different originals: Hebrew <em>Sheol</em>, the grave or world of the dead; Greek <em>Hades</em>, its usual translation; <em>Gehenna</em>, the valley of Hinnom outside Jerusalem, used by Jesus for punishment; and <em>Tartarus</em>, the Greek prison of the Titans. Young's Literal Translation keeps the original words, so lining it up with the KJV shows what each became. Click a bar for the verses.</p>
+    <div class="chart" id="hell-chart"></div>
+    <div id="hell-out"></div>
+    <div class="cards" id="tr-cards"></div>
   </section>
 
   <section id="v-numbers" hidden>
@@ -415,6 +432,16 @@ table.gen td { font-family: var(--scripture); }
     <h2 class="sub">The Rosicrucians</h2>
     <p class="lede">Between 1614 and 1616 three anonymous pamphlets announced a secret brotherhood of the Rosy Cross. Europe went looking for it and never found it, but the legend fed Freemasonry, occult societies and one famous claim about Shakespeare and the King James Bible.</p>
     <div class="cards" id="rosy-cards"></div>
+    <h2 class="sub">Lost books the Bible cites</h2>
+    <p class="lede">The Bible names books that no longer exist. Counted here are the verses that cite each one.</p>
+    <ol class="rank" id="lost-books"></ol>
+    <div class="cards" id="lost-cards"></div>
+    <h2 class="sub">The world was supposed to end</h2>
+    <p class="lede">Dates set for the end of the world or the return of Christ, and the verse each was built on. Jesus' own line on the subject is Matthew 24:36.</p>
+    <ol class="rank" id="end-dates"></ol>
+    <h2 class="sub">What the Dead Sea Scrolls changed</h2>
+    <p class="lede">From 1947, caves at Qumran gave up about 1,000 manuscripts, including the oldest known copies of every Old Testament book except Esther, roughly a thousand years older than the Hebrew text behind the KJV. Mostly they confirm it. A few readings differ, and some modern translations now follow the scrolls.</p>
+    <div class="cards" id="dss-cards"></div>
   </section>
 
   <section id="v-codes" hidden>
@@ -500,10 +527,11 @@ function parseRef(s) {
 const VIEWS = ["arcs", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
 const rendered = {};
 function route() {
-  const name = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "arcs";
+  const [h, arg] = location.hash.slice(1).split("/"), name = VIEWS.includes(h) ? h : "arcs";
   document.querySelectorAll("nav.tabs a").forEach((a) => { if (a.dataset.view === name) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
   if (!D) return;
   VIEWS.forEach((v) => { $("v-" + v).hidden = v !== name; });
+  if (name === "verse" && arg) { const v = parseRef(decodeURIComponent(arg)); rendered.verse = true; $("verse-in").value = v == null ? decodeURIComponent(arg) : ref(v); showVerse(v); }
   if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes })[name](); }
   else if (name === "arcs") drawArcs();
   else if (name === "history") drawPopes();
@@ -551,6 +579,34 @@ function initArcs() {
   new MutationObserver(rerender).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
   drawArcs();
   renderRanks();
+  drawHeat();
+}
+// 66 x 66 book-to-book vote totals, in SVG so the theme tokens apply without redrawing
+function drawHeat() {
+  const n = D.books.length, M = new Float64Array(n * n);
+  for (let e = 0; e < D.E; e++) M[D.bookOf[D.from[e]] * n + D.bookOf[D.to[e]]] += D.votes[e];
+  let mx = 0; for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) if (a !== b) mx = Math.max(mx, M[a * n + b]);
+  const L = 70, T = 30, S = 690 / n, W = L + n * S + 6, H = T + n * S + 6;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cross-reference votes between every pair of books" style="max-width:780px">`;
+  s += `<rect x="${L}" y="${T}" width="${n * S}" height="${n * S}" style="fill:var(--surface);stroke:var(--rule)"/>`;
+  for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) {
+    const v = M[a * n + b];
+    if (!v || a === b) continue;
+    s += `<rect x="${L + b * S}" y="${T + a * S}" width="${S}" height="${S}" data-a="${a}" data-b="${b}" style="fill:var(--rubric);fill-opacity:${Math.min(1, 0.08 + Math.sqrt(v / mx) * 0.92).toFixed(3)};cursor:pointer"><title>${D.books[a][1]} → ${D.books[b][1]}: ${fmt(v)} votes</title></rect>`;
+  }
+  for (let a = 0; a < n; a++) s += `<rect x="${L + a * S}" y="${T + a * S}" width="${S}" height="${S}" style="fill:var(--rule)"><title>${D.books[a][1]}: references within the book are left out</title></rect>`;
+  const nt = L + 39 * S, ntY = T + 39 * S;
+  s += `<line x1="${nt}" x2="${nt}" y1="${T - 6}" y2="${T + n * S}" style="stroke:var(--muted);stroke-dasharray:3 3"/><line x1="${L - 6}" x2="${L + n * S}" y1="${ntY}" y2="${ntY}" style="stroke:var(--muted);stroke-dasharray:3 3"/>`;
+  s += `<text x="${L + 19.5 * S}" y="${T - 10}" text-anchor="middle" font-size="12" style="fill:var(--muted)">to Old Testament</text><text x="${L + 52.5 * S}" y="${T - 10}" text-anchor="middle" font-size="12" style="fill:var(--muted)">to New Testament</text>`;
+  ["Gen", "Ps", "Isa", "Matt", "Rom", "Rev"].forEach((o) => { const b = bookIdx(o); s += `<text x="${L - 6}" y="${T + b * S + S * 0.8}" text-anchor="end" font-size="11" style="fill:var(--muted)">${D.books[b][1]}</text>`; });
+  $("heat").innerHTML = s + "</svg>";
+  $("heat").querySelector("svg").onclick = (ev) => {
+    const r = ev.target.closest("rect[data-a]"); if (!r) return;
+    const a = +r.dataset.a, b = +r.dataset.b, list = [];
+    for (let e = 0; e < D.E; e++) if (D.bookOf[D.from[e]] === a && D.bookOf[D.to[e]] === b) list.push(e);
+    list.sort((x, y) => D.votes[y] - D.votes[x]);
+    $("heat-out").innerHTML = `<h3>${D.books[a][1]} → ${D.books[b][1]}: ${fmt(list.length)} references, ${fmt(M[a * n + b])} votes</h3><ol class="rank">${list.slice(0, 8).map((e, k) => `<li><span class="i">${k + 1}</span><span class="t"><button class="ref" data-v="${D.from[e]}">${ref(D.from[e])}</button> → <button class="ref" data-v="${D.to[e]}">${refRange(D.to[e], D.span[e])}</button> <span class="snip">${esc(D.text[D.to[e]])}</span></span><span class="num status">${fmt(D.votes[e])}</span></li>`).join("")}</ol>`;
+  };
 }
 
 function drawArcs() {
@@ -614,11 +670,11 @@ function renderRanks() {
 document.addEventListener("click", (ev) => {
   const b = ev.target.closest("button.ref[data-v]");
   if (!b) return;
-  const v = +b.dataset.v;
-  $("verse-in").value = ref(v); rendered.verse = true; showVerse(v); go("verse"); window.scrollTo({ top: 0 });
+  location.hash = "verse/" + verseKey(+b.dataset.v); window.scrollTo({ top: 0 });
 });
 
 // ---------- verse ----------
+const verseKey = (i) => `${D.books[D.bookOf[i]][0]}.${D.chOf[i]}.${D.vOf[i]}`;
 function showVerse(v) {
   $("verse-err").textContent = "";
   if (v == null) { $("verse-err").textContent = "Couldn't read that reference. Try a form like Romans 8:28."; return; }
@@ -627,9 +683,13 @@ function showVerse(v) {
   const rows = Array.from(out.slice(0, 60), (e) => `<li><button class="ref" data-v="${D.to[e]}">${refRange(D.to[e], D.span[e])}</button><span class="snip">${esc(D.text[D.to[e]])}${D.span[e] ? " …" : ""}</span><span class="votes"><span class="num">${fmt(D.votes[e])}</span><span class="bar" style="width:${Math.max(4, D.votes[e] / maxV * 60)}px"></span></span></li>`).join("");
   $("verse-out").innerHTML = `
     <div class="verse-hero"><div class="r">${ref(v)}</div><blockquote>${esc(D.text[v])}</blockquote>
-      <div class="meta"><span><span class="num">${fmt(out.length)}</span> outgoing references</span><span>cited by <span class="num">${fmt(D.inCount[v])}</span> verses</span><span><span class="num">${fmt(D.inVotes[v])}</span> votes received</span></div></div>
+      <div class="meta"><button type="button" class="ghost" id="verse-link">Copy link</button><span><span class="num">${fmt(out.length)}</span> outgoing references</span><span>cited by <span class="num">${fmt(D.inCount[v])}</span> verses</span><span><span class="num">${fmt(D.inVotes[v])}</span> votes received</span></div></div>
     <h3>Cross-references, strongest first${out.length > 60 ? " (top 60)" : ""}</h3>
     ${out.length ? `<ul class="xr">${rows}</ul>` : `<p class="status">No outgoing cross-references for this verse.</p>`}`;
+  // The public site is the shareable address, also when this page runs as an artifact
+  const link = "https://versegraph.noblerworks.com/#verse/" + verseKey(v);
+  $("verse-link").onclick = () => navigator.clipboard.writeText(link).then(() => { $("verse-link").textContent = "Copied"; }, () => { $("verse-link").textContent = link; });
+  if (location.hash.startsWith("#verse")) history.replaceState(null, "", "#verse/" + verseKey(v));
 }
 $("verse-form").onsubmit = (ev) => { ev.preventDefault(); showVerse(parseRef($("verse-in").value)); };
 $("verse-rand").onclick = () => { const v = Math.floor(Math.random() * D.N); $("verse-in").value = ref(v); showVerse(v); };
@@ -858,6 +918,59 @@ function initLadder() {
     LAD.hint = nbs[k][0]; LAD.hints++; if (k >= 12) LAD.showAll = true; renderLadder();
   };
   makeLadder("Today's ladder", hashStr(todayKey()));
+  initQuiz();
+}
+
+// ---------- daily quiz ----------
+const QWORDS = ["love", "war", "gold", "angel", "sin", "heaven", "sea", "lion", "bread", "wine", "fire", "king", "prophet", "mountain", "river", "sheep", "silver", "temple", "sword", "peace", "horse", "tree", "star", "blood", "water", "camel", "dog", "eagle", "serpent", "dream"];
+// Whether each phrase is in the KJV is checked against the text, not stored here
+const QPHRASES = ["the powers that be", "a drop of a bucket", "the skin of my teeth", "the salt of the earth", "a law unto themselves", "eat drink and be merry", "fell flat on his face", "the writing on the wall", "god helps those who help themselves", "cleanliness is next to godliness", "this too shall pass", "god works in mysterious ways", "pride goeth before a fall", "spare the rod and spoil the child", "the blind leading the blind", "to everything there is a season"];
+let quizNorm = null;
+function findPhrase(ph) {
+  if (!quizNorm) quizNorm = D.text.map((t) => " " + t.toLowerCase().replace(/[^a-z\s]/g, "").replace(/\s+/g, " ") + " ");
+  const k = quizNorm.findIndex((t) => t.includes(" " + ph + " "));
+  return k;
+}
+function makeQuiz(seed) {
+  const r = mulberry(seed), pick = (a) => a[Math.floor(r() * a.length)], shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const Q = [];
+  // 1: which book
+  let v; do v = Math.floor(r() * D.N); while (D.text[v].length < 70);
+  const books = new Set([D.bookOf[v]]); while (books.size < 4) books.add(Math.floor(r() * D.books.length));
+  Q.push({ q: `Which book is this verse from? <span class="snip">“${esc(D.text[v])}”</span>`, opts: shuffle([...books]).map((b) => [D.books[b][1], b === D.bookOf[v]]), why: `It is ${ref(v)}.`, v });
+  // 2: lifespans
+  const ls = D.more.lifespans; let a, b; do { a = pick(ls); b = pick(ls); } while (a[1] === b[1]);
+  Q.push({ q: "Who lived longer, according to the KJV?", opts: [a, b].map((p) => [p[0], p[1] === Math.max(a[1], b[1])]), why: `${a[0]} ${a[1]} years (${ref(a[2])}), ${b[0]} ${b[1]} years (${ref(b[2])}).` });
+  // 3: word frequency
+  let w1, w2, c1, c2; do { w1 = pick(QWORDS); w2 = pick(QWORDS); c1 = countRx(new RegExp(`\\b${w1}\\b`, "gi")); c2 = countRx(new RegExp(`\\b${w2}\\b`, "gi")); } while (w1 === w2 || c1 === c2);
+  Q.push({ q: "Which word appears more often in the KJV?", opts: [[w1, c1 > c2], [w2, c2 > c1]], why: `“${w1}” ${fmt(c1)} times, “${w2}” ${fmt(c2)} times (whole words).` });
+  // 4: phrase
+  const ph = pick(QPHRASES), at = findPhrase(ph);
+  Q.push({ q: `Is this exact phrase in the KJV? <span class="snip">“${ph}”</span>`, opts: [["Yes", at >= 0], ["No", at < 0]], why: at >= 0 ? `Yes: ${ref(at)}, “${esc(D.text[at])}”` : "No. It sounds biblical, but it is not in the King James text.", v: at >= 0 ? at : undefined });
+  // 5: most cited
+  const top = Array.from({ length: D.N }, (_, i) => i).sort((x, y) => D.inVotes[y] - D.inVotes[x]).slice(0, 400);
+  const three = new Set(); while (three.size < 3) three.add(pick(top));
+  const best = [...three].reduce((x, y) => (D.inVotes[y] > D.inVotes[x] ? y : x));
+  Q.push({ q: "Which verse do more cross-references point to?", opts: [...three].map((i) => [ref(i), i === best]), why: [...three].map((i) => `${ref(i)} ${fmt(D.inVotes[i])} votes`).join(" · ") + "." });
+  return Q;
+}
+function initQuiz() {
+  const Q = makeQuiz(hashStr("quiz " + todayKey())), got = [];
+  $("quiz").innerHTML = `<div class="cards">${Q.map((q, k) => `<div class="card" id="qz-${k}"><span class="status">Question ${k + 1} of ${Q.length}</span><h4>${q.q}</h4><div class="controls" style="margin:0">${q.opts.map(([label], j) => `<button type="button" class="ghost qopt" data-q="${k}" data-o="${j}">${esc(label)}</button>`).join("")}</div><p class="status" id="qz-why-${k}"></p></div>`).join("")}</div><div id="quiz-score"></div>`;
+  $("quiz").querySelectorAll("button.qopt").forEach((btn) => {
+    btn.onclick = () => {
+      const k = +btn.dataset.q, q = Q[k], ok = q.opts[+btn.dataset.o][1];
+      if (got[k] !== undefined) return;
+      got[k] = ok;
+      $("qz-" + k).querySelectorAll("button.qopt").forEach((b2) => { b2.disabled = true; if (q.opts[+b2.dataset.o][1]) b2.classList.add("right"); else if (b2 === btn) b2.classList.add("wrong"); });
+      $("qz-why-" + k).innerHTML = `<strong>${ok ? "Right." : "Not quite."}</strong> ${q.why}${q.v !== undefined ? ` <button class="ref" data-v="${q.v}">Open verse</button>` : ""}`;
+      if (got.filter((x) => x !== undefined).length === Q.length) {
+        const score = got.filter(Boolean).length, share = `Versegraph quiz ${todayKey()}: ${score}/${Q.length} ${got.map((x) => (x ? "🟩" : "🟥")).join("")}`;
+        $("quiz-score").innerHTML = `<div class="win"><span style="font-family:var(--display);font-size:22px">${score} of ${Q.length}</span><button type="button" id="quiz-copy">Copy result</button><span class="status" id="quiz-copied" role="status"></span></div>`;
+        $("quiz-copy").onclick = () => navigator.clipboard.writeText(share).then(() => { $("quiz-copied").textContent = "Copied"; }, () => { $("quiz-copied").textContent = share; });
+      }
+    };
+  });
 }
 
 // ---------- myths ----------
@@ -999,6 +1112,7 @@ function initTheories() {
   const mk = C.Mark;
   $("syn-note").textContent = `${pct(mk.total - mk.none, mk.total)} of Mark's verses have a parallel in Matthew or Luke. ${fmt(C.Matt.Luke)} verses of Matthew are shared with Luke but not Mark, the "double tradition" scholars assign to Q. Method: a verse counts as a parallel when OpenBible lists a cross-reference to the other gospel and at least 10% of the meaningful words overlap. That is rough, but it lands near published estimates.`;
   renderFulfil();
+  renderParallels();
   renderMood();
 }
 
@@ -1310,6 +1424,7 @@ const EGYPT = [
   { c: "Hebrew slaves built the pyramids", v: ["Myth", "myth"], b: "The Great Pyramid was built around 2560 BC, more than a thousand years before any proposed date for the Exodus, and the Bible never mentions pyramids; the Israelites make bricks for store cities. Excavations at Giza led by Mark Lehner and Zahi Hawass found the workers' town, bakeries and tombs of organized Egyptian labour crews who were fed and buried with honour." },
   { c: "Jesus was copied from Horus", v: ["Myth", "myth"], b: "The claim that Horus was born of a virgin on 25 December, had 12 disciples, was crucified and rose after three days was spread by Gerald Massey in the 19th century and the 2007 film <em>Zeitgeist</em>. In Egyptian sources Isis conceives Horus from the dead Osiris, whom she has magically restored, and there are no disciples and no crucifixion. The Gospels give no birth date at all." },
   { c: "Moses was Akhenaten's disciple", v: ["Speculation", "part"], b: "Sigmund Freud's <em>Moses and Monotheism</em> (1939) proposed that Moses was an Egyptian follower of Akhenaten, the pharaoh who worshipped one god, the sun disk Aten. Akhenaten's reform is real, but nothing links him to Moses, and Egyptologists and biblical scholars generally reject the idea." },
+  { c: "Moses was a prince named Thutmose", v: ["Speculation", "part"], b: "Since “Moses” looks like the end of “Thutmose”, alternative-history writers have proposed he was a royal Thutmose, most often Akhenaten's elder brother, Crown Prince Thutmose, who vanishes from the record. Nothing connects that prince to the Exodus. The oldest Egyptian version is hostile: the priest Manetho (about 280 BC), quoted by Josephus in <em>Against Apion</em>, says Moses was a renegade priest of Heliopolis named Osarseph who led out a band of lepers. The Knights Templar never taught any of this; the medieval order was a Catholic military order, and the Templar–Egypt link comes from the same modern books." },
 ];
 const DEGREES = [
   ["Entered Apprentice", "Psalm 133, on brothers living in unity, is read as the candidate is led around the lodge.", [["Ps", 133, 1]]],
@@ -1329,6 +1444,42 @@ const ROSY = [
   { c: "Christian Rosenkreutz was a real man", v: ["Fiction", "myth"], b: "No record of him exists outside the manifestos. The Lutheran theologian Johann Valentin Andreae wrote the <em>Chymical Wedding</em> as a young man and later called it a <em>ludibrium</em>, a joke or play. Most historians think the manifestos came from Andreae's circle of friends at Tübingen." },
   { c: "Rosicrucians began in ancient Egypt", v: ["Myth", "myth"], b: "AMORC, founded in New York in 1915 by H. Spencer Lewis, teaches that its tradition began in the mystery schools of Pharaoh Thutmose III and continued under Akhenaten. No evidence of a Rosicrucian movement exists before the 1614 <em>Fama</em>. AMORC does run a real Egyptian museum, the Rosicrucian Egyptian Museum in San Jose, California." },
   { c: "Rosicrucians and Freemasons", v: ["Real link", "true"], b: "Freemasonry absorbed the Rosicrucian legend in the 1700s. The 18th degree of the Scottish Rite is the Knight Rose Croix, and the Societas Rosicruciana in Anglia, founded in 1865, admits only Master Masons." },
+];
+const LOST = [
+  ["The Book of the Wars of the Lord", /book of the wars of the Lord/i],
+  ["The Book of Jasher", /book of Jasher/],
+  ["The Book of the Acts of Solomon", /book of the acts of Solomon/],
+  ["The Chronicles of the Kings of Israel", /chronicles of the kings of Israel/],
+  ["The Chronicles of the Kings of Judah", /chronicles of the kings of Judah/],
+  ["The Book of the Kings of Israel and Judah", /book of the kings of (?:Israel and Judah|Judah and Israel)/],
+  ["The books of Samuel the seer, Nathan the prophet and Gad the seer", /book of (?:Samuel the seer|Nathan the prophet|Gad the seer)/],
+  ["The prophecy of Ahijah and the visions and story of Iddo", /prophecy of Ahijah|visions of Iddo|story of the prophet Iddo|Iddo the seer/],
+  ["The book of Shemaiah the prophet", /book of Shemaiah/],
+  ["The book of Jehu son of Hanani", /book of Jehu/],
+  ["The sayings of the seers", /sayings of the seers/],
+  ["Paul's letter from Laodicea", /epistle from Laodicea/],
+  ["Paul's earlier letter to Corinth", /I wrote unto you in an epistle/],
+];
+const LOST_CARDS = [
+  { c: "The Book of Jasher you can buy today", v: ["Not the lost book", "myth"], b: "Two books have used the title. One, published in 1751 as a translation by the medieval scholar Alcuin, was a forgery by the London printer Jacob Ilive, reprinted in 1829. The other, translated into English in 1840, is a real Hebrew book first printed in Venice in 1625: a medieval retelling of the stories from Genesis to Judges, not the ancient book that Joshua and 2 Samuel quote.", r: [["Josh", 10, 13], ["2Sam", 1, 18]] },
+];
+const ENDS = [
+  ["c. 170", "Montanus and his prophetesses: the New Jerusalem would come down at Pepuza in Phrygia.", ["Rev", 21, 2]],
+  ["1260", "Followers of Joachim of Fiore, reading Revelation's 1,260 days as years, expected the age of the Spirit.", ["Rev", 12, 6]],
+  ["1533", "Melchior Hoffman: Christ would return, with Strasbourg as the New Jerusalem.", null],
+  ["1844", "William Miller counted Daniel's 2,300 days as years from 457 BC. When 22 October 1844 passed, followers called it the Great Disappointment.", ["Dan", 8, 14]],
+  ["1914", "Charles Taze Russell's Bible Students: the “times of the Gentiles” would end. The movement later read 1914 as Christ's invisible return.", ["Luke", 21, 24]],
+  ["1975", "Jehovah's Witness publications pointed to 1975 as the end of 6,000 years of human history.", ["2Pet", 3, 8]],
+  ["1988", "Edgar Whisenant's booklet <em>88 Reasons Why the Rapture Will Be in 1988</em>.", ["1Thess", 4, 17]],
+  ["2011", "Harold Camping: the Rapture on 21 May 2011, then the end of the world on 21 October.", ["Gen", 7, 4]],
+];
+const DSS = [
+  { c: "Goliath was over nine feet tall", v: ["Depends on the manuscript", "part"], b: "The Hebrew text behind the KJV makes him six cubits and a span, about 9 feet 9 inches. The oldest copy of Samuel, the Dead Sea Scroll 4QSam<sup>a</sup>, and the Greek Septuagint say four cubits and a span, about 6 feet 9 inches: huge for the time, but human.", r: [["1Sam", 17, 4]] },
+  { c: "A missing paragraph in 1 Samuel", v: ["Restored", "true"], b: "4QSam<sup>a</sup> has a paragraph before 1 Samuel 11 explaining that Nahash the Ammonite had been gouging out the right eyes of Israelites, which is why his threat in verse 2 makes sense. The historian Josephus knew the story in the 1st century. The New Revised Standard Version (1989) put it back in its text.", r: [["1Sam", 11, 1], ["1Sam", 11, 2]] },
+  { c: "Psalm 145's missing letter", v: ["Restored", "true"], b: () => `Psalm 145 is an alphabet acrostic, but the Hebrew text behind the KJV has ${D.books[bookIdx("Ps")][2][144]} verses and skips the letter nun. The Psalms scroll from Cave 11 (11QPs<sup>a</sup>) and the Septuagint have the missing line, and the World English Bible adds it to verse 13: “The LORD is faithful in all his words, and loving in all his deeds.”`, r: [["Ps", 145, 13]] },
+  { c: "“Sons of God” in Deuteronomy 32:8", v: ["The scroll reading", "part"], b: "The KJV says God set the nations' borders by “the number of the children of Israel”. A scroll from Cave 4 (4QDeut<sup>j</sup>) reads “sons of God”, matching the Septuagint's “angels of God”: a nation for each heavenly being. The ESV and NRSV now follow the scroll.", r: [["Deut", 32, 8]] },
+  { c: "The Great Isaiah Scroll", v: ["Confirms the text", "true"], b: "The complete Isaiah scroll from Cave 1 (1QIsa<sup>a</sup>), copied around 125 BC, agrees closely with medieval Hebrew manuscripts copied a thousand years later. Most of the differences are spelling and small changes of wording." },
+  { c: "The Vatican hid the scrolls", v: ["Myth", "myth"], b: "The Vatican never held them. Most are in Jerusalem, at the Israel Museum's Shrine of the Book and the Israel Antiquities Authority, and some are in Amman. Publication dragged on for decades because a small editorial team led by the Dominican priest Roland de Vaux controlled access, until the Huntington Library released its photographs in 1991. None of the scrolls mentions Jesus." },
 ];
 // The Psalm 46 "Shakespeare" count, computed from the text so the conditions it needs are visible
 function psalm46() {
@@ -1351,6 +1502,11 @@ function initMysteries() {
   const p = psalm46();
   const shake = { c: "Shakespeare hidden in Psalm 46", v: ["Coincidence", "myth"], b: `In the KJV of Psalm 46 the 46th word is “${esc(p.a)}” and the 46th word from the end is “${esc(p.z)}”, and Shakespeare turned 46 in 1610, the year before the KJV appeared. The claim usually comes with the theory that Francis Bacon, supposedly a Rosicrucian, wrote Shakespeare's plays and edited the KJV. The count only works if you skip the psalm's ${p.titleLen}-word title and the ${p.selahs} “Selah”s; count them and the words are “${esc(p.raw[0])}” and “${esc(p.raw[1])}”. Both words translate the Hebrew directly (<em>ra'ash</em>, “quake”, and <em>chanit</em>, “spear”), and the KJV's six committees of named scholars left no record of Shakespeare or Bacon.` };
   $("rosy-cards").innerHTML = ROSY.map(card).join("") + card(shake).replace(/<\/div>$/, p.html + "</div>");
+  const lost = LOST.map(([t, rx]) => { const vs = []; for (let i = 0; i < D.N; i++) if (rx.test(D.text[i])) vs.push(i); return [t, vs]; }).sort((a, b) => b[1].length - a[1].length);
+  $("lost-books").innerHTML = lost.map(([t, vs], k) => `<li><span class="i">${k + 1}</span><span class="t">${esc(t)} <span class="status">${vs.slice(0, 3).map((i) => `<button class="ref" data-v="${i}">${ref(i)}</button>`).join(" ")}${vs.length > 3 ? " …" : ""}</span></span><span class="num status">${vs.length} ${vs.length === 1 ? "verse" : "verses"}</span></li>`).join("");
+  $("lost-cards").innerHTML = LOST_CARDS.map(card).join("");
+  $("end-dates").innerHTML = ENDS.map(([y, t, r]) => `<li><span class="i" style="min-width:3.5em">${y}</span><span class="t">${t}</span><span class="num status">${r ? `<button class="ref" data-v="${vi(...r)}">${ref(vi(...r))}</button>` : ""}</span></li>`).join("") + `<li><span class="i" style="min-width:3.5em">—</span><span class="t">${esc(D.text[vi("Matt", 24, 36)])}</span><span class="num status"><button class="ref" data-v="${vi("Matt", 24, 36)}">Matthew 24:36</button></span></li>`;
+  $("dss-cards").innerHTML = DSS.map(card).join("");
 }
 
 // ---------- translations ----------
@@ -1386,6 +1542,10 @@ async function initTranslations() {
   catch (e) { $("tr-out").innerHTML = `<p class="status">Couldn't load the translations (${esc(e.message)}). Reload the page to try again.</p>`; return; }
   $("tr-form").onsubmit = (ev) => { ev.preventDefault(); compareVerse(); };
   compareVerse();
+  renderHell();
+  const luc = bookIdx("Isa"), li = D.chapStart[luc][13] + 11;
+  $("tr-cards").innerHTML = card({ c: "Lucifer", v: ["One verse, borrowed from Latin", "part"], b: `“Lucifer” appears ${countRx(/\bLucifer\b/g) === 1 ? "once" : countRx(/\bLucifer\b/g) + " times"} in the KJV, in Isaiah 14:12, a taunt against the king of Babylon. The Hebrew is <em>hêlêl ben shachar</em>, “shining one, son of the dawn”, most likely the morning star. Jerome's Latin Vulgate rendered it <em>lucifer</em>, “light-bringer”, the Latin name for the morning star, and the KJV kept the Latin word; the Vulgate uses the same word in 2 Peter 1:19 for the “day star” rising in believers' hearts. Reading Isaiah's verse as the fall of Satan comes from early Christian interpreters such as Tertullian and Origen, who linked it to Luke 10:18.`, r: [["Luke", 10, 18], ["2Pet", 1, 19]] })
+    .replace(/<\/div>$/, TR_KEYS.map(([k, name]) => `<div class="q"><b>${name}</b> ${esc(k === "kjv" ? D.text[li] : TRD[k][li])}</div>`).join("") + "</div>");
   const dropped = [];
   for (let i = 0; i < D.N; i++) if (!TRD.asv[i] && D.text[i]) dropped.push(i);
   $("tr-dropped").innerHTML = `<p class="status"><span class="num">${dropped.length}</span> verses. Click one to compare all six translations.</p><ul class="xr">${dropped.map((i) => `<li><button class="ref" data-tr="${i}">${ref(i)}</button><span class="snip">${esc(D.text[i])}</span><span></span></li>`).join("")}</ul>`;
@@ -1399,6 +1559,30 @@ async function initTranslations() {
       return `<div class="row"><strong>${name} <span class="status num">${pct}% of words shared with the KJV, on average per verse</span></strong><div class="bars"><span style="width:${pct}%;background:var(--gold)"></span></div></div>`;
     }).join("") + `<p class="status">Webster's 1833 Bible is a light modernization of the KJV, so it stays closest. The World English Bible is a fresh modern translation.</p>`;
   }, 50);
+}
+
+// Sheol, Hades, Gehenna and Tartarus located through Young's Literal, which keeps the original words
+const HELL_SRC = [["sheol", "Sheol"], ["hades", "Hades"], ["gehenna", "Gehenna"], ["tartarus", "Tartarus"]];
+const HELL_KJV = [["hell", /\bhell\b/i, "var(--rubric)"], ["grave", /\bgraves?\b/i, "var(--gold)"], ["pit", /\bpit\b/i, "var(--violet)"], ["other", /./, "var(--rule)"]];
+let HELL = null;
+function renderHell() {
+  HELL = HELL_SRC.map(([k]) => ({ k, rows: [] }));
+  TRD.ylt.forEach((t, i) => {
+    const y = (t || "").toLowerCase();
+    HELL.forEach((h) => { if (new RegExp(`\\b${h.k}\\b`).test(y)) h.rows.push([i, HELL_KJV.findIndex(([, rx]) => rx.test(D.text[i]))]); });
+  });
+  const hellAll = countRx(/\bhell\b/gi), asvHell = TRD.asv.filter((t) => /\bhell\b/i.test(t)).length;
+  $("hell-chart").innerHTML = `<div class="stack">${HELL.map((h, n) => {
+    const by = HELL_KJV.map((_, j) => h.rows.filter((r) => r[1] === j).length), tot = h.rows.length;
+    return `<div class="row" data-h="${n}" style="cursor:pointer"><strong>${HELL_SRC[n][1]} <span class="status num">${tot} ${tot === 1 ? "verse" : "verses"} in Young's · KJV: ${HELL_KJV.map(([w], j) => (by[j] ? `${w} ${by[j]}` : "")).filter(Boolean).join(", ")}</span></strong><div class="bars">${by.map((c, j) => (c ? `<span style="width:${c / tot * 100}%;background:${HELL_KJV[j][2]}" title="${HELL_KJV[j][0]}: ${c}"></span>` : "")).join("")}</div></div>`;
+  }).join("")}</div><div class="legend">${HELL_KJV.map(([w, , c]) => `<span><span class="swatch" style="background:${c}"></span>KJV says “${w}”</span>`).join("")}</div>
+  <p class="status">“Hell” appears ${fmt(hellAll)} times in the KJV but in only ${asvHell} verses of the American Standard Version, which writes Sheol and Hades where the KJV has hell. Counts are verses; Young's follows a slightly different Greek text in a few places.</p>`;
+  $("hell-chart").querySelectorAll("[data-h]").forEach((row) => {
+    row.onclick = () => {
+      const h = HELL[+row.dataset.h];
+      $("hell-out").innerHTML = `<h3>${HELL_SRC[+row.dataset.h][1]}</h3><ul class="xr">${h.rows.map(([i]) => `<li><button class="ref" data-v="${i}">${ref(i)}</button><span class="snip">${esc(D.text[i])}</span><span></span></li>`).join("")}</ul>`;
+    };
+  });
 }
 
 // ---------- people ----------
@@ -1474,6 +1658,10 @@ function showPerson(k) {
 }
 
 // ---------- theories: fulfilment and mood ----------
+function renderParallels() {
+  $("par-table").innerHTML = `<thead><tr><th>What is counted</th><th>Samuel or Kings</th><th class="n">Says</th><th>Chronicles</th><th class="n">Says</th></tr></thead><tbody>${D.more.parallels.map(([what, a, na, b, nb]) =>
+    `<tr><td>${esc(what)}</td><td><button class="ref" data-v="${a}">${ref(a)}</button></td><td class="n">${fmt(na)}</td><td><button class="ref" data-v="${b}">${ref(b)}</button></td><td class="n">${fmt(nb)}</td></tr>`).join("")}</tbody>`;
+}
 function renderFulfil() {
   $("fulfil").innerHTML = D.more.fulfilment.map(([i, ot, note]) => `<div class="card">${pill(note ? ["Debated", "part"] : ot >= 0 ? ["Clear source", "true"] : ["No clear source", "myth"])}<h4>${ref(i)}</h4>${quoteI(i)}${i + 1 < D.N && D.bookOf[i + 1] === D.bookOf[i] ? quoteI(i + 1) : ""}${ot >= 0 ? `<p class="status">Old Testament source</p>${quoteI(ot)}` : ""}${note ? `<p>${note}</p>` : ""}</div>`).join("");
 }
@@ -1526,6 +1714,10 @@ function runGematria() {
     ${list.length ? `<ul class="hits" style="margin-bottom:8px">${list.slice(0, 30).map(([ph, v]) => `<li><button class="ghost ref" data-v="${v}" style="text-decoration:none">${esc(ph)} <span class="status">${ref(v)}</span></button></li>`).join("")}</ul>` : ""}
     <p class="status">A random 30 shown. For comparison, in the Sumerian system the English word “computer” adds up to ${computer}.</p>`;
 }
+// The KJV's spellings of the stanza headings in Psalm 119
+const PS119 = ["ALEPH", "BETH", "GIMEL", "DALETH", "HE", "VAU", "ZAIN", "CHETH", "TETH", "JOD", "CAPH", "LAMED", "MEM", "NUN", "SAMECH", "AIN", "PE", "TZADDI", "KOPH", "RESH", "SCHIN", "TAU"];
+const hebVal = (ch) => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400][HEB.indexOf(FINALS[ch] || ch)] || 0;
+const hebSum = (w) => [...w].reduce((a, c) => a + hebVal(c), 0);
 const HEB = "אבגדהוזחטיכלמנסעפצקרשת", FINALS = { "ך": "כ", "ם": "מ", "ן": "נ", "ף": "פ", "ץ": "צ" };
 const TO_FINAL = { "כ": "ך", "מ": "ם", "נ": "ן", "פ": "ף", "צ": "ץ" };
 // Letter-for-letter swap, then Hebrew final forms at the end of each word.
@@ -1548,7 +1740,14 @@ function initNumbers() {
       <label class="f">Try it with Hebrew letters <input type="text" id="atb-in" dir="rtl" value="בבל" class="heb" style="font-size:20px"></label><div class="heb" id="atb-out"></div></div>
     <div class="card">${pill(["Real pattern", "true"])}<h4>Alphabet acrostics</h4><p>Several poems start each verse or stanza with the next letter of the 22-letter Hebrew alphabet. The structure is lost in English but still shows in the verse counts, computed here from the text.</p>
       <ul><li><strong>Psalm 119:</strong> ${ps} verses = 22 letters × ${ps / 22} verses each.</li><li><strong>Lamentations 1–5:</strong> ${lam.join(", ")} verses. Chapter 3 gives each letter three verses. Chapter 5 has 22 verses but is not an acrostic.</li><li><strong>Proverbs 31:10–31</strong>, the “virtuous woman”: ${prov} verses, one per letter.</li></ul>
-      <div class="heb" style="font-size:18px;line-height:1.6">${[...HEB].join(" ")}</div></div>`;
+      <div class="heb" style="font-size:18px;line-height:1.6">${[...HEB].join(" ")}</div>
+      <label class="f">Read Psalm 119 by letter <select id="ps119-sel">${PS119.map((n, k) => `<option value="${k}">${HEB[k]} ${n}</option>`).join("")}</select></label><div id="ps119-out"></div>
+      <p>Psalm 145 is an acrostic too, but has only ${D.books[bookIdx("Ps")][2][144]} verses: the line for the letter nun is missing from the Hebrew text the KJV used. See the Dead Sea Scrolls in the Mysteries tab.</p></div>
+    <div class="card">${pill(["Real cipher", "true"])}<h4>666, or 616?</h4><p>Revelation asks the reader to “count the number of the beast… the number of a man”. Hebrew letters double as numbers, and the emperor's name <em>Nero Caesar</em> spelled נרון קסר adds up to ${hebSum("נרון קסר")}. Spelled the Latin way, without the final n, נרו קסר gives ${hebSum("נרו קסר")}, and 616 is what the oldest surviving fragment of Revelation 13, Papyrus 115 from Oxyrhynchus (3rd century), reads. Around AD 180 Irenaeus already knew copies with 616 and rejected them. The spelling נרון קסר appears on a Hebrew document from Wadi Murabba'at dated to Nero's reign.</p>
+      <div class="heb">${[..."נרון קסר"].filter((c) => c !== " ").map((c) => `${c} ${hebVal(c)}`).join(" + ")} = ${hebSum("נרון קסר")}</div>${quote("Rev", 13, 18)}</div>`;
+  const s119 = D.chapStart[bookIdx("Ps")][118];
+  const show119 = () => { const k = +$("ps119-sel").value; $("ps119-out").innerHTML = Array.from({ length: 8 }, (_, j) => quoteI(s119 + k * 8 + j)).join(""); };
+  $("ps119-sel").onchange = show119; show119();
   const upd = () => { $("atb-out").textContent = "→ " + atbash($("atb-in").value); };
   $("atb-in").oninput = upd; upd();
 }

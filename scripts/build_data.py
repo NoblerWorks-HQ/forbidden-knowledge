@@ -127,6 +127,7 @@ def main():
         "genealogies": build_more.build_genealogies(text, index),
         "sentiment": build_more.build_sentiment(fetch, books, text),
         "fulfilment": build_more.build_fulfilment(text, index, rows),
+        "parallels": build_more.build_parallels(text, index),
     }
 
     OUT.mkdir(parents=True, exist_ok=True)

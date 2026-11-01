@@ -69,7 +69,8 @@ def words_to_int(phrase):
         elif w == "hundred":
             cur = (cur or 1) * 100
         elif w == "thousand":
-            total, cur = total + (cur or 1) * 1000, 0
+            # "a thousand thousand" is a million
+            total, cur = (total * 1000, 0) if total and not cur else (total + (cur or 1) * 1000, 0)
     return total + cur
 
 
@@ -218,4 +219,51 @@ def build_fulfilment(text, index, rows):
             out.append([i, ot, FULFIL_NOTES.get(ref_of[i], "")])
     if len(out) < 10:
         sys.exit(f"fulfilment: only {len(out)} formula verses found in Matthew")
+    return out
+
+
+def number_phrases(verse):
+    """Every number phrase in a verse as an int ("threescore and ten" -> 70)."""
+    toks = re.findall(r"[a-z]+", verse.lower())
+    out, k = [], 0
+    while k < len(toks):
+        if toks[k] in NUMWORD and toks[k] not in ("a", "an", "and"):
+            j = k
+            while j < len(toks) and toks[j] in NUMWORD:
+                j += 1
+            while toks[j - 1] in ("a", "an", "and"):
+                j -= 1
+            out.append(words_to_int(" ".join(toks[k:j])))
+            k = j
+        else:
+            k += 1
+    return out
+
+
+# Samuel/Kings vs Chronicles: (what, earlier ref, its number, Chronicles ref, its number), each checked in the text
+PARALLELS = [
+    ("David's captured horsemen", "2Sam.8.4", 700, "1Chr.18.4", 7000),
+    ("Syrian chariot crews killed", "2Sam.10.18", 700, "1Chr.19.18", 7000),
+    ("Fighting men of Judah in David's census", "2Sam.24.9", 500000, "1Chr.21.5", 470000),
+    ("Fighting men of Israel in David's census", "2Sam.24.9", 800000, "1Chr.21.5", 1100000),
+    ("Years of famine offered as punishment", "2Sam.24.13", 7, "1Chr.21.12", 3),
+    ("Shekels David paid for the threshing floor", "2Sam.24.24", 50, "1Chr.21.25", 600),
+    ("Solomon's horse stalls", "1Kgs.4.26", 40000, "2Chr.9.25", 4000),
+    ("Overseers of Solomon's workers", "1Kgs.5.16", 3300, "2Chr.2.2", 3600),
+    ("Height of the bronze pillars, in cubits", "1Kgs.7.15", 18, "2Chr.3.15", 35),
+    ("Baths the bronze sea held", "1Kgs.7.26", 2000, "2Chr.4.5", 3000),
+    ("Chief officers over the work", "1Kgs.9.23", 550, "2Chr.8.10", 250),
+    ("Talents of gold from Ophir", "1Kgs.9.28", 420, "2Chr.8.18", 450),
+    ("Ahaziah's age when he became king", "2Kgs.8.26", 22, "2Chr.22.2", 42),
+    ("Jehoiachin's age when he became king", "2Kgs.24.8", 18, "2Chr.36.9", 8),
+]
+
+
+def build_parallels(text, index):
+    out = []
+    for what, a, na, b, nb in PARALLELS:
+        for ref, n in ((a, na), (b, nb)):
+            if n not in number_phrases(text[index[ref]]):
+                sys.exit(f"parallels: {n} not found in {ref} ({what})")
+        out.append([what, index[a], na, index[b], nb])
     return out
