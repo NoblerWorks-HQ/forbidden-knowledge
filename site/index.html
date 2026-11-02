@@ -169,6 +169,20 @@ footer a { color: inherit; }
 .qopt.right { border-color: var(--ok); color: var(--ok); }
 .qopt.wrong { border-color: var(--rubric); color: var(--rubric); }
 .win { border: 1px solid var(--accent); background: var(--surface); border-radius: 10px; padding: 14px 16px; margin: 12px 0; display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
+.trad-chart svg { min-width: 820px; }
+.trad-chart .tr-dot { cursor: pointer; }
+.trad-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0 24px; margin-top: 12px; }
+.trad-links h3 { font: 600 14px var(--ui); margin: 8px 0 0; }
+.fig { margin: 0 0 4px; display: grid; gap: 6px; }
+.fig img { width: 100%; max-height: 300px; object-fit: contain; background: var(--bg); border-radius: 6px; }
+.fig figcaption { font: 12px/1.4 var(--ui); color: var(--muted); }
+.fig figcaption a { color: inherit; }
+.card.flash { animation: flash 1.6s ease-out; }
+@keyframes flash { 0%, 40% { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 0 transparent; } }
+.metals { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; margin-top: 10px; }
+.metal { background: var(--surface); padding: 12px 14px; display: grid; gap: 2px; font-size: 13px; min-width: 0; }
+.metal .glyph { font-size: 30px; line-height: 1.1; color: var(--rubric); }
+.metal b { font-family: var(--display); font-size: 19px; font-weight: 400; }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; margin-top: 14px; }
 .card { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
 .card h4 { font-family: var(--scripture); font-size: 17px; font-weight: 600; margin: 0; text-wrap: balance; }
@@ -247,6 +261,7 @@ table.gen td { font-family: var(--scripture); }
     <span class="grp">Forbidden</span>
     <a href="#timeline" data-view="timeline">Timeline</a>
     <a href="#lost" data-view="lost">Lost Worlds</a>
+    <a href="#traditions" data-view="traditions">Secret Traditions</a>
     <a href="#conspiracies" data-view="conspiracies">Conspiracies</a>
     <a href="#mysteries" data-view="mysteries">Mysteries</a>
     <a href="#library" data-view="library">Library</a>
@@ -520,6 +535,19 @@ table.gen td { font-family: var(--scripture); }
     <div class="cards" id="lost-forbidden"></div>
   </section>
 
+  <section id="v-traditions" hidden>
+    <h2>Secret traditions</h2>
+    <p class="lede">Smiths, alchemists, Hermetists, Gnostics, Templars, Rosicrucians, Freemasons and the Illuminati, on one timeline. Every one of these orders told a story about its own ancient lineage. Solid lines are links historians can document; dashed lines are links the traditions claimed, or their enemies did. Click a dot to jump to its card.</p>
+    <div class="legend"><span><svg width="28" height="8" aria-hidden="true"><line x1="0" x2="28" y1="4" y2="4" stroke-width="2" style="stroke:var(--ink)" stroke-opacity=".6"/></svg>Documented link</span><span><svg width="28" height="8" aria-hidden="true"><line x1="0" x2="28" y1="4" y2="4" stroke-width="2" stroke-dasharray="4 4" style="stroke:var(--muted)"/></svg>Claimed link</span></div>
+    <div class="chart trad-chart" id="trad-chart"></div>
+    <div class="trad-links">
+      <div><h3>Documented</h3><ul class="rank" id="trad-doc"></ul></div>
+      <div><h3>Claimed</h3><ul class="rank" id="trad-claim"></ul></div>
+    </div>
+    <div id="trad-sections"></div>
+    <p class="status">Images are public domain, from Wikimedia Commons; each caption links to its source.</p>
+  </section>
+
   <section id="v-conspiracies" hidden>
     <h2>Conspiracies</h2>
     <p class="lede">Secret societies, hidden truths and stolen holidays: where each story came from and what the evidence shows.</p>
@@ -697,7 +725,7 @@ darkMQ.addEventListener("change", applyTheme);
 applyTheme();
 
 // ---------- routing ----------
-const VIEWS = ["library", "religions", "philosophy", "lost", "conspiracies", "arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
+const VIEWS = ["traditions", "library", "religions", "philosophy", "lost", "conspiracies", "arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
 const rendered = {};
 function route() {
   const [h, arg] = location.hash.slice(1).split("/"), name = VIEWS.includes(h) ? h : "timeline";
@@ -705,7 +733,7 @@ function route() {
   if (!D) return;
   VIEWS.forEach((v) => { $("v-" + v).hidden = v !== name; });
   if (name === "verse" && arg) { const v = parseRef(decodeURIComponent(arg)); rendered.verse = true; $("verse-in").value = v == null ? decodeURIComponent(arg) : ref(v); showVerse(v); }
-  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, library: initLibrary, religions: initReligions, philosophy: initPhilosophy, lost: initLost, conspiracies: initConspiracies, timeline: initTimeline, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes })[name](); }
+  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, library: initLibrary, religions: initReligions, philosophy: initPhilosophy, lost: initLost, traditions: initTraditions, conspiracies: initConspiracies, timeline: initTimeline, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes })[name](); }
   else if (name === "arcs") drawArcs();
   else if (name === "history") drawPopes();
   else if (name === "map") drawMap();
@@ -1440,10 +1468,12 @@ function initMap() {
 // Each step: when (number for the scrubber), d (label), era, title, body, pins [name, lon, lat], optional route, verses, books for faint place dots
 const STEPS = [
   { y: -9500, d: "c. 9500 BC", era: "Before farming", t: "Göbekli Tepe", b: "Hunter-gatherers raise rings of carved stone pillars on a hill in south-east Turkey, seven thousand years before Stonehenge's stones and before farming, pottery or writing. It is the oldest monumental site known.", pins: [["Göbekli Tepe", 38.922, 37.223]], span: 16, go: ["lost", "Lost civilizations"] },
+  { y: -5000, d: "c. 5000 BC", era: "The first metal", t: "Fire turns rock into metal", b: "At Belovode in Serbia, people smelt copper out of green malachite: the oldest securely dated smelting anywhere. Genesis credits the first smith, Tubal-cain, to the line of Cain, and 1 Enoch says a fallen angel taught the art.", pins: [["Belovode", 21.416, 44.328]], span: 12, go: ["traditions", "Secret Traditions"] },
   { y: -2560, d: "c. 2560 BC", era: "Egypt", t: "The Great Pyramid", b: "Pharaoh Khufu's pyramid rises at Giza, more than a thousand years before any date proposed for the Exodus. The Bible never mentions pyramids, and the builders were Egyptian work crews housed in a town beside the site.", pins: [["Giza", 31.134, 29.979]], span: 9, go: ["mysteries", "Egypt in the Bible"] },
   { y: -1900, d: "c. 2000–1800 BC (traditional)", era: "The patriarchs", t: "Abraham leaves Ur", b: "Genesis follows Abram from Ur of the Chaldees to Harran, into Canaan, and down to Egypt in a famine. The date comes from adding up the ages in Genesis; no inscription names Abraham.", pins: [["Ur", 46.103, 30.962], ["Harran", 39.031, 36.865], ["Shechem", 35.281, 32.213], ["Egypt", 31.3, 30.1]], route: true, r: [["Gen", 12, 1], ["Gen", 12, 10]], books: ["Gen"] },
   { y: -1800, d: "c. 1800 BC", era: "Mesopotamia", t: "Gilgamesh and the flood", b: "Old Babylonian scribes copy the Epic of Gilgamesh, the hero-king of Uruk. Its later Tablet XI tells of Utnapishtim, warned by a god to build a boat before a great flood, who sends out a dove, a swallow and a raven.", pins: [["Uruk", 45.64, 31.32], ["Nineveh", 43.152, 36.359]], r: [["Gen", 8, 7]], go: ["religions", "One idea, many traditions"] },
   { y: -1700, d: "Traditional date", era: "The patriarchs", t: "Joseph in Egypt", b: "Sold by his brothers, Joseph rises to govern Egypt, takes an Egyptian name and marries the daughter of a priest of On, the city of the sun god. His father is embalmed in the Egyptian way. No Egyptian record names him.", pins: [["On (Heliopolis)", 31.307, 30.129], ["Goshen", 31.9, 30.55], ["Hebron", 35.099, 31.529]], r: [["Gen", 41, 45], ["Gen", 50, 3]] },
+  { y: -1600, d: "c. 1600 BC (date argued)", era: "Bronze Age", t: "The Nebra sky disc", img: "nebra", b: "In central Germany, someone inlays a bronze disc with a gold sun or moon, a crescent and the Pleiades: probably the oldest surviving picture of the sky. Bronze, copper alloyed with tin carried from far away, has tied Europe together in trade.", pins: [["Nebra", 11.52, 51.284]], span: 9, go: ["traditions", "Secret Traditions"] },
   { y: -1350, d: "c. 1350 BC", era: "Egypt", t: "Akhenaten's one god", b: "At his new capital, Amarna, Pharaoh Akhenaten worships a single god, the sun disk Aten. A hymn found in a tomb there runs through the same scenes as Psalm 104. Freud later guessed that Moses was his follower; nothing links them.", pins: [["Amarna", 30.896, 27.645]], span: 6, r: [["Ps", 104, 24]] },
   { y: -1250, d: "c. 1446 BC or 1200s BC (disputed)", era: "The Exodus", t: "Out of Egypt", b: "Israel builds the store cities Pithom and Raamses, leaves Egypt, receives the law at Sinai and wanders to the edge of Canaan. 1 Kings implies about 1446 BC; the city of Raamses points to the 1200s. No Egyptian record mentions it, and both the route and the mountain are disputed.", pins: [["Raamses", 31.836, 30.799], ["Mount Sinai (traditional)", 33.975, 28.539], ["Kadesh-barnea", 34.42, 30.69], ["Mount Nebo", 35.725, 31.768]], route: true, r: [["Exod", 1, 11], ["Exod", 14, 21]], books: ["Exod", "Num"] },
   { y: -1208, d: "c. 1208 BC", era: "Egypt", t: "Israel carved in stone", b: "Pharaoh Merneptah's victory stele lists Israel among his defeated enemies: “Israel is laid waste; his seed is not.” Found at Thebes in 1896, it is the oldest mention of Israel outside the Bible.", pins: [["Thebes", 32.64, 25.72], ["Israel", 35.25, 32.1]] },
@@ -1462,18 +1492,23 @@ const STEPS = [
   { y: 50, d: "AD 46–62", era: "The church", t: "Paul's journeys", b: "Paul carries the new faith from Antioch through Asia Minor and Greece, and finally reaches Rome as a prisoner. His letters are the oldest writings in the New Testament.", pins: [["Antioch", 36.161, 36.202], ["Ephesus", 27.341, 37.941], ["Philippi", 24.286, 41.012], ["Corinth", 22.879, 37.906], ["Rome", 12.484, 41.891]], route: true, r: [["Acts", 13, 4], ["Acts", 28, 16]], books: ["Acts"] },
   { y: 70, d: "AD 70", era: "The church", t: "The Temple falls", b: "Roman legions under Titus destroy Jerusalem and the Second Temple. The Arch of Titus in Rome still shows the Temple's menorah carried in his triumph.", pins: [["Jerusalem", 35.235, 31.778], ["Rome", 12.484, 41.891]], r: [["Matt", 24, 2]] },
   { y: 95, d: "c. AD 95", era: "The church", t: "Revelation on Patmos", b: "Exiled on the island of Patmos, John writes Revelation, with its beast whose number is 666, or 616 in some early copies.", pins: [["Patmos", 26.547, 37.31]], span: 3, r: [["Rev", 1, 9], ["Rev", 13, 18]], go: ["numbers", "666, or 616?"] },
+  { y: 300, d: "c. AD 300", era: "Alchemy", t: "The first alchemists", img: "zosimos", b: "In Roman Egypt, Zosimos of Panopolis writes about stills, furnaces and turning base metal into gold, and cites Hermes Trismegistus and an earlier woman alchemist, Maria the Jewess. Alchemy began in metalworkers' recipe books for imitating gold.", pins: [["Panopolis", 31.745, 26.565], ["Alexandria", 29.92, 31.2]], span: 7, go: ["traditions", "Secret Traditions"] },
   { y: 325, d: "AD 325 and 367", era: "The empire", t: "Nicaea, and the list of books", b: "The Council of Nicaea argues over whether Jesus is fully divine and when to keep Easter; it does not choose the books of the Bible. In 367 Athanasius of Alexandria writes the first surviving list of today's 27 New Testament books.", pins: [["Nicaea", 29.72, 40.43], ["Alexandria", 29.919, 31.2]] },
-  { y: 380, d: "4th century", era: "The empire", t: "Books buried at Nag Hammadi", b: "Someone buries a jar of leather-bound Coptic books near Nag Hammadi in Upper Egypt, among them the Gospel of Thomas. Farmers dig it up in December 1945.", pins: [["Nag Hammadi", 32.242, 26.049]], span: 5, go: ["canon", "Beyond the Canon"] },
+  { y: 380, d: "4th century", era: "The empire", t: "Books buried at Nag Hammadi", img: "thomas", b: "Someone buries a jar of leather-bound Coptic books near Nag Hammadi in Upper Egypt, among them the Gospel of Thomas. Farmers dig it up in December 1945.", pins: [["Nag Hammadi", 32.242, 26.049]], span: 5, go: ["canon", "Beyond the Canon"] },
   { y: 391, d: "AD 391", era: "The empire", t: "The Serapeum falls", b: "Christians destroy the Serapeum of Alexandria, which housed the great library's daughter collection. The library had been declining for centuries; the story that it burned in a single night is a myth.", pins: [["Alexandria", 29.919, 31.2]], span: 3, go: ["lost", "Forbidden knowledge"] },
   { y: 405, d: "c. AD 405", era: "The empire", t: "Jerome's Vulgate", b: "Working in Bethlehem, Jerome finishes his Latin translation from the Hebrew and Greek. His word <em>lucifer</em>, “light-bringer”, in Isaiah 14:12 passes into the KJV as a name.", pins: [["Bethlehem", 35.202, 31.705]], span: 2, r: [["Isa", 14, 12]], go: ["translations", "Lucifer"] },
   { y: 600, d: "c. AD 600", era: "The Americas", t: "Puma Punku", b: "At Tiwanaku, near Lake Titicaca, builders cut andesite blocks with flat faces and repeated shapes and hold them with copper clamps poured into place. It is often called impossible; it was made with stone tools, abrasives and templates.", pins: [["Tiwanaku", -68.68, -16.56]], span: 8, go: ["lost", "Lost technology that wasn't"] },
   { y: 622, d: "AD 610–632", era: "Islam", t: "Muhammad and the Quran", b: "In Mecca, Muhammad begins reciting revelations in 610. In 622 he and his followers move to Medina, the Hijra, year one of the Islamic calendar. The Quran retells many Bible stories, and Mary is the only woman it names.", pins: [["Mecca", 39.826, 21.423], ["Medina", 39.611, 24.468]], route: true, go: ["religions", "Read the Quran"] },
-  { y: 1119, d: "1119–1312", era: "Middle Ages", t: "The Knights Templar", b: "Founded in Jerusalem to protect pilgrims, the Templars become Europe's bankers. On Friday 13 October 1307 Philip IV of France arrests every Templar in his kingdom; the pope dissolves the order in 1312.", pins: [["Jerusalem", 35.235, 31.778], ["Paris", 2.352, 48.857]], route: true, go: ["history", "Relics, orders and legends"] },
+  { y: 1119, d: "1119–1312", era: "Middle Ages", t: "The Knights Templar", img: "templars", b: "Founded in Jerusalem to protect pilgrims, the Templars become Europe's bankers. On Friday 13 October 1307 Philip IV of France arrests every Templar in his kingdom; the pope dissolves the order in 1312.", pins: [["Jerusalem", 35.235, 31.778], ["Paris", 2.352, 48.857]], route: true, go: ["history", "Relics, orders and legends"] },
+  { y: 1209, d: "1209–1244", era: "Heresy", t: "The Cathar crusade", img: "cathars", b: "The pope calls a crusade against the Cathars of southern France, Christians who believed the material world was the work of an evil power. Béziers is sacked in 1209, and when the fortress of Montségur falls in 1244 more than 200 are burned. The Inquisition is created to finish the job.", pins: [["Béziers", 3.215, 43.344], ["Carcassonne", 2.353, 43.212], ["Montségur", 1.832, 42.876]], span: 3, go: ["traditions", "Secret Traditions"] },
   { y: 1355, d: "1350s; carbon-dated 1260–1390", era: "Middle Ages", t: "The Shroud appears", b: "The Shroud of Turin's first secure record is at Lirey in France in the 1350s. It reaches Turin in 1578, and radiocarbon tests in 1988 dated the linen to 1260–1390.", pins: [["Lirey", 4.04, 48.18], ["Turin", 7.686, 45.07]], route: true },
+  { y: 1463, d: "1463", era: "Renaissance", t: "Hermes before Plato", b: "Cosimo de' Medici tells Marsilio Ficino to put Plato aside and translate the newly arrived writings of Hermes Trismegistus, believed older than Moses. The idea of a secret ancient wisdom, passed down from Egypt, takes hold of the Renaissance.", pins: [["Florence", 11.256, 43.77]], span: 4, go: ["traditions", "Secret Traditions"] },
   { y: 1469, d: "1469", era: "Sikhism", t: "Guru Nanak", b: "Guru Nanak is born at Talwandi, now Nankana Sahib in Pakistan. His teaching of one God beyond Hindu and Muslim divisions becomes Sikhism, carried on by nine further Gurus and the scripture, the Guru Granth Sahib.", pins: [["Nankana Sahib", 73.69, 31.45]], span: 6 },
   { y: 1611, d: "1611", era: "Print", t: "The King James Version", b: "Six committees of scholars, two each at Westminster, Oxford and Cambridge, finish the Authorized Version. Shakespeare had turned 46 the year before, which is all the Psalm 46 “code” needs.", pins: [["Westminster", -0.127, 51.5], ["Oxford", -1.257, 51.752], ["Cambridge", 0.119, 52.205]], r: [["Ps", 46, 3]], go: ["mysteries", "The Rosicrucians"] },
-  { y: 1615, d: "1614–1616", era: "Print", t: "The Rosicrucian manifestos", b: "Pamphlets printed in Kassel announce a secret Brotherhood of the Rosy Cross. Europe goes looking and never finds it; Johann Valentin Andreae of Tübingen later calls his part a joke.", pins: [["Kassel", 9.479, 51.312], ["Tübingen", 9.056, 48.52]] },
-  { y: 1717, d: "1717", era: "Enlightenment", t: "The first Grand Lodge", b: "Four London lodges meet at the Goose and Gridiron tavern and form the first Grand Lodge of Freemasonry. Its rituals retell the building of Solomon's Temple.", pins: [["London", -0.098, 51.513]], span: 4, r: [["1Kgs", 7, 21]] },
+  { y: 1615, d: "1614–1616", era: "Print", t: "The Rosicrucian manifestos", img: "rosy", b: "Pamphlets printed in Kassel announce a secret Brotherhood of the Rosy Cross. Europe goes looking and never finds it; Johann Valentin Andreae of Tübingen later calls his part a joke.", pins: [["Kassel", 9.479, 51.312], ["Tübingen", 9.056, 48.52]] },
+  { y: 1669, d: "1669", era: "Alchemy", t: "Alchemy finds an element", img: "wright", b: "Searching for the philosopher's stone, Hennig Brand boils down urine in Hamburg and finds phosphorus, glowing in the dark. Isaac Newton is writing a million words on alchemy in Cambridge at the same time.", pins: [["Hamburg", 9.99, 53.55], ["Cambridge", 0.12, 52.205]], span: 9, go: ["traditions", "Secret Traditions"] },
+  { y: 1717, d: "1717", era: "Enlightenment", t: "The first Grand Lodge", img: "anderson", b: "Four London lodges meet at the Goose and Gridiron tavern and form the first Grand Lodge of Freemasonry. Its rituals retell the building of Solomon's Temple.", pins: [["London", -0.098, 51.513]], span: 4, r: [["1Kgs", 7, 21]] },
+  { y: 1776, d: "1 May 1776", era: "Enlightenment", t: "The Illuminati", img: "weishaupt", b: "Adam Weishaupt founds the Order of the Illuminati in Ingolstadt to spread Enlightenment reason in Catholic Bavaria. It recruits inside Masonic lodges, is banned in 1785 and is gone within a decade, but after 1797 it is blamed for the French Revolution and never stops being blamed.", pins: [["Ingolstadt", 11.425, 48.765]], span: 5, go: ["traditions", "Secret Traditions"] },
   { y: 1830, d: "1830", era: "New scriptures", t: "The Book of Mormon", b: "In Palmyra, New York, Joseph Smith publishes the Book of Mormon, presented as a translation of golden plates. About one verse in thirteen is almost word for word the King James Bible.", pins: [["Palmyra", -77.233, 43.064]], span: 10, go: ["religions", "The Book of Mormon and the King James Bible"] },
   { y: 1869, d: "1869", era: "Hoaxes", t: "The Cardiff Giant", b: "Well-diggers in Cardiff, New York, unearth a 10-foot “petrified man”. George Hull had it carved from gypsum after arguing with a preacher about the giants of Genesis. Crowds pay to see it anyway.", pins: [["Cardiff, NY", -76.14, 42.89]], span: 6, r: [["Gen", 6, 4]], go: ["lost", "Giants"] },
   { y: 1872, d: "1872", era: "Discovery", t: "A flood older than Noah's", b: "George Smith, a self-taught assistant at the British Museum, reads a cuneiform tablet from Nineveh and finds a flood story with a boat and birds. He announces it to the Society of Biblical Archaeology in December 1872.", pins: [["London", -0.128, 51.519], ["Nineveh", 43.152, 36.359]] },
@@ -1491,7 +1526,7 @@ function tlCam(s) {
 }
 function initTimeline() {
   STEPS[STEPS.length - 1].b = `The ${fmt(D.places.length)} places the Bible names, each at its most likely modern location. Scroll back up to travel again, or open any tab to explore.`;
-  $("tl-steps").innerHTML = STEPS.map((s, k) => `<div class="tl-step" data-k="${k}"><div class="card"><span class="when">${s.d}</span><h4>${s.t}</h4><p>${s.b}</p>${(s.r || []).map((r) => quote(...r)).join("")}${s.go ? `<button type="button" class="ghost" data-go="${s.go[0]}" style="justify-self:start">More: ${s.go[1]}</button>` : ""}</div></div>`).join("");
+  $("tl-steps").innerHTML = STEPS.map((s, k) => `<div class="tl-step" data-k="${k}"><div class="card"><span class="when">${s.d}</span><h4>${s.t}</h4>${s.img ? fig(s.img) : ""}<p>${s.b}</p>${(s.r || []).map((r) => quote(...r)).join("")}${s.go ? `<button type="button" class="ghost" data-go="${s.go[0]}" style="justify-self:start">More: ${s.go[1]}</button>` : ""}</div></div>`).join("");
   $("tl-steps").querySelectorAll("button[data-go]").forEach((b) => { b.onclick = () => { go(b.dataset.go); window.scrollTo({ top: 0 }); }; });
   // Land in raw lon/lat, projected by the canvas transform, so a frame costs one fill
   const path = (rings, close) => { const p = new Path2D(); rings.forEach((r) => { r.forEach(([lon, lat], i) => (i ? p.lineTo(lon, lat) : p.moveTo(lon, lat))); if (close) p.closePath(); }); return p; };
@@ -1756,6 +1791,172 @@ function initLost() {
   $("lost-giants").innerHTML = LOST_GIANTS.map(cardEn).join("");
   $("lost-forbidden").innerHTML = LOST_FORBIDDEN.map((m) => cardEn(m).replace(/<\/div>$/, m.go ? `<button type="button" class="ghost" data-go="${m.go}" style="justify-self:start">Read 1 Enoch</button></div>` : "</div>")).join("");
   $("lost-forbidden").querySelectorAll("button[data-go]").forEach((b) => { b.onclick = () => { go(b.dataset.go); window.scrollTo({ top: 0 }); }; });
+}
+
+// ---------- secret traditions ----------
+// Public-domain images from Wikimedia Commons, resized into site/img: [caption, credit, Commons file]
+const IMG = {
+  agricola: ["Refiners at the furnace", "Georgius Agricola, De re metallica, 1556", "De re metallica 1556-262.png"],
+  nebra: ["The Nebra sky disc: bronze inlaid with gold", "c. 1600 BC; photo by Anagoria", "1600 Himmelsscheibe von Nebra sky disk anagoria.jpg"],
+  zosimos: ["Stills and flasks from the Greek alchemical manuscripts", "Byzantine manuscript, redrawn by Marcellin Berthelot, 1887", "Zosimos distillation equipment.jpg"],
+  ouroboros: ["The serpent eating its tail, inscribed “the All is One”, from the Chrysopoeia of Cleopatra", "Codex Marcianus graecus 299, 10th–11th century", "Chrysopoea of Cleopatra 1.png"],
+  emerald: ["The Emerald Tablet carved into a mountain", "Heinrich Khunrath, 1606", "Emerald tablet.jpg"],
+  paracelsus: ["Paracelsus at 47", "Augustin Hirschvogel, 1540", "Paracelsus-03.jpg"],
+  khunrath: ["The alchemist's laboratory and oratory", "Heinrich Khunrath and Hans Vredeman de Vries, 1595", "Amphitheatrum sapientiae aeternae - Alchemist's Laboratory.jpg"],
+  wright: ["The Alchemist Discovering Phosphorus: Hennig Brand in 1669", "Joseph Wright of Derby, 1771", "Joseph Wright of Derby The Alchemist.jpg"],
+  abraxas: ["An Abraxas gem: a rooster-headed god with snakes for legs, inscribed IAŌ ABRASAX SABAŌTH", "Drawing from Nordisk familjebok", "Abraxas, Nordisk familjebok.png"],
+  thomas: ["The last page of the Gospel of Thomas, with its title, in Nag Hammadi Codex II", "4th century", "Gospel of Thomas - Nag Hammadi II-51.jpg"],
+  cathars: ["The Cathars driven out of Carcassonne in 1209", "Workshop of the Boucicaut Master, c. 1415", "Cathars expelled.JPG"],
+  templseal: ["The Templar seal: two knights on one horse, “Seal of the soldiers of Christ”", "Drawing from Archer and Kingsford, The Crusades, 1894", "Templ.jpg"],
+  templars: ["Templars burned at the stake", "French chronicle, after 1380", "Templars Burning.jpg"],
+  rosy: ["The Temple of the Rose Cross, on wheels and with wings", "Theophilus Schweighardt, 1618", "Templeofrosycross highres.png"],
+  atalanta: ["“Its nurse is the earth”, a line of the Emerald Tablet, as Emblem II of Atalanta Fugiens", "Michael Maier, 1617", "Michael Maier Atalanta Fugiens Emblem 02.jpeg"],
+  anderson: ["Frontispiece and title page of Anderson's Constitutions of the Free-Masons", "John Pine, 1723", "Anderson'sConstitutions.jpg"],
+  weishaupt: ["Adam Weishaupt, founder of the Illuminati", "Friedrich Rossmässler, 1799", "Johann Adam Weishaupt.jpg"],
+  seal: ["William Barton's design for the reverse of the Great Seal: an eye over an unfinished pyramid", "William Barton, 1782", "BartonGreatSealDesignReverse.jpg"],
+};
+const fig = (k) => { const [cap, by, f] = IMG[k]; return `<figure class="fig"><img src="img/${k}.jpg" alt="${esc(cap)}" loading="lazy"><figcaption>${esc(cap)}. <a href="https://commons.wikimedia.org/wiki/File:${encodeURIComponent(f.replace(/ /g, "_"))}" target="_blank" rel="noopener">${esc(by)}</a>, public domain.</figcaption></figure>`; };
+
+const TR_LANES = [
+  ["metal", "Metalworking", "#f97316", "The smith was the first magician: a man who turned rock into metal with fire. Genesis and Enoch both remember metalworking as knowledge from before the Flood."],
+  ["alch", "Alchemy", "#eab308", "Alchemy grew out of Egyptian workshop recipes for imitating gold, and turned into a spiritual art, a secret tradition and finally chemistry."],
+  ["herm", "Hermetica", "#10b981", "Writings credited to Hermes Trismegistus, “thrice-great Hermes”, the Greek name for the Egyptian god Thoth. They gave alchemy its philosophy and the Renaissance its idea of an ancient secret wisdom."],
+  ["gnos", "Gnostics", "#a855f7", "Early Christian groups who taught that the world was made by a lesser, ignorant god and that salvation comes through secret knowledge, gnosis. Their opponents wrote most of what was known about them until 1945."],
+  ["temp", "Templars", "#ef4444", "The warrior monks who guarded pilgrims, became Europe's bankers and were destroyed in seven years. Almost every later secret society has claimed them."],
+  ["rose", "Rosicrucians", "#ec4899", "A brotherhood that announced itself in three pamphlets in 1614–1616 and may never have existed, until people founded it."],
+  ["mason", "Freemasons", "#0ea5e9", "Stonemasons' lodges that became gentlemen's clubs with a legend reaching back to Solomon's Temple and the smith Hiram."],
+  ["illu", "Illuminati", "#6366f1", "A real secret society that lasted nine years, and a conspiracy theory that has lasted more than two hundred."],
+];
+const TRAD = [
+  // metalworking
+  { id: "belovode", l: "metal", y: -5000, s: "First smelted copper", d: "c. 5000 BC", c: "The first smelted metal", v: ["Real", "true"], b: "Copper slag at Belovode in Serbia, published in 2010, is the oldest securely dated evidence of smelting: getting metal out of ore with fire. Ötzi the Iceman carried a nearly pure copper axe across the Alps around 3300 BC." },
+  { id: "tubal", l: "metal", y: -3600, s: "Tubal-cain", d: "Before the Flood (Genesis)", c: "Tubal-cain, the first smith", v: ["Scripture", "part"], b: "Genesis names Tubal-cain, descendant of Cain, as the teacher of metalworkers. In English-speaking Freemasonry “Tubal-cain” is the password of the Master Mason degree.", r: [["Gen", 4, 22]] },
+  { id: "nebra", l: "metal", y: -1600, s: "Nebra sky disc", d: "c. 1600 BC (date argued)", c: "The Nebra sky disc", v: ["Real; date argued", "true"], img: "nebra", b: "A bronze disc inlaid with a gold sun or full moon, a crescent and the Pleiades, dug up by looters in Saxony-Anhalt in 1999 and recovered in a police sting in 2002. It is usually dated around 1600 BC, which would make it the oldest known picture of the sky; in 2020 two archaeologists argued it is Iron Age, a thousand years younger." },
+  { id: "tut", l: "metal", y: -1323, s: "Iron from the sky", d: "c. 1323 BC", c: "Tutankhamun's dagger is made of meteorite", v: ["Real", "true"], b: "A 2016 study measured the nickel and cobalt in the iron blade buried with Tutankhamun and found it came from a meteorite. The Egyptians later called iron “metal of heaven”. Before smelted iron, sky iron was the only kind." },
+  { id: "iron", l: "metal", y: -1200, s: "Iron Age", d: "c. 1200 BC", c: "The Iron Age", v: ["Real", "true"], b: "Smelted iron spread across the Near East after the Bronze Age collapse around 1200 BC. The Bible remembers the Philistines keeping it from Israel.", r: [["1Sam", 13, 19]] },
+  { id: "hiram", l: "metal", y: -960, s: "Hiram the bronze-caster", d: "c. 960 BC", c: "Hiram of Tyre, the widow's son", v: ["Scripture", "part"], b: "The craftsman who cast the bronze pillars Jachin and Boaz for Solomon's Temple. Freemasonry made him Hiram Abiff, a master builder murdered for refusing to reveal the master's word, a story found nowhere in the Bible.", r: [["1Kgs", 7, 14]] },
+  { id: "watchers", l: "metal", y: -250, s: "The Watchers' secret", d: "Written c. 300–200 BC", c: "Forbidden knowledge: Azazel teaches metalworking", v: ["Ancient text", "part"], b: "In 1 Enoch the fallen angels teach humans forbidden arts, and the first is metalworking: weapons, jewellery and cosmetics. It is the oldest story of “forbidden knowledge” given from heaven.", en: [[8, "1"]] },
+  { id: "agricola", l: "metal", y: 1556, s: "De re metallica", d: "1556", c: "De re metallica", v: ["Real", "true"], img: "agricola", b: "Georgius Agricola's book on mining and smelting, with more than 250 woodcuts, was the standard work for two centuries. The first English translation (1912) was made by a mining engineer and his wife: Herbert Hoover, later president, and Lou Henry Hoover." },
+  // alchemy
+  { id: "papyri", l: "alch", y: 250, s: "Leiden papyrus", d: "c. AD 300", c: "Recipes for fake gold", v: ["Real", "true"], b: "The Leiden and Stockholm papyri, Greek workshop manuals from Egypt, give recipes for alloys that look like gold and silver and for dyes that imitate purple. Alchemy starts as craft knowledge, not magic." },
+  { id: "zosimos", l: "alch", y: 300, s: "Zosimos", d: "c. AD 300", c: "Zosimos of Panopolis", v: ["Real", "true"], img: "zosimos", b: "The first alchemist whose own writings survive, from Panopolis in Egypt. He describes stills and furnaces, credits an earlier woman alchemist, Maria the Jewess, with apparatus still named after her (the bain-marie), and treats the work as purifying the soul as well as the metal. He cites Hermes as an authority." },
+  { id: "chrysopoeia", l: "alch", y: 1000, s: "The ouroboros", d: "Copied 10th–11th century", c: "The Chrysopoeia of Cleopatra", v: ["Real text", "true"], img: "ouroboros", b: "“Gold-making of Cleopatra”, a single page of symbols in a Byzantine manuscript copied from older Greek alchemy. It has one of the earliest alchemical serpents eating its own tail, around the words <em>hen to pan</em>, “the All is One”. The author is not the famous queen." },
+  { id: "jabir", l: "alch", y: 800, s: "Jabir", d: "8th–10th century", c: "Jabir ibn Hayyan", v: ["Real, mostly pseudonymous", "part"], b: "The Arabic alchemist credited with thousands of works. Historians date most of the Jabir writings to the 9th and 10th centuries, by many hands. They taught that all metals are made of sulphur and mercury in different proportions, the theory alchemists used for the next 800 years." },
+  { id: "chester", l: "alch", y: 1144, s: "Into Latin", d: "1144", c: "Alchemy reaches Europe", v: ["Real", "true"], b: "Robert of Chester translated the first alchemy book from Arabic into Latin in 1144. The word itself is Arabic: <em>al-kīmiyā</em>, from Greek <em>chēmeia</em>." },
+  { id: "banned", l: "alch", y: 1404, s: "Gold-making banned", d: "1317 and 1404", c: "Alchemy outlawed", v: ["Real", "true"], b: "Pope John XXII condemned alchemists who passed off fake gold around 1317, and in 1404 England made “multiplying” gold and silver a felony. The English law was repealed in 1689 with the support of Robert Boyle, the founder of modern chemistry, who believed transmutation was possible." },
+  { id: "paracelsus", l: "alch", y: 1530, s: "Paracelsus", d: "1493–1541", c: "Paracelsus", v: ["Real", "true"], img: "paracelsus", b: "A Swiss physician who turned alchemy towards medicine, burned a textbook of Avicenna in public at Basel, and added salt to sulphur and mercury as the three principles. “The dose makes the poison” is a summary of his words." },
+  { id: "khunrath", l: "alch", y: 1595, s: "Khunrath", d: "1595", c: "The laboratory is an oratory", v: ["Real", "true"], img: "khunrath", b: "Heinrich Khunrath's <em>Amphitheatre of Eternal Wisdom</em> shows an alchemist praying at an altar on one side of the room and his furnaces on the other: the work in the lab and the work on the soul are the same work." },
+  { id: "brand", l: "alch", y: 1669, s: "Phosphorus", d: "1669", c: "The alchemist who found an element", v: ["Real", "true"], img: "wright", b: "Hennig Brand boiled down about 1,500 gallons of urine in Hamburg looking for the philosopher's stone and found phosphorus, which glows in the dark: the first element discovered by a known person." },
+  { id: "newton", l: "alch", y: 1690, s: "Newton", d: "1669–1690s", c: "Isaac Newton, alchemist", v: ["Real", "true"], b: "Newton wrote over a million words on alchemy and never published them. John Maynard Keynes bought many of the papers at auction in 1936 and called Newton “not the first of the age of reason” but “the last of the magicians”." },
+  { id: "gold", l: "alch", y: 1980, s: "Lead into gold", d: "1901, 1980, 2025", c: "Transmutation is real", v: ["Real, at a loss", "true"], b: "In 1901 Frederick Soddy saw thorium turning into another element and told Ernest Rutherford it was transmutation; Rutherford replied, “Don't call it transmutation. They'll have our heads off as alchemists.” In 1980 Glenn Seaborg's team turned bismuth into a few thousand atoms of gold, and in 2025 CERN's ALICE experiment reported that near-miss lead collisions in the Large Hadron Collider had made about 29 trillionths of a gram of gold. Cost per ounce: astronomical." },
+  // hermetica
+  { id: "corpus", l: "herm", y: 150, s: "Corpus Hermeticum", d: "1st–3rd century AD", c: "The Corpus Hermeticum", v: ["Real texts, Roman era", "true"], b: "Greek dialogues in which Hermes Trismegistus teaches his son about the One, the fall of the soul into the body and its return. They were written in Roman Egypt, mixing Greek philosophy with Egyptian religion." },
+  { id: "nhherm", l: "herm", y: 360, s: "Hermes at Nag Hammadi", d: "4th century", c: "Hermes among the Gnostics", v: ["Documented link", "true"], b: "Codex VI of the Nag Hammadi library, buried by Egyptian monks, holds three Hermetic texts beside Gnostic ones, including the <em>Discourse on the Eighth and Ninth</em>. The same readers were reading both." },
+  { id: "emerald", l: "herm", y: 850, s: "Emerald Tablet", d: "8th–9th century", c: "The Emerald Tablet", v: ["Medieval Arabic", "part"], img: "emerald", b: "“That which is above is like that which is below”: a dozen lines said to be found in the tomb of Hermes. The earliest copy is Arabic, in the <em>Secret of Creation</em> credited to Apollonius of Tyana, and it reached Latin in the 12th century. Every later alchemist quoted it." },
+  { id: "ficino", l: "herm", y: 1463, s: "Ficino", d: "1463", c: "Hermes before Plato", v: ["Real", "true"], b: "When a manuscript of the Corpus Hermeticum reached Florence, Cosimo de' Medici told Marsilio Ficino to stop translating Plato and translate Hermes first, because Hermes was thought to be older than Moses. The Renaissance idea of an ancient secret wisdom starts here." },
+  { id: "casaubon", l: "herm", y: 1614, s: "Casaubon's dating", d: "1614", c: "Casaubon dates the Hermetica", v: ["Real", "true"], b: "Isaac Casaubon showed from the Greek that the Hermetica were written in the Christian era, not before Moses. He published it in 1614, the same year as the first Rosicrucian manifesto, which drew on the older belief anyway." },
+  // gnostics
+  { id: "basilides", l: "gnos", y: 130, s: "Basilides and Abraxas", d: "c. AD 130", c: "Basilides and Abraxas", v: ["Real", "true"], img: "abraxas", b: () => `Basilides taught in Alexandria. According to his critic Irenaeus, his followers counted 365 heavens ruled by Abrasax, whose Greek letters add up to ${[1, 2, 100, 1, 200, 1, 60].join(" + ")} = 365. Most “Abraxas gems” were made for everyday magic, not by Gnostics.` },
+  { id: "irenaeus", l: "gnos", y: 180, s: "Irenaeus", d: "c. AD 180", c: "Against Heresies", v: ["Real", "true"], b: "Bishop Irenaeus of Lyon wrote five books against the Gnostics and named their gospels, including a Gospel of Judas. For 1,600 years most of what anyone knew about the Gnostics came from their enemies." },
+  { id: "mani", l: "gnos", y: 240, s: "Mani", d: "AD 216–274", c: "Mani and the religion of light", v: ["Real", "true"], b: "The Persian prophet Mani taught a cosmic war of light and darkness. His religion spread from Rome to China; Augustine was a Manichaean for nine years before his conversion, and a Manichaean shrine in Fujian survives as a temple." },
+  { id: "nh", l: "gnos", y: 380, s: "Books buried", d: "Buried 4th century, found 1945", c: "The Nag Hammadi library", v: ["Real", "true"], img: "thomas", b: "In December 1945 a farmer, Muhammad Ali al-Samman, dug up a jar near Nag Hammadi in Egypt holding thirteen leather-bound books: 52 texts, including the Gospel of Thomas, the Secret Book of John and a page of Plato's <em>Republic</em>. For the first time the Gnostics spoke for themselves.", go: ["canon", "Read Thomas"] },
+  { id: "bogomils", l: "gnos", y: 950, s: "Bogomils", d: "10th century", c: "The Bogomils", v: ["Real", "true"], b: "A Bulgarian priest called Bogomil taught that the visible world belonged to Satan. His followers spread through the Balkans and Byzantium, and western Europe's Cathars took their ideas from them." },
+  { id: "cathars", l: "gnos", y: 1209, s: "Cathars", d: "1209–1321", c: "The Cathars", v: ["Real", "true"], img: "cathars", b: "Dualist Christians of southern France, crushed by the Albigensian Crusade from 1209. At the sack of Béziers the papal legate is reported to have said “Kill them all; God will know his own”, though the line comes from a chronicler writing years later. More than 200 were burned after Montségur fell in 1244, and the last known Cathar priest was burned in 1321. The Inquisition was created to finish them." },
+  { id: "judas", l: "gnos", y: 2006, s: "Gospel of Judas", d: "Published 2006", c: "The Gospel of Judas", v: ["Real text", "true"], b: "A Coptic book found in Egypt in the 1970s, sold on, damaged in a bank vault, and published by National Geographic in 2006. It is the gospel Irenaeus named around 180, in which Judas is the one disciple who understands Jesus." },
+  { id: "mandaeans", l: "gnos", y: 2026, s: "Mandaeans", d: "Today", c: "The last Gnostics", v: ["Real", "true"], b: "The Mandaeans of southern Iraq and Iran, a few tens of thousands of people, practise the only Gnostic religion that survives. They baptise in running water and honour John the Baptist as their prophet; most have fled Iraq since 2003." },
+  // templars
+  { id: "tfound", l: "temp", y: 1119, s: "Founded", d: "c. 1119–1129", c: "The Poor Fellow-Soldiers of Christ", v: ["Real", "true"], img: "templseal", b: "Hugues de Payens and a few knights vowed to guard pilgrims and were given quarters in the al-Aqsa mosque, which crusaders believed was Solomon's Temple; hence “Templars”. The Council of Troyes approved their rule in 1129 and Bernard of Clairvaux wrote their manifesto. Their seal shows two knights on one horse." },
+  { id: "tbank", l: "temp", y: 1180, s: "Bankers", d: "12th–13th century", c: "Europe's first international bank", v: ["Real", "true"], b: "A pilgrim could deposit money at a Templar house in Europe and draw it in Jerusalem with a letter of credit. The order held the French royal treasury in its Paris Temple, which is why a king who owed them money had a reason to destroy them." },
+  { id: "tarrest", l: "temp", y: 1307, s: "Arrests", d: "1307–1314", c: "Arrest, trial and fire", v: ["Real", "true"], img: "templars", b: "Philip IV of France had every Templar in France arrested on Friday 13 October 1307 on charges of heresy, spitting on the cross and idol worship, extracted under torture. Pope Clement V dissolved the order in 1312, and Grand Master Jacques de Molay was burned in Paris in March 1314. Later chronicles say he summoned the pope and king to God's judgement; both died within the year.", go: ["mysteries", "More on the trials"] },
+  { id: "tchrist", l: "temp", y: 1319, s: "Order of Christ", d: "1319", c: "The Templars who survived", v: ["Real", "true"], b: "Portugal refused to destroy its Templars and refounded them in 1319 as the Order of Christ, with the same red cross. Henry the Navigator ran the order, and its cross flew on the sails of the Portuguese ships that opened the sea route to India." },
+  { id: "larmenius", l: "temp", y: 1804, s: "Larmenius Charter", d: "1804", c: "The Larmenius Charter", v: ["Forgery", "myth"], b: "A list of secret Grand Masters supposedly running from de Molay to 1804, produced by Bernard-Raymond Fabré-Palaprat to found a revived Order of the Temple in Napoleon's Paris. Historians regard it as an 18th- or 19th-century forgery; many modern Templar orders descend from it." },
+  // rosicrucians
+  { id: "fama", l: "rose", y: 1614, s: "Manifestos", d: "1614–1616", c: "Three pamphlets", v: ["Real texts", "true"], img: "rosy", b: "The <em>Fama</em> (1614) and <em>Confessio</em> (1615) announced a secret brotherhood founded by Christian Rosenkreutz, whose tomb had been opened after 120 years, and invited the learned to join. The third, the <em>Chymical Wedding</em> (1616), is an alchemical allegory; its author, the Lutheran pastor Johann Valentin Andreae, later called the whole affair a <em>ludibrium</em>, a play.", go: ["mysteries", "More on the Rosicrucians"] },
+  { id: "maier", l: "rose", y: 1617, s: "Maier", d: "1617", c: "Atalanta Fugiens", v: ["Real", "true"], img: "atalanta", b: "Michael Maier, physician to Emperor Rudolf II and a defender of the brotherhood, published fifty alchemical emblems, each with a poem and a piece of music for three voices: a multimedia book in 1617. Emblem II illustrates a line of the Emerald Tablet." },
+  { id: "paris", l: "rose", y: 1623, s: "Paris posters", d: "1623", c: "The invisible brothers of Paris", v: ["Real", "true"], b: "Posters appeared in Paris announcing that deputies of the Rose Cross were in the city, “visible and invisible”. A panic followed. Descartes, just back from Germany, was suspected of being one; his biographer says he made a point of being seen to prove he wasn't invisible." },
+  { id: "goldrose", l: "rose", y: 1760, s: "Gold and Rosy Cross", d: "1750s–1780s", c: "The Gold and Rosy Cross", v: ["Real", "true"], b: "A German order of alchemists organised inside Masonic lodges. King Frederick William II of Prussia was a member, and his minister Johann Christoph von Wöllner was one of its leaders." },
+  { id: "gdawn", l: "rose", y: 1888, s: "Golden Dawn", d: "1888", c: "The Hermetic Order of the Golden Dawn", v: ["Real", "true"], b: "Founded in London by three Freemasons of the Societas Rosicruciana in Anglia, it taught Hermetic magic, alchemy and Kabbalah in Masonic-style grades. W. B. Yeats and Aleister Crowley were members. Much of modern occultism comes from it." },
+  // freemasons
+  { id: "regius", l: "mason", y: 1400, s: "Regius Poem", d: "c. 1390–1425", c: "The Regius Poem", v: ["Real", "true"], b: "The oldest Masonic document, a poem of rules for working stonemasons. Its legend says Euclid founded the craft in Egypt and King Athelstan brought it to England. No Templars, no Rosicrucians." },
+  { id: "schaw", l: "mason", y: 1599, s: "Schaw Statutes", d: "1598–1599", c: "The first lodges", v: ["Real", "true"], b: "William Schaw, master of works to James VI of Scotland, wrote statutes for the masons' lodges, and the oldest surviving lodge minutes date from 1599. Gentlemen who were not builders soon began to join." },
+  { id: "ashmole", l: "mason", y: 1646, s: "Ashmole", d: "1646", c: "Elias Ashmole, alchemist and Mason", v: ["Documented link", "true"], b: "Ashmole wrote in his diary that he was made a Freemason at Warrington on 16 October 1646. He also collected and published English alchemical poetry (1652) and founded Oxford's Ashmolean Museum: alchemy and Masonry in one man, documented." },
+  { id: "gl1717", l: "mason", y: 1717, s: "Grand Lodge", d: "1717 (or 1721)", c: "The first Grand Lodge", v: ["Date argued", "part"], b: "Four London lodges are said to have formed a Grand Lodge at the Goose and Gridiron alehouse on 24 June 1717. The date rests on James Anderson's account of 1738; some historians argue it was really 1721." },
+  { id: "anderson", l: "mason", y: 1723, s: "Constitutions", d: "1723", c: "Anderson's Constitutions", v: ["Real", "true"], img: "anderson", b: "The first rulebook of the Grand Lodge opens with a history of Masonry from Adam, who “must have had the Liberal Sciences, particularly Geometry, written on his Heart”, through Noah, Solomon and Hiram. Legend, presented as history." },
+  { id: "ramsay", l: "mason", y: 1737, s: "Ramsay's oration", d: "1737", c: "Ramsay gives Masonry crusader roots", v: ["Origin of a legend", "part"], b: "In a Paris speech, the Scottish Jacobite Andrew Michael Ramsay said Masonry came from crusader knights in the Holy Land. He did not name the Templars, but German lodges did: the Strict Observance of the 1750s claimed descent from secret Templar survivors, until its own convention gave the claim up in 1782." },
+  { id: "papal", l: "mason", y: 1738, s: "Papal ban", d: "1738", c: "The Church bans Freemasonry", v: ["Real", "true"], b: "Pope Clement XII excommunicated Catholics who joined, because of the secret oaths. The Catholic Church restated in 1983 that membership is still forbidden." },
+  { id: "morgan", l: "mason", y: 1826, s: "Morgan affair", d: "1826", c: "The Morgan affair", v: ["Real", "true"], b: "William Morgan of Batavia, New York, announced a book exposing Masonic ritual and then vanished; Masons were convicted of kidnapping him and he was never found. The outrage created the Anti-Masonic Party, America's first third party, which held the first national nominating convention in 1831." },
+  // illuminati
+  { id: "illu", l: "illu", y: 1776, s: "Founded", d: "1 May 1776", c: "The Bavarian Illuminati", v: ["Real", "true"], img: "weishaupt", b: "Adam Weishaupt, a law professor at Ingolstadt, founded a secret society to spread Enlightenment reason against the Church's grip on Bavaria. Its symbol was the owl of Minerva, not an eye in a pyramid.", go: ["conspiracies", "More conspiracies"] },
+  { id: "knigge", l: "illu", y: 1780, s: "Inside the lodges", d: "1780–1784", c: "Recruiting through the lodges", v: ["Documented link", "true"], b: "Baron Adolph Knigge rebuilt the order on Masonic lines and recruited inside Masonic lodges. At its peak it had perhaps 2,000 members, including Goethe and Herder." },
+  { id: "ban", l: "illu", y: 1785, s: "Banned", d: "1784–1787", c: "Banned and exposed", v: ["Real", "true"], b: "Bavaria's elector banned secret societies in 1784 and named the Illuminati in 1785. Police seized the order's papers and the government printed them in 1787 to expose it. Weishaupt fled to Gotha and lived there until 1830. The order was finished." },
+  { id: "barruel", l: "illu", y: 1797, s: "Barruel and Robison", d: "1797–1798", c: "The conspiracy theory is born", v: ["Origin of a myth", "myth"], b: "Augustin Barruel and John Robison each blamed the French Revolution on Illuminati who had survived inside Masonry. In 1798 the preacher Jedidiah Morse spread the alarm in America, and George Washington wrote that he did not believe the lodges of the United States were contaminated." },
+  { id: "seal", l: "illu", y: 1782, s: "The Great Seal", d: "1782", c: "The eye and the pyramid", v: ["Not Illuminati", "myth"], img: "seal", b: "The reverse of the Great Seal was designed in 1782 by William Barton and Charles Thomson, with an eye of Providence over an unfinished pyramid of thirteen steps for the thirteen states. The only Freemason on the design committees was Benjamin Franklin, whose idea was not used. It went on the dollar bill in 1935." },
+  { id: "illuminatus", l: "illu", y: 1975, s: "Illuminatus!", d: "1969–1975", c: "Pranksters revive the Illuminati", v: ["Real", "true"], b: "Robert Shea and Robert Anton Wilson, two editors at <em>Playboy</em>, wrote the satirical <em>Illuminatus!</em> trilogy (1975) after Discordian pranksters had mailed fake Illuminati claims to newspapers. Much of the modern Illuminati myth comes back from their joke." },
+];
+// Influence between traditions: [from, to, documented?, note]
+const TR_LINKS = [
+  ["belovode", "papyri", true, "Alchemy grows out of metalworkers' recipes"],
+  ["watchers", "tubal", false, "Enoch and Genesis both credit metalworking to the line before the Flood"],
+  ["hiram", "anderson", true, "Masonic legend is built on the Bible's Hiram, from 1 Kings 7"],
+  ["tubal", "anderson", true, "The masons' legendary histories name Tubal-cain among the founders of the crafts"],
+  ["corpus", "zosimos", true, "Zosimos cites Hermes as an authority"],
+  ["nhherm", "nh", true, "Hermetic and Gnostic texts were buried in the same library"],
+  ["emerald", "chester", true, "Arabic alchemy and its Hermetic texts reach Latin Europe"],
+  ["ficino", "paracelsus", true, "Renaissance Hermetism shapes Renaissance alchemy"],
+  ["bogomils", "cathars", true, "Cathar teaching came from the Bogomils"],
+  ["basilides", "bogomils", false, "A direct line from ancient Gnostics to medieval dualists is often claimed, but not documented"],
+  ["khunrath", "fama", true, "The manifestos come out of the alchemical circles of Khunrath's generation"],
+  ["maier", "emerald", true, "Maier's emblems illustrate the Emerald Tablet"],
+  ["ashmole", "fama", true, "Ashmole collected Rosicrucian and alchemical writings and joined a lodge"],
+  ["tarrest", "ramsay", false, "Masonic claims of Templar descent, from Ramsay to the Strict Observance"],
+  ["tarrest", "larmenius", false, "A forged list of secret Grand Masters"],
+  ["goldrose", "gl1717", true, "The Gold and Rosy Cross worked inside Masonic lodges; the Rose Croix degree joins the Scottish Rite"],
+  ["gl1717", "knigge", true, "The Illuminati recruited inside Masonic lodges"],
+  ["ban", "barruel", false, "Claims that the Illuminati survived and caused the French Revolution"],
+  ["seal", "illu", false, "Claims that the Great Seal is an Illuminati symbol"],
+  ["gdawn", "fama", true, "The Golden Dawn's founders took the Rosicrucian legend into modern occultism"],
+];
+const METALS = [
+  ["Gold", "☉", "Sun", "Sunday", "Au", "aurum", /\bgold\b/gi],
+  ["Silver", "☽", "Moon", "Monday", "Ag", "argentum", /\bsilver\b/gi],
+  ["Iron", "♂", "Mars", "Tuesday (French mardi)", "Fe", "ferrum", /\biron\b/gi],
+  ["Mercury", "☿", "Mercury", "Wednesday (mercredi)", "Hg", "hydrargyrum, “water-silver”", /\b(quicksilver|mercury)\b/gi],
+  ["Tin", "♃", "Jupiter", "Thursday (jeudi)", "Sn", "stannum", /\btin\b/gi],
+  ["Copper", "♀", "Venus", "Friday (vendredi)", "Cu", "cuprum, “metal of Cyprus”", /\b(copper|brass|brasen)\b/gi],
+  ["Lead", "♄", "Saturn", "Saturday", "Pb", "plumbum", null],
+];
+// Piecewise, so 5000 BC fits and the crowded last five centuries get room
+const trX = (y) => 140 + 850 * (y < 0 ? 0.22 * (y + 5200) / 5200 : y < 1100 ? 0.22 + 0.2 * y / 1100 : 0.42 + 0.58 * (y - 1100) / 930);
+function initTraditions() {
+  const by = Object.fromEntries(TRAD.map((t) => [t.id, t])), lane = Object.fromEntries(TR_LANES.map(([k], i) => [k, i])), H = 58, top = 34;
+  const Y = (t) => top + lane[t.l] * H + H / 2;
+  // Labels go above or below the dot, wherever the lane still has room; the rest show on hover
+  const used = TR_LANES.map(() => [-1e9, -1e9]), labels = [];
+  for (const t of [...TRAD].sort((a, b) => a.y - b.y)) {
+    const x = trX(t.y), w = t.s.length * 5.6 + 8, u = used[lane[t.l]];
+    const side = x - w / 2 > u[0] ? 0 : x - w / 2 > u[1] ? 1 : -1;
+    if (side < 0) continue;
+    u[side] = x + w / 2;
+    labels.push(`<text x="${Math.min(990 - w / 2, x)}" y="${Y(t) + (side ? 19 : -11)}" text-anchor="middle" font-size="10" style="fill:var(--muted)">${esc(t.s)}</text>`);
+  }
+  const ticks = [-5000, -3000, -1000, 1, 500, 1000, 1200, 1400, 1600, 1800, 2000];
+  $("trad-chart").innerHTML = `<svg viewBox="0 0 1000 ${top + TR_LANES.length * H + 6}" role="img" aria-label="Eight secret traditions over seven thousand years, and the links between them">
+    ${ticks.map((y) => `<line x1="${trX(y)}" x2="${trX(y)}" y1="${top - 8}" y2="${top + TR_LANES.length * H}" style="stroke:var(--rule)"/><text x="${trX(y)}" y="${top - 14}" text-anchor="middle" font-size="10" style="fill:var(--muted)">${y < 0 ? -y + " BC" : y === 1 ? "AD 1" : y}</text>`).join("")}
+    ${TR_LANES.map(([k, n, col], i) => `<line x1="140" x2="990" y1="${top + i * H + H / 2}" y2="${top + i * H + H / 2}" stroke="${col}" stroke-opacity=".35" stroke-width="2"/><text x="6" y="${top + i * H + H / 2 + 4}" font-size="12" font-weight="600" fill="${col}">${n}</text>`).join("")}
+    ${TR_LINKS.map(([a, b, doc, note]) => { const x1 = trX(by[a].y), y1 = Y(by[a]), x2 = trX(by[b].y), y2 = Y(by[b]), m = (y1 + y2) / 2; return `<path d="M${x1} ${y1} C${x1} ${m} ${x2} ${m} ${x2} ${y2}" fill="none" stroke-width="1.6" style="stroke:${doc ? "var(--ink)" : "var(--muted)"}" stroke-opacity="${doc ? 0.55 : 0.8}"${doc ? "" : ' stroke-dasharray="4 4"'}><title>${esc(note)}</title></path>`; }).join("")}
+    ${labels.join("")}
+    ${TRAD.map((t) => `<circle class="tr-dot" data-id="${t.id}" cx="${trX(t.y)}" cy="${Y(t)}" r="6" fill="${TR_LANES[lane[t.l]][2]}" style="stroke:var(--surface)" stroke-width="2"><title>${esc(t.d)}: ${esc(t.c)}</title></circle>`).join("")}
+  </svg>`;
+  $("trad-chart").querySelectorAll(".tr-dot").forEach((c) => { c.onclick = () => { const el = $("tr-" + c.dataset.id); el.scrollIntoView({ behavior: "smooth", block: "center" }); el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }; });
+  const linkLi = ([a, b, , note]) => `<li><span class="t" style="white-space:normal">${esc(note)} <span class="status">${esc(by[a].c)} → ${esc(by[b].c)}</span></span></li>`;
+  $("trad-doc").innerHTML = TR_LINKS.filter((l) => l[2]).map(linkLi).join("");
+  $("trad-claim").innerHTML = TR_LINKS.filter((l) => !l[2]).map(linkLi).join("");
+  $("trad-sections").innerHTML = TR_LANES.map(([k, n, col, lede]) => `<h2 class="sub" style="border-left:4px solid ${col};padding-left:10px">${n}</h2><p class="lede">${lede}</p>${k === "metal" ? `<div class="metals" id="metals"></div>` : ""}<div class="cards">${TRAD.filter((t) => t.l === k).sort((a, b) => a.y - b.y).map((t) => card(t).replace('<div class="card">', `<div class="card" id="tr-${t.id}">${t.img ? fig(t.img) : ""}`).replace(/<\/div>$/, (t.en || []).map(([c, l]) => enochQ(c, l)).join("") + (t.go ? `<button type="button" class="ghost" data-go="${t.go[0]}" style="justify-self:start">${t.go[1]}</button>` : "") + "</div>")).join("")}</div>`).join("");
+  $("metals").innerHTML = METALS.map(([n, g, p, d, sym, lat, rx]) => {
+    const k = rx ? countRx(rx) : null;
+    return `<div class="metal"><span class="glyph" aria-hidden="true">${g}</span><b>${n}</b><span>${p} · ${d}</span><span>${sym}, from Latin ${lat}</span><span class="status">${k === null ? "Not counted: “lead” is also a verb" : k ? `${fmt(k)} times in the KJV${n === "Copper" ? " (mostly as “brass”)" : ""}` : "Never named in the KJV"}</span></div>`;
+  }).join("");
+  $("trad-sections").querySelectorAll("button[data-go]").forEach((b) => { b.onclick = () => { go(b.dataset.go); window.scrollTo({ top: 0 }); }; });
 }
 
 // ---------- conspiracies ----------

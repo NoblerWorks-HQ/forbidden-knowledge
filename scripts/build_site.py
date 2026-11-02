@@ -18,7 +18,7 @@ SITE, DIST = ROOT / "site", ROOT / "dist"
 HOST = "versegraph.noblerworks.com"
 BASE = f"https://{HOST}"
 DESC = ("Lost civilizations, secret societies, banned books and Bible codes, every claim checked against the sources: "
-        "an 11,000-year scroll-through timeline, Giza theories, giants, the Templars, the Book of Enoch, "
+        "an 11,000-year scroll-through timeline, Giza theories, giants, alchemy, Gnostics, Templars, Rosicrucians, Freemasons and the Illuminati, the Book of Enoch, "
         "the Quran and the Book of Mormon beside the KJV, and an honest test of Bible codes.")
 XREFS_PER_VERSE = 3
 MIN_VOTES = 5
@@ -82,6 +82,7 @@ def main():
     if DIST.exists():
         shutil.rmtree(DIST)
     shutil.copytree(data, DIST / "data")
+    shutil.copytree(SITE / "img", DIST / "img")  # public-domain images, credited in the page
 
     # The app: the artifact page is a fragment (title, style, markup, script); give it a real document.
     app = (SITE / "index.html").read_text()

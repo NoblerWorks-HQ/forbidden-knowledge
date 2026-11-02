@@ -14,5 +14,7 @@ Working task list for **versegraph**. Read this at the start of a work session a
 - [x] 2026-11-01 v5/v6: Mysteries tab, scroll Timeline, daily quiz, book heatmap, verse links, hell words, 666/616, Kings vs Chronicles, Dead Sea Scrolls (site + artifact)
 - [x] 2026-11-01 v8: Religions, Philosophy, Lost Worlds, Conspiracies tabs; Tim Hogan claims; timeline to 9500 BC with world steps; whole-world coastline
 - [ ] Pat: skim the new history-heavy cards (Lost Worlds, Conspiracies, Philosophy, Hogan) before promoting the site; facts are from model knowledge, Bible/Quran/BoM figures are computed
+- [x] 2026-11-01 Secret Traditions tab (alchemy, metalworking, Hermetica, Gnostics, Templars, Rosicrucians, Masons, Illuminati: lineage chart, 56 cards, metals grid, 18 PD images) + 7 timeline steps
+- [ ] Pat: skim the Secret Traditions cards (model-knowledge facts) before promoting
 - [ ] Pat: decide whether Forbidden Knowledge gets its own subdomain (e.g. forbidden.noblerworks.com; Pages serves one custom domain, so versegraph. would need a redirect) and whether to rename the repo
 - [ ] Ideas: Verse Ladder as its own shareable page, word/topic drift by book, OT-quoted-in-NT view
