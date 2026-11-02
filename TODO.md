@@ -5,6 +5,9 @@ Working task list for **forbidden-knowledge**. Read this at the start of a work 
 ---
 
 ## Prototype (2026-11-01)
+- [x] 2026-11-02 Who Copied Whom chart (Faiths & Texts): 8 texts, 18 nodes, 16 links (solid = documented, dashed = parallel/claimed) with click-through detail; app strip now uses each product's social image (site/img/app-*.jpg). Left: republish the claude.ai artifact (140 images)
+- [ ] Pat: skim the Who Copied Whom links (model-knowledge: Wright on Hammurabi, Asín Palacio/1264 Latin Mi'raj, Genesis Rabbah dates) before promoting
+- [ ] Next chart idea (agreed): claimed age vs dated age bars for Giza, Sphinx, Göbekli Tepe, Puma Punku, Antikythera, Nazca, Baalbek
 - [x] 2026-11-02 UFOs & UAP tab (20 cases from ufoexplorer.xyz data, each linking its case file) + "More from Nobler Works" app strip on home + footer line. Left: republish the claude.ai artifact (now 132 images)
 - [ ] Pat: skim the UFO cards (summaries from UFO Explorer notes + model knowledge, e.g. AARO 2024 report, Basel 1566) before promoting; ufo-explorer's own audit lists data bugs (/agency pages) I did not use
 - [x] 2026-11-02 Olmec + Maya tabs (Ancient menu; 11 + 13 cards, Long Count converter moved to Maya, 5 timeline steps, 6 CC0/PD images, OG images). Left: republish the claude.ai artifact (index.html + data + img, now 130 images)
