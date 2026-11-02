@@ -18,5 +18,5 @@ Working task list for **versegraph**. Read this at the start of a work session a
 - [x] 2026-11-01 UX pass: home page (tiles, Real-or-myth game, live stats), sticky nav with More/Scripture menus, site-wide search (/ or Ctrl+K, verses too), verdict filters + jump chips, shareable card links, prev/next, back-to-top
 - [ ] Pat: skim the Secret Traditions cards (model-knowledge facts) before promoting
 - [x] 2026-11-02 Moved to forbidden.noblerworks.com (repo name unchanged)
-- [ ] 🔴 2026-11-02 Pat: versegraph.noblerworks.com now 404s; approve creating public repo `NoblerWorks-HQ/versegraph-redirect` (Pages, CNAME versegraph.) that forwards path + hash, or delete the old Route 53 CNAME
+- [x] 2026-11-02 Old versegraph.noblerworks.com CNAME deleted (no redirect; site was unannounced)
 - [ ] Ideas: Verse Ladder as its own shareable page, word/topic drift by book, OT-quoted-in-NT view
