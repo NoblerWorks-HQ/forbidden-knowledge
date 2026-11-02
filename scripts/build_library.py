@@ -23,6 +23,7 @@ SOURCES = {
     "lib/hammurabi.txt": "https://www.gutenberg.org/cache/epub/17150/pg17150.txt",
     "lib/tao.txt": "https://www.gutenberg.org/cache/epub/216/pg216.txt",
     "lib/gita.txt": "https://www.gutenberg.org/cache/epub/2388/pg2388.txt",
+    "lib/dante.txt": "https://www.gutenberg.org/cache/epub/1004/pg1004.txt",
     "world/dhammapada.txt": "https://www.gutenberg.org/cache/epub/2017/pg2017.txt",
 }
 
@@ -39,6 +40,7 @@ TEXTS = [
     ("gita", "Bhagavad Gita", "Hinduism", "c. 2nd century BC – 2nd century AD", -100, "Edwin Arnold, 1885"),
     ("thomas", "Gospel of Thomas", "Early Christianity", "1st–2nd century AD", 120, "Mark M. Mattison"),
     ("quran", "The Quran", "Islam", "AD 610–632", 620, "Marmaduke Pickthall, 1930"),
+    ("dante", "Divine Comedy", "Medieval Christianity", "c. 1308–1321", 1314, "Henry Wadsworth Longfellow, 1867"),
     ("bom", "Book of Mormon", "Latter-day Saints", "1830", 1830, "Joseph Smith, 1830"),
 ]
 APOC = ["I Esdras", "II Esdras", "Tobit", "Judith", "Additions to Esther", "Wisdom", "Sirach", "Baruch", "Prayer of Azariah",
@@ -214,6 +216,37 @@ def build_gita(fetch):
     return out
 
 
+def build_dante(fetch):
+    """Longfellow's Dante, one passage per tercet, labelled by the line it starts on ("Inferno 3:7")."""
+    t = gutenberg_body(fetch("lib/dante.txt"))
+    t = t[:t.index("\nAPPENDIX\n")]
+    parts = re.split(r"^(Inferno|Purgatorio|Paradiso): Canto ([IVXL]+)\s*$", t, flags=re.M)
+    out, cantos = [], []
+    for k in range(1, len(parts), 3):
+        name, num = parts[k], roman(parts[k + 1])
+        cantos.append((name, num))
+        line = 1
+        for st in re.split(r"\n\s*\n", parts[k + 2].strip()):
+            ls = [x.strip() for x in st.splitlines() if x.strip()]
+            if not ls:
+                continue
+            if len(ls) == 1 and out and out[-1][0].startswith(f"{name} {num}:"):
+                out[-1][1] += " " + ls[0]  # the closing line of a canto joins the last tercet
+            else:
+                out.append([f"{name} {num}:{line}", " ".join(ls)])
+            line += len(ls)
+    if len(cantos) != 100 or cantos[0] != ("Inferno", 1) or cantos[-1] != ("Paradiso", 33) or len(out) < 4600:
+        sys.exit(f"Divine Comedy: {len(cantos)} cantos, {len(out)} tercets")
+    if not out[-1][1].endswith("The Love which moves the sun and the other stars."):
+        sys.exit("Divine Comedy: last line missing")
+    return out
+
+
+def roman(r):
+    v = {"I": 1, "V": 5, "X": 10, "L": 50}
+    return sum(-v[a] if b and v[b] > v[a] else v[a] for a, b in zip(r, list(r[1:]) + [None]))
+
+
 STOP = set("""the and of to that in he shall unto for his a they be is him not them it with all thou thy was which my me but ye
 their have thee from as are when this out were by upon there then so said on what one into an i we you your our us she her
 who whom will would may might can could hath had has did do does doth done also even if or nor no yea lo behold now these
@@ -351,12 +384,22 @@ PARALLELS = [
     (("bom", ("Mosiah", 14, 5)), ("kjv", "Isa.53.5"), "quote", "Isaiah 53, the suffering servant."),
     (("bom", ("3 Nephi", 24, 10)), ("kjv", "Mal.3.10"), "quote", "Jesus gives the Nephites Malachi's words."),
 ]
+PARALLELS += [
+    (("dante", "Midway upon the journey of our life"), ("kjv", "Isa.38.10"), "idea", "Dante is 35, half the Psalms' seventy years, and his first line echoes the Latin of Isaiah 38:10, <em>in dimidio dierum meorum</em>, “in the middle of my days”; the KJV has “in the cutting off of my days”."),
+    (("dante", "All hope abandon"), ("kjv", "Matt.7.13"), "idea", "The gate of Dante's Hell, and the wide gate that leads to destruction."),
+    (("dante", "Emperor of the kingdom dolorous"), ("kjv", "Isa.14.12"), "story", "Dante's Lucifer, fallen from heaven and frozen at the centre of the earth, comes from Isaiah's taunt of the king of Babylon, read as Satan's fall."),
+    (("dante", "Nimrod"), ("kjv", "Gen.11.9"), "story", "Dante makes Nimrod a giant chained in Hell, babbling, because tradition blamed him for Babel. The Greek Septuagint calls Nimrod a giant; Genesis never says he built the tower."),
+    (("dante", "Ezekiel"), ("kjv", "Ezek.1.6"), "quote", "Dante's four living creatures at the top of Purgatory: “read Ezekiel… John is with me”, siding with Revelation's six wings over Ezekiel's four."),
+    (("dante", "Ezekiel"), ("kjv", "Rev.4.8"), "quote", "John's six-winged creatures, which Dante follows."),
+    (("dante", "The Love which moves the sun and the other stars"), ("kjv", "1John.4.8"), "idea", "The last line of the Comedy: God as love, moving the universe."),
+]
+
 KINDS = {"quote": "Quotes", "story": "Same story", "law": "Same law", "saying": "Same saying", "idea": "Similar idea"}
 
 
 def build_library(fetch, kjv_text, kjv_index, world, extra, sources):
     texts = {k: getattr(sys.modules[__name__], "build_" + b)(fetch) for k, b in
-             [("apoc", "apocrypha"), ("gilgamesh", "gilgamesh"), ("hammurabi", "hammurabi"), ("tao", "tao"), ("dhamma", "dhamma"), ("gita", "gita")]}
+             [("apoc", "apocrypha"), ("gilgamesh", "gilgamesh"), ("hammurabi", "hammurabi"), ("tao", "tao"), ("dhamma", "dhamma"), ("gita", "gita"), ("dante", "dante")]}
     texts["bod"] = build_bod(fetch, sources)
     qstart, n = [], 0
     for s in world["quran"]:

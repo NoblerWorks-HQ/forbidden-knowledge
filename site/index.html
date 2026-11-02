@@ -172,6 +172,19 @@ footer a { color: inherit; }
 .trad-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0 24px; margin-top: 12px; }
 .trad-links h3 { font: 600 14px var(--ui); margin: 8px 0 0; }
 .fig { margin: 0 0 4px; display: grid; gap: 6px; }
+.dante-map { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin: 16px 0; }
+.dante-col h3 { margin: 0; }
+.dante-col .status { min-height: 3em; }
+.dante-stack { display: grid; gap: 3px; justify-items: center; }
+.dl { font: 12px/1.25 var(--ui); padding: 6px 8px; border: 0; border-radius: 4px; cursor: pointer; text-align: center; color: #fff; min-height: 30px; }
+.dl-hell { background: color-mix(in oklab, #b91c1c calc(100% - var(--i) * 60%), #1c0606); }
+.dl-purg { background: color-mix(in oklab, #57534e, #a16207 calc(var(--i) * 70%)); }
+.dl-para { background: color-mix(in oklab, #1e3a8a calc(100% - var(--i) * 70%), #b45309); }
+.dl[aria-pressed="true"] { outline: 3px solid var(--accent); outline-offset: 2px; }
+.dl:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+#dante-pick .card { max-width: 760px; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+@media (max-width: 720px) { .dante-map { grid-template-columns: 1fr; } .dante-col .status { min-height: 0; } }
 .fig img { width: 100%; max-height: 300px; object-fit: contain; background: var(--bg); border-radius: 6px; }
 .fig figcaption { font: 12px/1.4 var(--ui); color: var(--muted); }
 .fig figcaption a { color: inherit; }
@@ -774,6 +787,19 @@ ol.deny .t { white-space: normal; }
     <div class="cards" id="north-cards"></div>
   </section>
 
+  <section id="v-dante" hidden>
+    <h2>Dante's afterlife</h2>
+    <p class="lede">Most of what people picture as Hell, the circles, the fire, the frozen Satan, the punishments that fit the crime, comes not from the Bible but from one poem: Dante Alighieri's <em>Divine Comedy</em>, written in exile between about 1308 and 1321. Dante walks down through Hell and up the mountain of Purgatory with the Roman poet Virgil, then rises through the heavens with Beatrice. Pick any level to see who Dante put there.</p>
+    <div class="controls"><button type="button" id="dante-read">Read the Comedy from Inferno 1</button><span class="status">Longfellow's translation, 1867, in the Library</span></div>
+    <div class="dante-map" id="dante-map"></div>
+    <div id="dante-pick"></div>
+    <h2 class="sub">The pictures</h2>
+    <p class="lede">Gustave Doré's engravings of 1857–68 fixed the look of Dante's world, as Botticelli and Blake had tried before him.</p>
+    <div class="gallery" id="dante-gallery"></div>
+    <h2 class="sub">What's real, what's Dante</h2>
+    <div class="cards" id="dante-cards"></div>
+  </section>
+
   <section id="v-aliens" hidden>
     <h2>Ancient aliens</h2>
     <p class="lede">The idea that visitors from space built the pyramids, taught the Sumerians or left their portraits in Maya stone, popularised by Erich von Däniken's <em>Chariots of the Gods?</em> in 1968 and by television since. Each claim, with what the evidence shows.</p>
@@ -989,8 +1015,8 @@ darkMQ.addEventListener("change", applyTheme);
 applyTheme();
 
 // ---------- routing ----------
-const VIEWS = ["home", "egypt", "phoenicia", "mesopotamia", "cults", "kabbalah", "americas", "north", "aliens", "traditions", "library", "religions", "philosophy", "lost", "conspiracies", "arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
-const INIT = { home: initHome, egypt: initEgypt, phoenicia: initPhoenicia, mesopotamia: initMesopotamia, cults: initCults, kabbalah: initKabbalah, americas: initAmericas, north: initNorth, aliens: initAliens, arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, library: initLibrary, religions: initReligions, philosophy: initPhilosophy, lost: initLost, traditions: initTraditions, conspiracies: initConspiracies, timeline: initTimeline, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes };
+const VIEWS = ["home", "dante", "egypt", "phoenicia", "mesopotamia", "cults", "kabbalah", "americas", "north", "aliens", "traditions", "library", "religions", "philosophy", "lost", "conspiracies", "arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
+const INIT = { home: initHome, egypt: initEgypt, phoenicia: initPhoenicia, mesopotamia: initMesopotamia, cults: initCults, kabbalah: initKabbalah, americas: initAmericas, north: initNorth, aliens: initAliens, dante: initDante, arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, library: initLibrary, religions: initReligions, philosophy: initPhilosophy, lost: initLost, traditions: initTraditions, conspiracies: initConspiracies, timeline: initTimeline, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes };
 const rendered = {};
 let curView = null;
 function route() {
@@ -1017,7 +1043,7 @@ window.addEventListener("hashchange", route);
 function go(view) { if (location.hash !== "#" + view) location.hash = view; else route(); }
 
 // ---------- navigation ----------
-const NAV = { primary: ["timeline", "lost", "traditions", "conspiracies", "library"], ancient: ["egypt", "mesopotamia", "phoenicia", "cults", "americas", "north"], more: ["aliens", "kabbalah", "mysteries", "religions", "philosophy", "canon", "history"], scripture: ["arcs", "verse", "path", "ladder", "myths", "theories", "map", "people", "translations", "numbers", "codes"] };
+const NAV = { primary: ["timeline", "lost", "traditions", "conspiracies", "library"], ancient: ["egypt", "mesopotamia", "phoenicia", "cults", "americas", "north"], more: ["aliens", "dante", "kabbalah", "mysteries", "religions", "philosophy", "canon", "history"], scripture: ["arcs", "verse", "path", "ladder", "myths", "theories", "map", "people", "translations", "numbers", "codes"] };
 const NAV_ORDER = [...NAV.primary, ...NAV.ancient, ...NAV.more, ...NAV.scripture];
 const MENUS = { ancient: "Ancient", more: "More", scripture: "Scripture" };
 // [title, one line, image in img/, glyph when there is no image]
@@ -1032,6 +1058,7 @@ const VIEW_INFO = {
   kabbalah: ["Kabbalah", "The Tree of Life, the Zohar, God's 72 names and gematria, from Safed to the red string", null, "כתר"],
   americas: ["The Americas", "The Maya calendar and 2012, Olmec heads, Nazca, Teotihuacan's mercury, and who reached America first", "copan"],
   north: ["Celts & Norse", "Stonehenge, the Druids, Odin on the tree, the runes, and the Vikings' missing horns", "stonehenge"],
+  dante: ["Dante's Afterlife", "Hell's nine circles, Purgatory's mountain and Heaven's spheres, and how much of “Hell” is Dante's", "dlucifer"],
   aliens: ["Ancient Aliens", "Pakal's “astronaut”, Baalbek, the Dogon, Ezekiel's wheel, Roswell: every claim checked", "baalbek"],
   traditions: ["Secret Traditions", "Alchemists, Gnostics, Templars, Rosicrucians, Masons and the Illuminati, and what really links them", "khunrath"],
   conspiracies: ["Conspiracies", "The Illuminati, the Protocols, Bible Mandela effects and two thousand years of antichrists", "seal"],
@@ -1158,7 +1185,7 @@ function focusTarget(id) {
 
 // ---------- search ----------
 // History redraws its canvas when shown, so it is safe to render while hidden; canvas views without a redraw are left out
-const SEARCHABLE = ["lost", "egypt", "phoenicia", "mesopotamia", "cults", "kabbalah", "americas", "north", "aliens", "traditions", "conspiracies", "mysteries", "religions", "philosophy", "theories", "canon", "history"];
+const SEARCHABLE = ["lost", "dante", "egypt", "phoenicia", "mesopotamia", "cults", "kabbalah", "americas", "north", "aliens", "traditions", "conspiracies", "mysteries", "religions", "philosophy", "theories", "canon", "history"];
 // Render the card views in the background so search and the home page can see every card
 function warmViews() {
   if (!D) return;
@@ -2050,6 +2077,7 @@ const STEPS = [
   { y: 622, d: "AD 610–632", era: "Islam", t: "Muhammad and the Quran", b: "In Mecca, Muhammad begins reciting revelations in 610. In 622 he and his followers move to Medina, the Hijra, year one of the Islamic calendar. The Quran retells many Bible stories, and Mary is the only woman it names.", pins: [["Mecca", 39.826, 21.423], ["Medina", 39.611, 24.468]], route: true, go: ["religions", "Read the Quran"] },
   { y: 1119, d: "1119–1312", era: "Middle Ages", t: "The Knights Templar", img: "templars", b: "Founded in Jerusalem to protect pilgrims, the Templars become Europe's bankers. On Friday 13 October 1307 Philip IV of France arrests every Templar in his kingdom; the pope dissolves the order in 1312.", pins: [["Jerusalem", 35.235, 31.778], ["Paris", 2.352, 48.857]], route: true, go: ["history", "Relics, orders and legends"] },
   { y: 1209, d: "1209–1244", era: "Heresy", t: "The Cathar crusade", img: "cathars", b: "The pope calls a crusade against the Cathars of southern France, Christians who believed the material world was the work of an evil power. Béziers is sacked in 1209, and when the fortress of Montségur falls in 1244 more than 200 are burned. The Inquisition is created to finish the job.", pins: [["Béziers", 3.215, 43.344], ["Carcassonne", 2.353, 43.212], ["Montségur", 1.832, 42.876]], span: 3, go: ["traditions", "Secret Traditions"] },
+  { y: 1314, d: "c. 1308–1321", era: "Medieval Italy", t: "Dante's Divine Comedy", img: "dmichelino", b: "Exiled from Florence and sentenced to burn if he returns, Dante Alighieri writes a journey down through Hell, up the mountain of Purgatory and through the heavens, in the everyday Tuscan of his city. Its nine circles, frozen Satan and punishments fitted to each sin shape the Western picture of the afterlife more than the Bible's few verses on it.", pins: [["Florence", 11.256, 43.770], ["Ravenna", 12.199, 44.418]], span: 5, go: ["dante", "Dante's afterlife"] },
   { y: 1355, d: "1350s; carbon-dated 1260–1390", era: "Middle Ages", t: "The Shroud appears", img: "shroud", b: "The Shroud of Turin's first secure record is at Lirey in France in the 1350s. It reaches Turin in 1578, and radiocarbon tests in 1988 dated the linen to 1260–1390.", pins: [["Lirey", 4.04, 48.18], ["Turin", 7.686, 45.07]], route: true },
   { y: 1463, d: "1463", era: "Renaissance", t: "Hermes before Plato", img: "hermes", b: "Cosimo de' Medici tells Marsilio Ficino to put Plato aside and translate the newly arrived writings of Hermes Trismegistus, believed older than Moses. The idea of a secret ancient wisdom, passed down from Egypt, takes hold of the Renaissance.", pins: [["Florence", 11.256, 43.77]], span: 4, go: ["traditions", "Secret Traditions"] },
   { y: 1469, d: "1469", era: "Sikhism", t: "Guru Nanak", img: "nanak", b: "Guru Nanak is born at Talwandi, now Nankana Sahib in Pakistan. His teaching of one God beyond Hindu and Muslim divisions becomes Sikhism, carried on by nine further Gurus and the scripture, the Guru Granth Sahib.", pins: [["Nankana Sahib", 73.69, 31.45]], span: 6 },
@@ -2346,6 +2374,27 @@ function initLost() {
 // ---------- secret traditions ----------
 // Public-domain images from Wikimedia Commons, resized into site/img: [caption, credit, Commons file]
 const IMG = {
+  dmap: ["Botticelli's Map of Hell: the funnel of circles down to Lucifer", "Sandro Botticelli, c. 1485", "Sandro Botticelli - La Carte de l'Enfer.jpg"],
+  dmichelino: ["Dante holding the Comedy, with Hell, Mount Purgatory and Florence", "Domenico di Michelino, 1465, Florence Cathedral", "Domenico-Di-Michelino-Dante-and-the-Three-Kingdoms.jpg"],
+  dportrait: ["Dante", "Sandro Botticelli, 1495", "Dante Alighieri's portrait by Sandro Botticelli.jpg"],
+  dforest: ["“Midway upon the journey of our life I found myself within a forest dark”", "Gustave Doré, 1857", "Gustave Doré - Dante Alighieri - Inferno - Plate 1 (I found myself within a forest dark...).jpg"],
+  dgate: ["The gate of Hell: “All hope abandon, ye who enter in”", "Gustave Doré, 1857", "Gustave Doré - Dante Alighieri - Inferno - Plate 8 (Canto III - Abandon all hope ye who enter here).jpg"],
+  dcharon: ["Charon ferries the damned across the Acheron", "Gustave Doré, 1857", "Gustave Doré - Dante Alighieri - Inferno - Plate 9 (Canto III - Charon).jpg"],
+  dlimbo: ["Limbo, the virtuous pagans", "Gustave Doré, 1857", "Gustave Doré - Dante Alighieri - Inferno - Plate 11 (Canto IV - Limbo, the Viruous Pagans).jpg"],
+  dminos: ["Minos judges each soul and coils his tail to show its circle", "Gustave Doré, 1857", "Gustave Doré - Dante Alighieri - Inferno - Plate 13 (Canto V - Minos).jpg"],
+  dlovers: ["The whirlwind of lovers, with Paolo and Francesca", "William Blake, 1824–27", "Blake Dante Hell V.jpg"],
+  dfrancesca: ["Francesca da Rimini tells her story", "Gustave Doré, 1857", "Gustave Doré - Dante Alighieri - Inferno - Plate 15 (Canto V - Francesca di Rimini).jpg"],
+  dcerberus: ["Cerberus over the gluttons", "Gustave Doré, 1857", "Inferno Canto 6 - Cerberus (148618330) (cropped).jpg"],
+  dgeryon: ["Geryon, the monster of fraud, carries Dante and Virgil down", "Gustave Doré, 1857", "Inferno Canto 17 (148618706).jpg"],
+  dsimony: ["The simoniacs, upside down in holes of fire", "Gustave Doré, 1857", "Inferno Canto 19 verses 10-11.jpg"],
+  dtitans: ["The giants around the pit, Nimrod among them", "Gustave Doré, 1857", "Gustave Doré - Dante Alighieri - Inferno - Plate 65 (Canto XXXI - The Titans).jpg"],
+  dice: ["The traitors frozen in the lake of Cocytus", "Gustave Doré, 1857", "Inferno Canto 32 (148619555).jpg"],
+  dlucifer: ["Lucifer, frozen at the centre of the earth", "Gustave Doré, 1857", "Inferno Canto 34 (148619628).jpg"],
+  dblake: ["Lucifer with three faces", "William Blake, 1824–27", "Illustrations to Dante's Divine Comedy, object 72 Butlin 812-69 recto Lucifer.jpg"],
+  dpurg2: ["The angel's boat brings souls to Purgatory", "Gustave Doré, 1868", "Purgatorio Canto 2 (148974163).jpg"],
+  dpurg12: ["The proud, bent under stones, on Purgatory's first terrace", "Gustave Doré, 1868", "Purgatorio Canto 12 (148974491).jpg"],
+  dpurg27: ["The wall of fire before Eden", "Gustave Doré, 1868", "Purgatorio Canto 27 (148975403).jpg"],
+  drose: ["The Empyrean: the saints in the form of a white rose", "Gustave Doré, 1868", "Paradiso Canto 31 (148200393).jpg"],
   gobekli: ["A predator carved on pillar 27 at Göbekli Tepe", "Photo", "Göbekli Tepe Enclosure C Pillar 27 relief.jpg"],
   atlantis: ["Athanasius Kircher's map of Atlantis, with south at the top", "Mundus Subterraneus, 1678", "Atlantis Kircher Mundus subterraneus 1678.jpg"],
   greekfire: ["Greek fire turned on an enemy ship", "Madrid Skylitzes, 12th century", "Greekfire-madridskylitzes1.jpg"],
@@ -2833,6 +2882,86 @@ function initAmericas() {
 // ---------- celts and norse ----------
 // Elder Futhark: [rune, reconstructed name, meaning, sound]
 const FUTHARK = [["ᚠ", "fehu", "cattle, wealth", "f"], ["ᚢ", "ūruz", "aurochs", "u"], ["ᚦ", "þurisaz", "giant", "th"], ["ᚨ", "ansuz", "a god", "a"], ["ᚱ", "raidō", "ride", "r"], ["ᚲ", "kaunan", "sore? torch?", "k"], ["ᚷ", "gebō", "gift", "g"], ["ᚹ", "wunjō", "joy", "w"], ["ᚺ", "hagalaz", "hail", "h"], ["ᚾ", "naudiz", "need", "n"], ["ᛁ", "īsaz", "ice", "i"], ["ᛃ", "jēra", "year, harvest", "j"], ["ᛇ", "eihwaz", "yew", "ï"], ["ᛈ", "perþ", "unknown", "p"], ["ᛉ", "algiz", "elk? protection?", "z"], ["ᛊ", "sōwilō", "sun", "s"], ["ᛏ", "tīwaz", "the god Tyr", "t"], ["ᛒ", "berkanan", "birch", "b"], ["ᛖ", "ehwaz", "horse", "e"], ["ᛗ", "mannaz", "man", "m"], ["ᛚ", "laguz", "water", "l"], ["ᛜ", "ingwaz", "the god Ing", "ng"], ["ᛞ", "dagaz", "day", "d"], ["ᛟ", "ōþila", "inheritance", "o"]];
+// ---------- dante ----------
+// [realm, name, who is there, what happens, cantos, image]
+const DANTE_LEVELS = [
+  ["hell", "The gate and the vestibule", "The uncommitted, who lived “without infamy or praise”, and the angels who took no side when Lucifer rebelled; among them “he who made the great refusal”, usually read as Pope Celestine V, who resigned.", "They chase a blank banner for ever, stung by wasps and hornets. Over the gate: “All hope abandon, ye who enter in.”", "Inferno 3", "dgate"],
+  ["hell", "Circle 1: Limbo", "Virtuous pagans and unbaptised infants: Homer, Horace, Ovid, Socrates, Plato, Aristotle, and the Muslims Saladin, Avicenna and Averroes. Virgil, Dante's guide, lives here.", "No torment, only longing without hope. Virgil says Christ came down once and took Adam, Abraham, Moses and David out.", "Inferno 4", "dlimbo"],
+  ["hell", "Circle 2: Lust", "Cleopatra, Helen, Achilles, Tristan, and Francesca da Rimini with Paolo, her husband's brother, killed together. Minos judges at the entrance, coiling his tail once for each circle a soul must descend.", "Blown for ever in a black whirlwind, as they let passion blow them in life.", "Inferno 5", "dlovers"],
+  ["hell", "Circle 3: Gluttony", "Ciacco, a Florentine, who foretells the city's civil war.", "Lying in freezing, filthy rain while the three-headed dog Cerberus claws them.", "Inferno 6", "dcerberus"],
+  ["hell", "Circle 4: Greed", "Hoarders and wasters, many of them tonsured: “popes and cardinals”.", "Two mobs roll great weights at each other, crash, and shout “Why do you hoard?” and “Why do you squander?”", "Inferno 7", ""],
+  ["hell", "Circle 5: Wrath", "The wrathful, and Filippo Argenti, a Florentine enemy of Dante's.", "The angry fight in the swamp of the Styx; the sullen gurgle under its mud.", "Inferno 7", ""],
+  ["hell", "Circle 6: Heresy", "Inside the walls of the city of Dis: Farinata degli Uberti, Epicureans who said the soul dies with the body, and Pope Anastasius II.", "Lying in open tombs of fire, to be sealed shut at the Last Judgement.", "Inferno 10", ""],
+  ["hell", "Circle 7: Violence", "Tyrants and murderers; suicides; blasphemers, sodomites and usurers. Dante's own teacher, Brunetto Latini, is here.", "A river of boiling blood guarded by centaurs; a wood where suicides are trees torn by Harpies; burning sand under a rain of fire.", "Inferno 13", "dgeryon"],
+  ["hell", "Circle 8: Fraud (Malebolge)", "Ten ditches: seducers, flatterers, simoniacs, fortune-tellers, corrupt officials, hypocrites, thieves, false counsellors, sowers of discord, falsifiers. Pope Nicholas III is here, expecting Boniface VIII, still alive in 1300, to join him; so are Caiaphas, Ulysses and Muhammad.", "Whipped by demons; plunged in excrement; upside down in holes with feet on fire; heads twisted backwards; boiled in pitch; crushed under gilded lead cloaks; turned into snakes; wrapped in flame; split open; rotting with disease.", "Inferno 19", "dsimony"],
+  ["hell", "The well of the giants", "Nimrod, Ephialtes and Antaeus, chained around the pit. Nimrod can only babble: “Raphael mai amech izabi almi”.", "Antaeus lowers Dante and Virgil into the last circle.", "Inferno 31", "dtitans"],
+  ["hell", "Circle 9: Treachery", "Traitors to family, country, guests and lords, in four zones named for Cain, Antenor, Ptolemy and Judas. Count Ugolino gnaws the skull of the archbishop who starved him and his sons.", "Frozen in the lake of Cocytus, some to the neck, some wholly under the ice.", "Inferno 32", "dice"],
+  ["hell", "The centre: Lucifer", "Lucifer, with three faces, chewing Judas, Brutus and Cassius, the betrayers of Christ and of Caesar.", "Waist-deep in ice, weeping from six eyes; his bat wings beat the wind that freezes the lake. Dante and Virgil climb down his fur, past the centre of the earth, and out to see the stars.", "Inferno 34", "dlucifer"],
+  ["purg", "The shore and Ante-Purgatory", "The excommunicated and those who repented late, such as King Manfred, wait at the foot of the mountain, which rises on an island opposite Jerusalem. Cato, a pagan suicide, guards it.", "An angel ferries the saved across the sea. They must wait before they may climb; prayers from the living shorten the wait.", "Purgatorio 2", "dpurg2"],
+  ["purg", "The gate of Peter", "An angel with Peter's keys.", "He cuts seven Ps, for <em>peccatum</em>, sin, into Dante's forehead; one is wiped away on each terrace.", "Purgatorio 9", ""],
+  ["purg", "Terrace 1: Pride", "Omberto Aldobrandeschi, and Oderisi, an illuminator, who says fame is a breath of wind.", "Bent double under great stones, studying carvings of humility.", "Purgatorio 11", "dpurg12"],
+  ["purg", "Terrace 2: Envy", "Sapia of Siena, who rejoiced at her own city's defeat.", "Eyelids sewn shut with wire, leaning on each other like beggars.", "Purgatorio 13", ""],
+  ["purg", "Terrace 3: Wrath", "Marco Lombardo, who explains free will.", "Walking blind in thick, bitter smoke.", "Purgatorio 16", ""],
+  ["purg", "Terrace 4: Sloth", "An abbot of San Zeno in Verona.", "Running without rest, shouting examples of zeal.", "Purgatorio 18", ""],
+  ["purg", "Terrace 5: Greed", "Pope Adrian V, and the poet Statius, whose penance ends as Dante passes; the whole mountain shakes.", "Lying face down, bound hand and foot, staring at the earth they loved.", "Purgatorio 19", ""],
+  ["purg", "Terrace 6: Gluttony", "Dante's friend Forese Donati, and Pope Martin IV, fasting off the eels of Lake Bolsena.", "Starving to skeletons beneath trees of fruit they cannot reach.", "Purgatorio 23", ""],
+  ["purg", "Terrace 7: Lust", "The poets Guido Guinizelli and Arnaut Daniel, who speaks in his own Provençal.", "Walking through a wall of fire, which Dante must cross too to reach Beatrice.", "Purgatorio 26", "dpurg27"],
+  ["purg", "The Earthly Paradise", "The Garden of Eden on the summit. Beatrice arrives in a procession of the books of the Bible; Virgil, a pagan, vanishes.", "Dante is washed in Lethe, which erases the memory of sin, and Eunoë, which restores the memory of good.", "Purgatorio 30", ""],
+  ["para", "1. The Moon", "Piccarda Donati and the Empress Constance, who broke vows when forced from their convents.", "All the blessed live with God in the Empyrean; they appear in the spheres to show Dante their rank.", "Paradiso 3", ""],
+  ["para", "2. Mercury", "The Emperor Justinian, who tells the history of Rome.", "Souls who did good for the sake of fame.", "Paradiso 6", ""],
+  ["para", "3. Venus", "Cunizza da Romano, the troubadour Folquet, and Rahab of Jericho.", "Souls of lovers, whose passion turned to God.", "Paradiso 9", ""],
+  ["para", "4. The Sun", "Thomas Aquinas, Bonaventure, Albert the Great, Bede, Solomon.", "Two rings of wise souls dance and sing around Dante and Beatrice.", "Paradiso 10", ""],
+  ["para", "5. Mars", "Dante's great-great-grandfather Cacciaguida, a crusader, who foretells Dante's exile.", "Warriors for the faith, forming a cross of light.", "Paradiso 17", ""],
+  ["para", "6. Jupiter", "David, Trajan and Constantine among just rulers.", "The souls spell out “Love justice, you who judge the earth”, then form an eagle that speaks with one voice.", "Paradiso 18", ""],
+  ["para", "7. Saturn", "Peter Damian and Benedict.", "Contemplatives, on a golden ladder that rises out of sight.", "Paradiso 21", ""],
+  ["para", "8. The Fixed Stars", "Christ and Mary pass in triumph; Peter, James and John test Dante on faith, hope and love; Adam answers his questions.", "Dante looks down through the spheres and laughs at how small the earth is.", "Paradiso 24", ""],
+  ["para", "9. The Primum Mobile", "The nine orders of angels.", "They wheel around a single point of light, the source of all motion.", "Paradiso 28", ""],
+  ["para", "The Empyrean", "Every saved soul, seated in a white rose of light; Mary; Bernard of Clairvaux, Dante's last guide.", "Dante sees three circles of light, the Trinity, and a human face within them, and his words fail: “The Love which moves the sun and the other stars.”", "Paradiso 33", "drose"],
+];
+const DANTE_REALMS = { hell: ["Inferno", "Hell is a funnel under Jerusalem, made when Lucifer fell and the earth fled from him."], purg: ["Purgatorio", "The earth that fled rose on the other side of the world as the mountain of Purgatory."], para: ["Paradiso", "Nine heavens circle the earth, and beyond them the Empyrean, outside space and time."] };
+const DANTE_CARDS = [
+  { c: "The Bible describes Hell's nine circles", v: ["Dante's design", "myth"], img: "dmap", b: "The Bible's afterlife is a few scattered images: <em>Sheol</em>, the grave; <em>Gehenna</em>, a burning valley outside Jerusalem; outer darkness; a lake of fire. It has no map. Dante's circles come from Aristotle's ethics, which he cites by name in Inferno 11, sorting sin into lack of self-control, violence and fraud, and from Virgil's underworld in Aeneid 6. The fire, the levels and the punishments people imagine are mostly his.", e: ["“Hell” in the KJV", /\bhell\b/gi], go: ["translations", "Where “hell” comes from"] },
+  { c: "Punishments that fit the sin", v: ["Dante's rule", "true"], img: "dlovers", b: "Dante's sinners suffer their sin made literal: lovers swept by the wind of passion, fortune-tellers with heads twisted backwards, the sowers of discord split apart. One of them, the troubadour Bertran de Born, carrying his own severed head, names the rule: <em>lo contrapasso</em>, “the counterpoise” in Longfellow. Older Christian hell-tours, like the second-century Apocalypse of Peter, already hang blasphemers by their tongues." },
+  { c: "Satan rules Hell with a pitchfork", v: ["Not in the Bible or Dante", "myth"], img: "dlucifer", b: "In the Bible the lake of fire is “prepared for the devil and his angels”: he is its prisoner, not its king. Dante's Lucifer is frozen waist-deep in ice at the bottom of the universe, weeping and chewing three traitors, and the wind of his own wings keeps him locked there. The horned ruler with a pitchfork comes from medieval plays and art, not from either text.", r: [["Matt", 25, 41], ["Rev", 20, 10]] },
+  { c: "Dante invented Purgatory", v: ["Older than Dante", "myth"], img: "dpurg2", b: "Prayers for the dead are as old as 2 Maccabees, and the historian Jacques Le Goff traced the noun <em>purgatorium</em>, a place of cleansing, to the late 12th century. The Second Council of Lyon defined the doctrine in 1274, when Dante was nine. What Dante invented was its shape: a mountain on an island opposite Jerusalem, climbed terrace by terrace, with Eden on top." },
+  { c: "Dante put popes in Hell", v: ["Real", "true"], img: "dsimony", b: "Pope Nicholas III is upside down in a hole of fire for selling church offices. Mistaking Dante for Boniface VIII, he says he has been expecting him, a neat way to damn a pope who was still alive in 1300, when the poem is set, and who had backed Dante's enemies. Anastasius II is among the heretics, the greedy circle is full of “popes and cardinals”, and Celestine V, who resigned, is probably “he who made the great refusal”. Adrian V and Martin IV are working off their sins in Purgatory." },
+  { c: "Dante put Muhammad in Hell", v: ["Real", "true"], b: "In Inferno 28 Muhammad and his son-in-law Ali are among the sowers of discord, split open, because medieval Christians saw Islam as a schism from Christianity. The same poem puts Saladin, Avicenna and Averroes in Limbo with the great pagans. A 15th-century fresco of the scene in Bologna's basilica of San Petronio was the target of foiled attack plots in 2002 and 2006." },
+  { c: "Dante borrowed from Muhammad's night journey", v: ["Possible; argued", "part"], b: "In 1919 the Spanish scholar Miguel Asín Palacios argued that Dante drew on Islamic accounts of Muhammad's ascent through the heavens, the <em>Mi'raj</em>. Critics dismissed it until the <em>Book of the Ladder</em>, a version of the Mi'raj translated into Castilian, Latin and French at the court of Alfonso X around 1264, was published in 1949. Dante's teacher Brunetto Latini was in Castile as an envoy in 1260. Whether Dante read it is unproven." },
+  { c: "Beatrice was a real woman", v: ["Probably", "true"], img: "drose", b: "Dante says he first saw Beatrice when they were both nine, and that she died young. Boccaccio, writing a few decades later, identified her as Beatrice Portinari, a banker's daughter who married Simone de' Bardi and died in 1290 at 24. In the poem she replaces Virgil as his guide through Heaven." },
+  { c: "Dante was sentenced to burn", v: ["Real", "true"], img: "dmichelino", b: "Florence exiled Dante in 1302 on a political charge of corruption, then sentenced him to be burned alive if he ever came back. He wrote the Comedy in exile and died in Ravenna in 1321, where his bones still are. Florence's city council formally revoked the sentence in 2008." },
+  { c: "It's called a comedy because it's funny", v: ["Myth", "myth"], img: "dportrait", b: "Dante called it a <em>Commedia</em> because it begins in misery and ends in happiness, and because it is written in everyday language rather than lofty Latin, both marks of comedy in medieval theory. Boccaccio called it “divine”, and the title <em>Divina Commedia</em> first appeared on a Venetian edition in 1555." },
+  { c: "Ulysses' last voyage", v: ["Dante's invention", "part"], b: "In Homer, Odysseus gets home to Ithaca. Dante's Ulysses, burning among the false counsellors, says he left again, sailed past Gibraltar into the forbidden ocean with his old crew, “to follow virtue and knowledge”, and was drowned in sight of a mountain: Purgatory, which no living person may reach by their own power. Tennyson's “Ulysses” grew from this canto." },
+  { c: "Galileo measured Hell", v: ["Real", "true"], b: "In 1588 the 24-year-old Galileo gave two lectures to the Florentine Academy on the shape, location and size of Dante's Inferno, using the poem's clues to work out the funnel's depth and Lucifer's height. It helped him win a chair of mathematics at Pisa. The physicist Mark Peterson has argued that Galileo later saw his scaled-up Hell would collapse under its own weight, the problem at the heart of his work on the strength of materials." },
+  { c: "Dante created the Italian language", v: ["Largely", "part"], b: "Dante wrote in the Tuscan of Florence when serious writing was in Latin, and argued for the vernacular in <em>De vulgari eloquentia</em>. The Comedy's Tuscan, with Petrarch's and Boccaccio's, became the model for literary Italian; when Italy unified in 1861, only a small minority spoke standard Italian at home." },
+];
+function danteShow(k) {
+  const [realm, name, who, what, canto, img] = DANTE_LEVELS[k];
+  document.querySelectorAll("#dante-map .dl").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.k === k)));
+  $("dante-pick").innerHTML = `<div class="card">${img ? fig(img) : ""}<span class="when">${DANTE_REALMS[realm][0]}</span><h4>${name}</h4><p><b>Who:</b> ${who}</p><p><b>What happens:</b> ${what}</p><button type="button" class="ghost" data-canto="${canto}" style="justify-self:start">Read ${canto}</button></div>`;
+  $("dante-pick").querySelector("[data-canto]").onclick = (ev) => readCanto(ev.target.dataset.canto);
+}
+function readCanto(label) {
+  openInLibrary("dante");
+  let n = 0; const t = setInterval(() => { const sel = $("lib-part"), o = sel && [...sel.options].find((x) => x.text === label); if (o) { clearInterval(t); sel.value = o.value; sel.dispatchEvent(new Event("change")); } else if (++n > 50) clearInterval(t); }, 100);
+}
+function initDante() {
+  const col = (realm) => {
+    const ks = DANTE_LEVELS.map((l, k) => [l, k]).filter(([l]) => l[0] === realm), n = ks.length;
+    const rows = ks.map(([l, k], i) => {
+      // Hell narrows going down; the mountain narrows going up; heaven widens going up
+      const w = realm === "hell" ? 100 - (i / (n - 1)) * 62 : 38 + (i / (n - 1)) * 62;
+      return `<button type="button" class="dl dl-${realm}" data-k="${k}" aria-pressed="false" style="width:${w.toFixed(0)}%;--i:${(i / (n - 1)).toFixed(2)}">${l[1]}</button>`;
+    });
+    return `<div class="dante-col"><h3>${DANTE_REALMS[realm][0]}</h3><p class="status">${DANTE_REALMS[realm][1]}</p><div class="dante-stack">${realm === "hell" ? rows.join("") : rows.reverse().join("")}</div></div>`;
+  };
+  $("dante-map").innerHTML = col("hell") + col("purg") + col("para");
+  $("dante-map").onclick = (ev) => { const b = ev.target.closest(".dl"); if (b) danteShow(+b.dataset.k); };
+  danteShow(0);
+  $("dante-cards").innerHTML = DANTE_CARDS.map(cardImg).join("");
+  wireGo($("dante-cards"));
+  $("dante-gallery").innerHTML = ["dforest", "dcharon", "dminos", "dfrancesca", "dblake", "dpurg12", "dpurg27", "drose"].map(fig).join("");
+  $("dante-read").onclick = () => readCanto("Inferno 1");
+}
 const NORTH_CARDS = [
   { c: "Stonehenge", v: ["Real", "true"], img: "stonehenge", b: "Built in stages from about 3000 to 1500 BC. Its smaller bluestones were dragged some 225 km from the Preseli Hills in Wales, and in 2024 the six-tonne Altar Stone was traced to north-east Scotland, over 700 km away. The monument is aligned on the midsummer sunrise and the midwinter sunset." },
   { c: "The Druids built Stonehenge", v: ["Myth", "myth"], b: "The Druids first appear in history around 2,000 years after Stonehenge was begun. The link was made by the antiquarians John Aubrey in the 1600s and William Stukeley in the 1700s, and modern Druid orders took it up." },
@@ -2978,7 +3107,7 @@ function renderLibPars() {
 }
 // Reading parts: chapters where the labels have them, otherwise runs of 30 passages
 function libGroups(t) {
-  const ps = libFlat[t], key = { bod: (l) => l.replace(/ \d+$/, ""), apoc: (l) => l.replace(/:\d+$/, ""), gilgamesh: (l) => l.replace(/\.\d+$/, ""), gita: (l) => l.replace(/\.\d+$/, ""), quran: (l) => l.replace(/:\d+$/, ""), bom: (l) => l.replace(/:\d+$/, ""), enoch: (l) => l.replace(/:[\da-d]+$/, "") }[t];
+  const ps = libFlat[t], key = { bod: (l) => l.replace(/ \d+$/, ""), apoc: (l) => l.replace(/:\d+$/, ""), gilgamesh: (l) => l.replace(/\.\d+$/, ""), gita: (l) => l.replace(/\.\d+$/, ""), quran: (l) => l.replace(/:\d+$/, ""), bom: (l) => l.replace(/:\d+$/, ""), enoch: (l) => l.replace(/:[\da-d]+$/, ""), dante: (l) => l.replace(/:\d+$/, "") }[t];
   const out = [];
   ps.forEach(([l], i) => { const g = key ? key(l) : `${Math.floor(i / 30) * 30}`; if (!out.length || out[out.length - 1][0] !== g) out.push([g, i, i]); out[out.length - 1][2] = i; });
   return out.map(([g, a, b]) => [key ? g.replace(/^.*?, /, "") : `${libFlat[t][a][0].replace(/^.*?, /, "")} – ${libFlat[t][b][0].replace(/^.*?, /, "")}`, a, b]);
