@@ -71,7 +71,7 @@ def fetch(name):
     if not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
         print(f"downloading {SOURCES[name]}")
-        req = urllib.request.Request(SOURCES[name], headers={"User-Agent": "versegraph-build/0.1 (+https://github.com/NoblerWorks-HQ/versegraph)"})
+        req = urllib.request.Request(SOURCES[name], headers={"User-Agent": "forbidden-knowledge-build/0.1 (+https://github.com/NoblerWorks-HQ/forbidden-knowledge)"})
         path.write_bytes(urllib.request.urlopen(req, timeout=60).read())
         time.sleep(0.3)  # polite to Wikisource and Wikidata
     return path.read_bytes()

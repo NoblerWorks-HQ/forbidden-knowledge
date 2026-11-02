@@ -1,6 +1,6 @@
 # TODO
 
-Working task list for **versegraph**. Read this at the start of a work session and keep it current as work completes - check items off with a date, add follow-ups as they surface. Stale TODOs are worse than none.
+Working task list for **forbidden-knowledge**. Read this at the start of a work session and keep it current as work completes - check items off with a date, add follow-ups as they surface. Stale TODOs are worse than none.
 
 ---
 

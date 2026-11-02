@@ -55,7 +55,7 @@ FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="p
 FOOTER = ('<footer>Text: King James Version (public domain). Cross-references from '
           '<a href="https://www.openbible.info/labs/cross-references/">OpenBible.info</a> (CC BY). '
           'Built by <a href="https://noblerworks.com">Nobler Works</a>. '
-          '<a href="https://github.com/NoblerWorks-HQ/versegraph">Source</a>.</footer>')
+          '<a href="https://github.com/NoblerWorks-HQ/forbidden-knowledge">Source</a>.</footer>')
 
 
 def slug(name):
