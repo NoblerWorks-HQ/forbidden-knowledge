@@ -122,7 +122,7 @@ def main():
     places = build_places(index)
     land = build_land()
     theories = build_theories(books, text, rows)
-    popes = build_extra.build_popes(fetch)
+    popes = build_extra.build_pope_bios(fetch, SOURCES, build_extra.build_popes(fetch))
     extra = {k: getattr(build_extra, f"build_{k}")(fetch) for k in ("enoch", "thomas", "mary")}
     translations = build_more.build_translations(fetch, books, index, clean)
     people = build_more.build_people(fetch)

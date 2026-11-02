@@ -28,7 +28,7 @@ ANTIPOPE = "Q172748"
 
 
 def build_popes(fetch):
-    """[ordinal, name, start, end, antipope] sorted by start; fails if the papal line has gaps."""
+    """[ordinal, name, start, end, antipope, Wikidata id] sorted by start; fails if the papal line has gaps."""
     seen, out = set(), []
     for b in json.loads(fetch("hist/popes.json"))["results"]["bindings"]:
         anti = b["kind"]["value"].endswith(ANTIPOPE)
@@ -40,12 +40,62 @@ def build_popes(fetch):
             continue
         seen.add(key)
         name = re.sub(r"^(Pope|Saint|Antipope) ", "", b["pLabel"]["value"])
-        out.append([0 if anti else int(b["ord"]["value"]), name, start, b.get("end", {}).get("value", "")[:10], int(anti)])
+        out.append([0 if anti else int(b["ord"]["value"]), name, start, b.get("end", {}).get("value", "")[:10], int(anti), b["p"]["value"].rsplit("/", 1)[1]])
     ords = sorted(p[0] for p in out if not p[4])
     if ords != list(range(1, len(ords) + 1)) or len(ords) < 266:
         missing = sorted(set(range(1, max(ords) + 1)) - set(ords))
         sys.exit(f"pope ordinals are not a clean 1..N line (missing {missing[:10]}, {len(ords)} rows)")
     return sorted(out, key=lambda p: p[2])
+
+
+WIKIDATA_API = "https://www.wikidata.org/w/api.php?format=json&action=wbgetentities&props=sitelinks&sitefilter=enwiki&ids="
+WIKIPEDIA_API = "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro=1&explaintext=1&redirects=1&exlimit=20&titles="
+
+
+def build_pope_bios(fetch, sources, popes):
+    """Append [English Wikipedia title, opening of its article] to each pope row. The text is CC BY-SA 4.0 and the page
+    credits Wikipedia on every card. Fails if fewer than 95% of popes get a summary."""
+    qids = sorted({p[5] for p in popes})
+    titles = {}
+    for k in range(0, len(qids), 50):
+        name = f"hist/pope-links-{k:03d}.json"
+        sources[name] = WIKIDATA_API + "|".join(qids[k:k + 50])
+        for q, e in json.loads(fetch(name))["entities"].items():
+            link = e.get("sitelinks", {}).get("enwiki")
+            if link:
+                titles[q] = link["title"]
+    want = sorted(set(titles.values()))
+    text = {}
+    for k in range(0, len(want), 20):
+        name = f"hist/pope-text-{k:03d}.json"
+        sources[name] = WIKIPEDIA_API + urllib.parse.quote("|".join(want[k:k + 20]))
+        q = json.loads(fetch(name))["query"]
+        back = {r["to"]: r["from"] for r in q.get("redirects", []) + q.get("normalized", [])}
+        for pg in q["pages"].values():
+            t = pg.get("title", "")
+            while t in back:
+                t = back[t]
+            text[t] = pg.get("extract", "")
+    for p in popes:
+        t = titles.get(p[5], "")
+        p += [t, intro(text.get(t, ""))]
+    have = sum(1 for p in popes if not p[4] and p[7])
+    if have < 0.95 * sum(1 for p in popes if not p[4]):
+        sys.exit(f"only {have} popes have a Wikipedia summary")
+    return popes
+
+
+def intro(t, limit=520):
+    """The first sentences of a Wikipedia intro, up to about `limit` characters, without pronunciation brackets."""
+    paras = [x for x in t.split("\n") if x.strip()]
+    t = " ".join(paras[:2]) if paras and len(paras[0]) < 200 else (paras[0] if paras else "")
+    t = re.sub(r"\s*\([^()]*(?:Latin|Italian|Greek|born|died|r\.|c\.)[^()]*\)", "", t).strip()
+    out = ""
+    for sent in re.split(r"(?<=[.!?])\s+(?=[A-Z])", t):
+        if out and len(out) + len(sent) > limit:
+            break
+        out = (out + " " + sent).strip()
+    return out
 
 
 def clean_wiki(t):
