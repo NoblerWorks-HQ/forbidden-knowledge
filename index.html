@@ -55,8 +55,6 @@ nav.tabs a { font-family: var(--ui); font-weight: 500; color: var(--muted); text
 .swatches button { width: 18px; height: 18px; min-height: 0; padding: 0; border-radius: 50%; border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--rule); cursor: pointer; }
 .swatches button[aria-checked="true"] { box-shadow: 0 0 0 2px var(--ink); }
 #theme-btn { font-size: 13px; padding: 5px 12px; }
-nav.tabs .grp { font: 600 11px var(--ui); letter-spacing: 0.08em; text-transform: uppercase; color: var(--rubric); align-self: center; padding: 0 6px 0 4px; }
-nav.tabs .brk { flex-basis: 100%; height: 0; }
 .wager { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; align-items: start; }
 @media (max-width: 720px) { .wager { grid-template-columns: minmax(0, 1fr); } }
 nav.tabs a:hover { color: var(--ink); border-color: var(--rule); }
@@ -140,7 +138,7 @@ footer a { color: inherit; }
 @media (max-width: 560px) { .choices button { grid-template-columns: minmax(0, 1fr) auto; } .choices button .snip { grid-column: 1 / -1; grid-row: 2; white-space: normal; } }
 #end-dates .t, #lost-books .t, #pharaohs .t { white-space: normal; }
 .tl { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 28px; align-items: start; margin-top: 10px; }
-.tl-stage { position: sticky; top: 12px; height: calc(100vh - 24px); max-height: 860px; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 8px; }
+.tl-stage { position: sticky; top: 64px; height: calc(100vh - 76px); max-height: 860px; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 8px; }
 .tl-map { position: relative; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--sea); }
 .tl-map canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .tl-year { position: absolute; left: 16px; top: 12px; font: 400 44px/1 var(--display); color: var(--ink); text-shadow: 0 0 8px var(--land), 0 0 3px var(--land); pointer-events: none; font-variant-numeric: tabular-nums; }
@@ -159,7 +157,7 @@ footer a { color: inherit; }
 @media (prefers-reduced-motion: reduce) { .tl-step .card { transition: none; transform: none; } }
 @media (max-width: 820px) {
   .tl { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .tl-stage { order: -1; top: 0; height: 46vh; z-index: 2; background: var(--bg); padding-bottom: 6px; }
+  .tl-stage { order: -1; top: 56px; height: 44vh; z-index: 2; background: var(--bg); padding-bottom: 6px; }
   .tl-step { min-height: 62vh; }
   .tl-year { font-size: 30px; } .tl-era { top: 46px; }
 }
@@ -241,12 +239,122 @@ table.gen td { font-family: var(--scripture); }
 .passage .simout ul { margin: 4px 0 0; padding-left: 18px; display: grid; gap: 4px; font-size: 14px; }
 @media (max-width: 480px) { .mark { font-size: 32px; } .verse-hero blockquote { font-size: 18px; } }
 @media (prefers-reduced-motion: reduce) { .progress div { transition: none; } }
+/* ---- navigation: a sticky bar with the main sections, two menus and search ---- */
+.mark a { color: inherit; text-decoration: none; }
+.navbar { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 8px; margin: 12px -16px 22px; padding: 8px 16px; background: color-mix(in srgb, var(--bg) 86%, transparent); -webkit-backdrop-filter: saturate(1.4) blur(10px); backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid transparent; transition: border-color .2s; }
+.navbar.stuck { border-bottom-color: var(--rule); }
+.navbar nav.tabs { flex: 1; min-width: 0; flex-wrap: nowrap; overflow-x: auto; margin: 0; gap: 2px; scrollbar-width: none; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); padding-right: 24px; }
+.navbar nav.tabs::-webkit-scrollbar { display: none; }
+.navbar nav.tabs a, .navmenu { white-space: nowrap; padding: 6px 12px; flex: none; }
+.navmenu { font: 500 15px var(--ui); color: var(--muted); background: none; border: 1px solid transparent; border-radius: 999px; cursor: pointer; }
+.navmenu:hover, .navmenu[aria-expanded="true"] { color: var(--ink); border-color: var(--rule); }
+.navmenu.cur { color: var(--ink); background: var(--surface); border-color: var(--rule); }
+.navmenu .chev { display: inline-block; font-size: 10px; margin-left: 4px; transition: transform .15s; }
+.navmenu[aria-expanded="true"] .chev { transform: rotate(180deg); }
+.menupanel { position: absolute; top: calc(100% + 6px); left: 16px; right: 16px; background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 2px; box-shadow: 0 18px 50px rgba(0,0,0,.18); max-height: calc(100vh - 90px); overflow: auto; }
+.menupanel a { display: grid; gap: 1px; padding: 10px 12px; border-radius: 8px; text-decoration: none; color: var(--ink); }
+.menupanel a:hover, .menupanel a:focus-visible { background: var(--bg); }
+.menupanel a[aria-current="page"] { box-shadow: inset 3px 0 0 var(--accent); }
+.menupanel b { font-weight: 600; }
+.menupanel span { font-size: 13px; color: var(--muted); }
+.searchbtn { display: inline-flex; align-items: center; gap: 8px; flex: none; color: var(--muted); padding: 6px 10px; }
+.searchbtn:hover { color: var(--ink); }
+kbd { font: 500 11px var(--mono); border: 1px solid var(--rule); border-radius: 4px; padding: 0 5px; color: var(--muted); }
+@media (max-width: 640px) { .searchbtn .lbl, .searchbtn kbd { display: none; } .navbar { gap: 4px; } .mast .tagline { display: none; } .mark { font-size: 30px; } header.mast { padding-bottom: 10px; } }
+h2, h2.sub, .card, .tl-step { scroll-margin-top: 76px; }
+
+/* ---- search ---- */
+dialog.search { width: min(680px, calc(100vw - 24px)); max-height: min(640px, calc(100vh - 48px)); margin: 8vh auto auto; padding: 0; border: 1px solid var(--rule); border-radius: 14px; background: var(--surface); color: var(--ink); box-shadow: 0 30px 80px rgba(0,0,0,.35); display: none; flex-direction: column; overflow: hidden; }
+dialog.search[open] { display: flex; }
+dialog.search::backdrop { background: rgba(0,0,0,.45); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+.search-in { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--rule); }
+.search-in input { flex: 1; border: 0; background: none; font: 17px var(--ui); color: var(--ink); padding: 6px 0; outline: none; min-width: 0; }
+.search-res { list-style: none; margin: 0; padding: 6px; overflow-y: auto; flex: 1; }
+.search-res li { padding: 10px 12px; border-radius: 8px; cursor: pointer; display: grid; gap: 3px; }
+.search-res li[aria-selected="true"] { background: var(--bg); box-shadow: inset 3px 0 0 var(--accent); }
+.search-res .top { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.search-res .t { font-weight: 600; }
+.search-res .where { font-size: 12px; color: var(--muted); }
+.search-res .x { font-size: 13px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.search-res mark { background: var(--hit); color: inherit; border-radius: 2px; }
+.search-foot { padding: 8px 16px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; }
+
+/* ---- per-view tools: on-this-page chips, verdict filter, card links, pager ---- */
+.onpage { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: -4px 0 18px; }
+.onpage .lab { font: 600 11px var(--ui); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
+.chip { font: 500 13px var(--ui); color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+.chip:hover { border-color: var(--muted); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip .n { font: 11px var(--mono); opacity: .7; margin-left: 4px; }
+.vfilter { display: inline-flex; gap: 4px; flex-wrap: wrap; }
+.onpage .sep { width: 1px; height: 20px; background: var(--rule); margin: 0 6px; }
+.card { position: relative; }
+.cardlink { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 6px; color: var(--muted); text-decoration: none; font: 600 14px var(--mono); opacity: 0; transition: opacity .15s; }
+.card:hover .cardlink, .cardlink:focus-visible { opacity: 1; }
+.cardlink:hover { background: var(--bg); color: var(--ink); }
+@media (hover: none) { .cardlink { opacity: .55; } }
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 40px; }
+.pager a { display: grid; gap: 2px; padding: 14px 16px; border: 1px solid var(--rule); border-radius: 10px; text-decoration: none; color: var(--ink); background: var(--surface); }
+.pager a:hover { border-color: var(--accent); }
+.pager a.next { text-align: right; grid-column: 2; }
+.pager span { font-size: 12px; color: var(--muted); }
+.pager b { font-family: var(--display); font-weight: 400; font-size: 20px; }
+.totop { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); z-index: 25; width: 44px; height: 44px; padding: 0; border-radius: 50%; background: var(--ink); color: var(--bg); font-size: 18px; box-shadow: 0 6px 20px rgba(0,0,0,.25); opacity: 0; transform: translateY(10px); pointer-events: none; transition: opacity .2s, transform .2s; }
+.totop.on { opacity: 1; transform: none; pointer-events: auto; }
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); background: var(--ink); color: var(--bg); padding: 8px 16px; border-radius: 999px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 40; }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+section[id^="v-"]:not([hidden]) { animation: viewin .25s ease-out; }
+@keyframes viewin { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ---- home ---- */
+.hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 32px; align-items: center; margin: 8px 0 36px; }
+.hero .kicker { font: 600 12px var(--ui); letter-spacing: .1em; text-transform: uppercase; color: var(--rubric); margin: 0 0 8px; }
+.hero h2 { font-size: clamp(30px, 4.4vw, 46px); line-height: 1.08; margin: 0 0 14px; }
+.hero p.lede { font-size: 17px; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 10px; margin: 6px 0 22px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--bg); background: var(--ink); border-radius: 8px; padding: 11px 18px; text-decoration: none; }
+.btn:hover { background: var(--accent); color: #fff; }
+.hero-cta button.ghost { padding: 11px 18px; border-radius: 8px; }
+.hero figure { margin: 0; display: grid; gap: 6px; }
+.hero figure img { width: 100%; border-radius: 12px; border: 1px solid var(--rule); filter: grayscale(.2) contrast(1.05); }
+.hero figcaption { font-size: 12px; color: var(--muted); }
+.hero figcaption a { color: inherit; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+.stats div { background: var(--surface); padding: 10px 12px; display: grid; }
+.stats b { font: 400 22px var(--display); }
+.stats span { font-size: 12px; color: var(--muted); }
+@media (max-width: 820px) { .hero { grid-template-columns: minmax(0, 1fr); } .hero figure img { max-height: 240px; object-fit: cover; } .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.home-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 34px 0 12px; }
+.home-h h3 { margin: 0; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+.tile { display: grid; grid-template-rows: 150px auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; text-decoration: none; color: var(--ink); transition: border-color .15s, transform .15s; }
+.tile:hover { border-color: var(--accent); transform: translateY(-2px); }
+.tile .pic { background: var(--bg) center 30% / cover no-repeat; position: relative; filter: grayscale(.25); transition: filter .2s; }
+.tile:hover .pic { filter: none; }
+.tile .pic.glyph { display: grid; place-items: center; font: 34px var(--scripture); letter-spacing: .3em; padding-left: .3em; color: var(--rubric); filter: none; background: linear-gradient(135deg, var(--hit), var(--bg)); }
+.tile .txt { padding: 12px 14px 14px; display: grid; gap: 4px; }
+.tile b { font: 400 21px var(--display); }
+.tile span { font-size: 13px; color: var(--muted); }
+.tools { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+.tools a { display: grid; gap: 2px; padding: 12px 14px; border: 1px solid var(--rule); border-radius: 10px; text-decoration: none; color: var(--ink); background: var(--surface); }
+.tools a:hover { border-color: var(--accent); }
+.tools span { font-size: 13px; color: var(--muted); }
+.game { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 20px 22px; display: grid; gap: 10px; }
+.game .q { font: 400 24px/1.25 var(--display); margin: 0; text-wrap: balance; }
+.game .where { font-size: 12px; color: var(--muted); }
+.game .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.game .row button { min-width: 110px; }
+.game .ans { display: grid; gap: 8px; }
+.game .ans p { margin: 0; max-width: 75ch; }
+.game .score { margin-left: auto; font-size: 13px; color: var(--muted); }
+[hidden] { display: none !important; }
+.card > h4 { padding-right: 26px; }
 </style>
 
 <div class="wrap">
   <header class="mast">
     <div>
-      <h1 class="mark">Forbidden <span>Knowledge</span></h1>
+      <h1 class="mark"><a href="#home">Forbidden <span>Knowledge</span></a></h1>
       <p class="tagline">Lost civilizations, secret societies, banned books and Bible codes: every claim checked against the sources.</p>
     </div>
     <div class="theme-ctl" aria-label="Appearance">
@@ -254,33 +362,32 @@ table.gen td { font-family: var(--scripture); }
       <button type="button" class="ghost" id="theme-btn" aria-label="Colour theme"></button>
     </div>
   </header>
-  <nav class="tabs" aria-label="Views">
-    <span class="grp">Forbidden</span>
-    <a href="#timeline" data-view="timeline">Timeline</a>
-    <a href="#lost" data-view="lost">Lost Worlds</a>
-    <a href="#traditions" data-view="traditions">Secret Traditions</a>
-    <a href="#conspiracies" data-view="conspiracies">Conspiracies</a>
-    <a href="#mysteries" data-view="mysteries">Mysteries</a>
-    <a href="#library" data-view="library">Library</a>
-    <a href="#religions" data-view="religions">Religions</a>
-    <a href="#philosophy" data-view="philosophy">Philosophy</a>
-    <a href="#canon" data-view="canon">Beyond the Canon</a>
-    <a href="#history" data-view="history">History</a>
-    <span class="brk"></span><span class="grp">Scripture</span>
-    <a href="#arcs" data-view="arcs">Arcs</a>
-    <a href="#verse" data-view="verse">Verse</a>
-    <a href="#path" data-view="path">Path</a>
-    <a href="#ladder" data-view="ladder">Ladder</a>
-    <a href="#myths" data-view="myths">Myths</a>
-    <a href="#theories" data-view="theories">Theories</a>
-    <a href="#map" data-view="map">Map</a>
-    <a href="#people" data-view="people">People</a>
-    <a href="#translations" data-view="translations">Translations</a>
-    <a href="#numbers" data-view="numbers">Numbers</a>
-    <a href="#codes" data-view="codes">Code Breaker</a>
-  </nav>
+  <div class="navbar" id="navbar">
+    <nav class="tabs" id="tabs" aria-label="Sections"></nav>
+    <button type="button" class="ghost searchbtn" id="search-btn" aria-label="Search everything" aria-keyshortcuts="/"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="lbl">Search</span><kbd>/</kbd></button>
+    <div class="menupanel" id="menupanel" hidden></div>
+  </div>
 
   <div id="loading" class="loading">Loading 31,102 verses and 341,282 cross-references…</div>
+
+  <section id="v-home" hidden>
+    <div class="hero">
+      <div>
+        <p class="kicker">Every claim checked against the sources</p>
+        <h2>Lost civilizations, secret societies and banned books</h2>
+        <p class="lede">Atlantis, the Templars, the Book of Enoch, Bible codes and the Illuminati, sorted into what the evidence supports, what is argued and what is myth. Every card gives its verdict, and every Bible figure is counted live from the text.</p>
+        <div class="hero-cta"><a class="btn" href="#timeline">Start the timeline <span aria-hidden="true">→</span></a><button type="button" class="ghost" data-search>Search everything <kbd>/</kbd></button></div>
+        <div class="stats"><div><b id="st-claims" class="num">…</b><span>claims with a verdict</span></div><div><b id="st-verses" class="num">31,102</b><span>verses searchable</span></div><div><b id="st-xrefs" class="num">341,282</b><span>cross-references</span></div><div><b class="num">11</b><span>sacred books compared</span></div></div>
+      </div>
+      <figure><img src="img/flammarion.jpg" alt="A traveller kneels at the edge of the world and pushes his head through the sky to see the machinery beyond"><figcaption>The Flammarion engraving: a traveller looks through the edge of the sky. Often called medieval, it first appeared in a book by Camille Flammarion in 1888. <a href="https://commons.wikimedia.org/wiki/File:FlammarionWoodcut.jpg" target="_blank" rel="noopener">Artist unknown</a>, public domain.</figcaption></figure>
+    </div>
+    <div class="home-h"><h3>Explore</h3></div>
+    <div class="tiles" id="home-tiles"></div>
+    <div class="home-h"><h3>Real or myth?</h3><span class="status">A random claim from the site</span></div>
+    <div class="game" id="game"><p class="status">Loading the claims…</p></div>
+    <div class="home-h"><h3>Scripture tools</h3></div>
+    <div class="tools" id="home-tools"></div>
+  </section>
 
   <section id="v-arcs" hidden>
     <h2>Every cross-reference, Genesis to Revelation</h2>
@@ -577,7 +684,7 @@ table.gen td { font-family: var(--scripture); }
 
   <section id="v-history" hidden>
     <h2>The line of popes</h2>
-    <p class="lede">Every entry in the official list of popes, from Peter to Leo XIV, one row per century. Each bar is one reign; click one for details. Red bars under a row are antipopes, rival claimants the Church does not recognize; the cluster in the 1300s and 1400s is the Western Schism, when up to three men claimed the title at once. White gaps are vacancies between popes. Dates come from Wikidata, and those before about AD 200 are traditional rather than recorded.</p>
+    <p class="lede">Every entry in the official list of popes, from Peter to Leo XIV, one row per century. Each bar is one reign; click one for details. Coloured bars under a row are antipopes, rival claimants the Church does not recognize; the cluster in the 1300s and 1400s is the Western Schism, when up to three men claimed the title at once. White gaps are vacancies between popes. Dates come from Wikidata, and those before about AD 200 are traditional rather than recorded.</p>
     <div class="canvasbox"><canvas id="popes" aria-label="Timeline of papal reigns by century"></canvas><div class="tip" id="pope-tip" hidden></div></div>
     <div class="legend"><span><span class="swatch" style="background:var(--gold)"></span><span class="swatch" style="background:var(--violet)"></span>Reigns, alternating colors</span><span><span class="swatch" style="background:var(--rubric)"></span>Antipopes before 1500</span></div>
     <div class="panel" id="pope-panel" style="margin-top:14px"></div>
@@ -640,6 +747,14 @@ table.gen td { font-family: var(--scripture); }
     Cross-references from <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY), based on the <em>Treasury of Scripture Knowledge</em> with reader votes. Place identifications from <a href="https://github.com/openbibleinfo/Bible-Geocoding-Data" target="_blank" rel="noopener">OpenBible.info Bible Geocoding Data</a> (CC BY 4.0). Map shapes from <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>. Popes from <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a> (CC0). 1 Enoch in R. H. Charles's 1917 translation (public domain) via <a href="https://en.wikisource.org/wiki/The_Book_of_Enoch_(Charles)" target="_blank" rel="noopener">Wikisource</a>. Gospels of Thomas and Mary in Mark M. Mattison's public-domain translations from <a href="https://www.gospels.net/" target="_blank" rel="noopener">gospels.net</a>. The King James Version, American Standard Version and <em>Moby Dick</em> (Project Gutenberg) are in the public domain. The Quran in Marmaduke Pickthall's 1930 translation via <a href="https://tanzil.net/" target="_blank" rel="noopener">Tanzil.net</a>; the Book of Mormon (1830), the <em>Analects</em> (Legge) and the <em>Dhammapada</em> (Müller) from Project Gutenberg, all public domain. The Apocrypha (KJV 1611, via scrollmapper), the Epic of Gilgamesh (R. Campbell Thompson, 1928, via the Internet Archive), the Code of Hammurabi (C. H. W. Johns), the <em>Tao Te Ching</em> (Legge) and the <em>Bhagavad Gita</em> (Arnold), all public domain. Religion figures from the <a href="https://www.pewresearch.org/religion/2025/06/09/how-the-global-religious-landscape-changed-from-2010-to-2020/" target="_blank" rel="noopener">Pew Research Center</a>. Built by Nobler Works.
   </footer>
 </div>
+
+<dialog class="search" id="search-dlg" aria-label="Search">
+  <div class="search-in"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="color:var(--muted)"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="search-in" placeholder="Search claims, sections, the timeline, or a verse like John 3:16" autocomplete="off" spellcheck="false" aria-controls="search-res" aria-label="Search"><kbd>Esc</kbd></div>
+  <ul class="search-res" id="search-res" role="listbox"></ul>
+  <div class="search-foot"><span><kbd>↑</kbd> <kbd>↓</kbd> move</span><span><kbd>Enter</kbd> open</span><span id="search-n"></span></div>
+</dialog>
+<button type="button" class="totop" id="totop" aria-label="Back to top">↑</button>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 "use strict";
@@ -722,22 +837,284 @@ darkMQ.addEventListener("change", applyTheme);
 applyTheme();
 
 // ---------- routing ----------
-const VIEWS = ["traditions", "library", "religions", "philosophy", "lost", "conspiracies", "arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
+const VIEWS = ["home", "traditions", "library", "religions", "philosophy", "lost", "conspiracies", "arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
+const INIT = { home: initHome, arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, library: initLibrary, religions: initReligions, philosophy: initPhilosophy, lost: initLost, traditions: initTraditions, conspiracies: initConspiracies, timeline: initTimeline, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes };
 const rendered = {};
+let curView = null;
 function route() {
-  const [h, arg] = location.hash.slice(1).split("/"), name = VIEWS.includes(h) ? h : "timeline";
-  document.querySelectorAll("nav.tabs a").forEach((a) => { if (a.dataset.view === name) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
-  if (!D) return;
-  VIEWS.forEach((v) => { $("v-" + v).hidden = v !== name; });
+  const [h, ...rest] = location.hash.slice(1).split("/"), arg = rest.join("/"), name = VIEWS.includes(h) ? h : "home", changed = name !== curView;
+  curView = name;
+  closeMenu();
+  setNavCurrent(name);
+  document.title = name === "home" ? "Forbidden Knowledge" : `${VIEW_INFO[name][0]} · Forbidden Knowledge`;
+  // Home needs no data, so it shows while the Bible loads
+  $("loading").hidden = !!D || name === "home";
+  VIEWS.forEach((v) => { $("v-" + v).hidden = v !== name || (!D && name !== "home"); });
+  if (!D && name !== "home") return;
   if (name === "verse" && arg) { const v = parseRef(decodeURIComponent(arg)); rendered.verse = true; $("verse-in").value = v == null ? decodeURIComponent(arg) : ref(v); showVerse(v); }
-  if (!rendered[name]) { rendered[name] = true; ({ arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, library: initLibrary, religions: initReligions, philosophy: initPhilosophy, lost: initLost, traditions: initTraditions, conspiracies: initConspiracies, timeline: initTimeline, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes })[name](); }
+  if (!rendered[name]) { rendered[name] = true; INIT[name](); }
   else if (name === "arcs") drawArcs();
   else if (name === "history") drawPopes();
   else if (name === "map") drawMap();
   else if (name === "timeline") tlUpdate();
+  enhance(name);
+  if (arg && name !== "verse") requestAnimationFrame(() => focusTarget(decodeURIComponent(arg)));
+  else if (changed) window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", route);
 function go(view) { if (location.hash !== "#" + view) location.hash = view; else route(); }
+
+// ---------- navigation ----------
+const NAV = { primary: ["timeline", "lost", "traditions", "conspiracies", "mysteries", "library"], more: ["religions", "philosophy", "canon", "history"], scripture: ["arcs", "verse", "path", "ladder", "myths", "theories", "map", "people", "translations", "numbers", "codes"] };
+const NAV_ORDER = [...NAV.primary, ...NAV.more, ...NAV.scripture];
+const MENUS = { more: "More", scripture: "Scripture" };
+// [title, one line, image in img/, glyph when there is no image]
+const VIEW_INFO = {
+  home: ["Home", "Start here"],
+  timeline: ["Timeline", "Eleven thousand years on a map that flies as you scroll", "nebra"],
+  lost: ["Lost Worlds", "Atlantis, Giza, lost technology and giants: real finds and wild theories, each with a verdict", "atlantis"],
+  traditions: ["Secret Traditions", "Alchemists, Gnostics, Templars, Rosicrucians, Masons and the Illuminati, and what really links them", "khunrath"],
+  conspiracies: ["Conspiracies", "The Illuminati, the Protocols, Bible Mandela effects and two thousand years of antichrists", "seal"],
+  mysteries: ["Mysteries", "Egypt in the Bible, Moses and Thutmose, Masonic ritual, the Dead Sea Scrolls and Tim Hogan's claims", "sphinx"],
+  library: ["Library", "Gilgamesh, Hammurabi, the Tao, the Gita, the Quran and more, with the threads between them", "thomas"],
+  religions: ["Religions", "How the world believes, with the Quran and the Book of Mormon beside the Bible", null, "✡ ✝ ☪ ☸ ॐ"],
+  philosophy: ["Philosophy", "Pascal's wager, the great arguments, and quotes nobody actually said", "athens"],
+  canon: ["Beyond the Canon", "Enoch, Thomas, Mary and the books left out of the Bible", "abraxas"],
+  history: ["History", "Popes, relics, orders and the legends around them", "templars"],
+  arcs: ["Arcs", "Every cross-reference in the Bible as one picture"],
+  verse: ["Verse", "Any verse with its strongest cross-references"],
+  path: ["Path", "The shortest chain of references between two verses"],
+  ladder: ["Ladder", "A daily puzzle: climb from one verse to another"],
+  myths: ["Myths", "Things people think the Bible says, checked against the text"],
+  theories: ["Theories", "Scholars' theories about who wrote what, tested on the text"],
+  map: ["Map", "Every place the Bible names, on one map"],
+  people: ["People", "Lifespans, two genealogies of Jesus and every family tree"],
+  translations: ["Translations", "Six public-domain English Bibles side by side"],
+  numbers: ["Numbers", "Number words, gematria, ciphers and 666"],
+  codes: ["Code Breaker", "Bible codes, with the odds of finding them by chance"],
+};
+const chev = '<span class="chev" aria-hidden="true">▼</span>';
+$("tabs").innerHTML = `<a href="#home" data-view="home">Home</a>${NAV.primary.map((v) => `<a href="#${v}" data-view="${v}">${VIEW_INFO[v][0]}</a>`).join("")}${Object.entries(MENUS).map(([k, l]) => `<button type="button" class="navmenu" data-menu="${k}" aria-expanded="false" aria-controls="menupanel"><span class="ml">${l}</span>${chev}</button>`).join("")}`;
+function closeMenu() { $("menupanel").hidden = true; document.querySelectorAll(".navmenu").forEach((b) => b.setAttribute("aria-expanded", "false")); }
+function openMenu(k, kb) {
+  const p = $("menupanel");
+  p.innerHTML = NAV[k].map((v) => `<a href="#${v}"${v === curView ? ' aria-current="page"' : ""}><b>${VIEW_INFO[v][0]}</b><span>${VIEW_INFO[v][1]}</span></a>`).join("");
+  p.hidden = false;
+  document.querySelectorAll(".navmenu").forEach((b) => b.setAttribute("aria-expanded", String(b.dataset.menu === k)));
+  if (kb) p.querySelector("a").focus({ preventScroll: true });
+}
+$("tabs").addEventListener("click", (ev) => { const b = ev.target.closest(".navmenu"); if (!b) return; if (b.getAttribute("aria-expanded") === "true") closeMenu(); else openMenu(b.dataset.menu, ev.detail === 0); });
+$("menupanel").addEventListener("click", (ev) => { if (ev.target.closest("a")) closeMenu(); });
+document.addEventListener("click", (ev) => { if (!$("menupanel").hidden && !ev.target.closest("#navbar")) closeMenu(); });
+function setNavCurrent(name) {
+  const tabs = $("tabs");
+  tabs.querySelectorAll("a").forEach((a) => { if (a.dataset.view === name) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+  tabs.querySelectorAll(".navmenu").forEach((b) => { const inside = NAV[b.dataset.menu].includes(name); b.classList.toggle("cur", inside); b.querySelector(".ml").textContent = inside ? `${MENUS[b.dataset.menu]} · ${VIEW_INFO[name][0]}` : MENUS[b.dataset.menu]; });
+  // Keep the current item in view when the bar scrolls sideways on a phone
+  const cur = tabs.querySelector('[aria-current="page"], .navmenu.cur');
+  if (cur && (cur.offsetLeft < tabs.scrollLeft || cur.offsetLeft + cur.offsetWidth > tabs.scrollLeft + tabs.clientWidth - 24)) tabs.scrollLeft = cur.offsetLeft - 16;
+}
+const toast = (msg) => { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("on"), 1800); };
+const onScroll = () => { $("navbar").classList.toggle("stuck", $("navbar").getBoundingClientRect().top <= 0.5); $("totop").classList.toggle("on", scrollY > 1400); };
+window.addEventListener("scroll", onScroll, { passive: true });
+$("totop").onclick = () => window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+
+// ---------- per-view tools: card links, on-this-page chips, verdict filter, pager ----------
+const slug = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
+const verdictOf = (c) => { const p = c.querySelector(":scope > .pill"); return p ? (p.className.match(/v-(true|part|myth)/) || [])[1] : undefined; };
+const filters = {};
+const cardsIn = (sec) => [...sec.querySelectorAll(".card")].filter((c) => !c.closest(".tl-step, .link") && c.querySelector(":scope > h4"));
+function applyFilter(sec, f) {
+  const cards = cardsIn(sec).filter(verdictOf);
+  cards.forEach((c) => { c.hidden = f !== "all" && verdictOf(c) !== f; });
+  // Hide a heading and its intro when the filter empties every card under it
+  sec.querySelectorAll("h2.sub").forEach((h) => {
+    const group = []; for (let e = h.nextElementSibling; e && !e.matches("h2.sub"); e = e.nextElementSibling) group.push(e);
+    const own = group.flatMap((e) => (e.matches(".cards") ? [...e.children] : [])), onlyCards = group.every((e) => e.matches(".cards, p.lede, p.status"));
+    const empty = f !== "all" && onlyCards && own.length > 0 && own.every((c) => c.hidden);
+    [h, ...group].forEach((e) => { e.hidden = empty; });
+  });
+}
+function enhance(name) {
+  if (name === "home") return;
+  const sec = $("v-" + name), obs = sec._obs || (sec._obs = new MutationObserver(() => { clearTimeout(sec._t); sec._t = setTimeout(() => enhance(name), 150); }));
+  obs.disconnect();
+  const cards = cardsIn(sec);
+  cards.forEach((c) => {
+    const h = c.querySelector(":scope > h4");
+    if (!c.id) { const base = "c-" + slug(h.textContent); let id = base, n = 2; while (document.getElementById(id)) id = `${base}-${n++}`; c.id = id; }
+    if (!c.querySelector(":scope > .cardlink")) c.insertAdjacentHTML("beforeend", `<a class="cardlink" href="#${name}/${c.id}" title="Copy a link to this card" aria-label="Copy a link to ${esc(h.textContent)}">#</a>`);
+  });
+  const subs = [...sec.querySelectorAll("h2.sub")], judged = cards.filter(verdictOf);
+  subs.forEach((h) => { if (!h.id) h.id = `${name}-${slug(h.textContent)}`; });
+  let bar = sec.querySelector(".onpage");
+  if (subs.length >= 2 || judged.length >= 8) {
+    if (!bar) { bar = document.createElement("div"); bar.className = "onpage"; (sec.querySelector(":scope > p.lede") || sec.querySelector(":scope > h2")).after(bar); }
+    const f = filters[name] || "all", cnt = { true: 0, part: 0, myth: 0 };
+    judged.forEach((c) => cnt[verdictOf(c)]++);
+    const chips = judged.length >= 8 ? [["all", "All", judged.length], ["true", "Real", cnt.true], ["part", "Disputed", cnt.part], ["myth", "Myth", cnt.myth]].filter(([k, , n]) => k === "all" || n) : [];
+    bar.innerHTML = (chips.length ? `<span class="vfilter" role="group" aria-label="Show cards by verdict">${chips.map(([k, l, n]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${f === k}">${l}<span class="n">${n}</span></button>`).join("")}</span>` : "")
+      + (chips.length && subs.length >= 2 ? '<span class="sep" aria-hidden="true"></span>' : "")
+      + (subs.length >= 2 ? `<span class="lab">Jump to</span>${subs.map((h) => `<button type="button" class="chip" data-to="${h.id}">${esc(h.textContent)}</button>`).join("")}` : "");
+    if (judged.length) applyFilter(sec, f);
+  }
+  if (!sec.querySelector(":scope > .pager")) {
+    const i = NAV_ORDER.indexOf(name), prev = NAV_ORDER[i - 1], next = NAV_ORDER[i + 1];
+    sec.insertAdjacentHTML("beforeend", `<nav class="pager" aria-label="Next section">${prev ? `<a class="prev" href="#${prev}"><span>← Previous</span><b>${VIEW_INFO[prev][0]}</b></a>` : ""}${next ? `<a class="next" href="#${next}"><span>Next →</span><b>${VIEW_INFO[next][0]}</b></a>` : ""}</nav>`);
+  }
+  obs.observe(sec, { childList: true, subtree: true });
+}
+document.addEventListener("click", (ev) => {
+  const t = ev.target.closest(".onpage .chip, .cardlink");
+  if (!t) return;
+  if (t.matches(".cardlink")) {
+    ev.preventDefault();
+    const url = location.href.split("#")[0] + t.getAttribute("href");
+    history.replaceState(null, "", t.getAttribute("href"));
+    (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(() => toast("Link copied"), () => toast("Link is in the address bar"));
+  } else if (t.dataset.to) {
+    $(t.dataset.to).scrollIntoView({ behavior: "smooth", block: "start" });
+  } else {
+    filters[curView] = t.dataset.f;
+    t.parentNode.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-pressed", String(c === t)));
+    applyFilter($("v-" + curView), t.dataset.f);
+  }
+});
+function focusTarget(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (el.hidden && filters[curView] && filters[curView] !== "all") { filters[curView] = "all"; enhance(curView); }
+  el.scrollIntoView({ block: "center" });
+  const c = el.classList.contains("card") ? el : el.querySelector(".card");
+  if (c) { c.classList.remove("flash"); void c.offsetWidth; c.classList.add("flash"); }
+}
+
+// ---------- search ----------
+// History redraws its canvas when shown, so it is safe to render while hidden; canvas views without a redraw are left out
+const SEARCHABLE = ["lost", "traditions", "conspiracies", "mysteries", "religions", "philosophy", "theories", "canon", "history"];
+// Render the card views in the background so search and the home page can see every card
+function warmViews() {
+  if (!D) return;
+  for (const v of SEARCHABLE) if (!rendered[v]) { rendered[v] = true; try { INIT[v](); } catch (e) { rendered[v] = false; console.warn("could not render", v, e); } enhance(v); }
+}
+const fold = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+const strip = (s) => s.replace(/<[^>]+>/g, "");
+let SIDX = null, SRES = [], SSEL = 0;
+function buildSearchIndex() {
+  warmViews();
+  const out = [];
+  Object.entries(VIEW_INFO).forEach(([v, [t, d]]) => { if (v !== "home") out.push({ v, id: "", t, x: d, kind: "Section" }); });
+  for (const v of VIEWS) {
+    if (v === "home" || v === "timeline") continue;
+    cardsIn($("v-" + v)).forEach((c) => {
+      const p = c.querySelector(":scope > .pill");
+      out.push({ v, id: c.id, t: c.querySelector(":scope > h4").textContent, x: [...c.children].filter((e) => !e.matches("h4, .pill, .cardlink, figure, button")).map((e) => e.textContent).join(" "), pill: p ? [p.textContent, verdictOf(c)] : null });
+    });
+  }
+  STEPS.forEach((s, k) => out.push({ v: "timeline", id: "t-" + k, t: s.t, x: strip(typeof s.b === "string" ? s.b : ""), kind: `Timeline · ${s.d}` }));
+  out.forEach((o) => { o.T = fold(o.t); o.X = fold(o.x); });
+  return out;
+}
+function hl(s, terms) {
+  let h = esc(s);
+  terms.forEach((t) => { if (t.length > 1) h = h.replace(new RegExp(`(${t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi"), "<mark>$1</mark>"); });
+  return h;
+}
+function runSearch() {
+  const q = $("search-in").value.trim(), terms = fold(q).split(/\s+/).filter(Boolean);
+  if (!SIDX || SIDX.stale) SIDX = buildSearchIndex();
+  let res;
+  if (!terms.length) res = SIDX.filter((o) => o.kind === "Section");
+  else {
+    res = SIDX.map((o) => {
+      let s = 0;
+      for (const t of terms) { if (o.T.includes(t)) s += 10; else if (o.X.includes(t)) s += 1; else return null; }
+      if (o.T.startsWith(terms[0])) s += 5;
+      if (o.kind === "Section") s += 6;
+      return [s, o];
+    }).filter(Boolean).sort((a, b) => b[0] - a[0]).slice(0, 40).map((r) => r[1]);
+    const v = D ? parseRef(q) : null;
+    if (v != null) res.unshift({ verse: v, v: "verse", t: ref(v), x: D.text[v], X: fold(D.text[v]), kind: "Open this verse" });
+  }
+  SRES = res; SSEL = 0;
+  const snip = (o) => { if (!terms.length) return o.x; const i = Math.max(0, o.X.indexOf(terms[0]) - 60); return (i ? "…" : "") + o.x.slice(i, i + 200); };
+  $("search-res").innerHTML = res.length ? res.map((o, i) => `<li role="option" id="sr-${i}" data-i="${i}" aria-selected="${i === 0}"><div class="top"><span class="t">${hl(o.t, terms)}</span>${o.pill ? pill(o.pill) : ""}<span class="where">${o.kind || VIEW_INFO[o.v][0]}</span></div><div class="x">${hl(snip(o), terms)}</div></li>`).join("")
+    : `<li aria-disabled="true"><span class="t">Nothing found</span><div class="x">Try a name (Enoch, Templars, Atlantis), a word, or a verse like John 3:16.</div></li>`;
+  $("search-n").textContent = terms.length ? `${res.length}${res.length === 40 ? "+" : ""} results` : "Sections";
+}
+function openResult(o) {
+  if (!o) return;
+  $("search-dlg").close();
+  const h = o.verse != null ? "verse/" + encodeURIComponent(ref(o.verse)) : o.id ? `${o.v}/${o.id}` : o.v;
+  if (location.hash.slice(1) === h) route(); else location.hash = h;
+}
+function selectResult(i) {
+  if (!SRES.length) return;
+  SSEL = (i + SRES.length) % SRES.length;
+  $("search-res").querySelectorAll("li").forEach((li) => li.setAttribute("aria-selected", String(+li.dataset.i === SSEL)));
+  $("sr-" + SSEL).scrollIntoView({ block: "nearest" });
+}
+function openSearch() {
+  closeMenu();
+  const d = $("search-dlg");
+  if (!d.open) d.showModal();
+  $("search-in").select();
+  runSearch();
+}
+$("search-btn").onclick = openSearch;
+$("search-in").oninput = runSearch;
+$("search-in").onkeydown = (ev) => {
+  if (ev.key === "ArrowDown") { ev.preventDefault(); selectResult(SSEL + 1); }
+  else if (ev.key === "ArrowUp") { ev.preventDefault(); selectResult(SSEL - 1); }
+  else if (ev.key === "Enter") { ev.preventDefault(); openResult(SRES[SSEL]); }
+};
+$("search-res").onclick = (ev) => { const li = ev.target.closest("li[data-i]"); if (li) openResult(SRES[+li.dataset.i]); };
+$("search-res").onmousemove = (ev) => { const li = ev.target.closest("li[data-i]"); if (li && +li.dataset.i !== SSEL) selectResult(+li.dataset.i); };
+$("search-dlg").addEventListener("click", (ev) => { if (ev.target === $("search-dlg")) $("search-dlg").close(); });
+document.addEventListener("keydown", (ev) => {
+  const typing = ev.target.closest && ev.target.closest("input, textarea, select, [contenteditable]");
+  if ((ev.key === "/" && !typing) || ((ev.metaKey || ev.ctrlKey) && ev.key.toLowerCase() === "k")) { ev.preventDefault(); openSearch(); }
+  else if (ev.key === "Escape" && !$("menupanel").hidden) { closeMenu(); }
+});
+document.addEventListener("click", (ev) => { if (ev.target.closest("[data-search]")) openSearch(); });
+
+// ---------- home ----------
+function initHome() {
+  const tile = (v) => { const [t, d, img, glyph] = VIEW_INFO[v]; return `<a class="tile" href="#${v}"><div class="pic${img ? "" : " glyph"}"${img ? ` style="background-image:url(img/${img}.jpg)"` : ""} aria-hidden="true">${img ? "" : glyph}</div><div class="txt"><b>${t}</b><span>${d}</span></div></a>`; };
+  $("home-tiles").innerHTML = [...NAV.primary, ...NAV.more].map(tile).join("");
+  $("home-tools").innerHTML = NAV.scripture.map((v) => `<a href="#${v}"><b>${VIEW_INFO[v][0]}</b><span>${VIEW_INFO[v][1]}</span></a>`).join("");
+  homeData();
+}
+const GAME = { pool: [], right: 0, n: 0 };
+function homeData() {
+  if (!D || homeData.done) return;
+  homeData.done = true;
+  warmViews();
+  if (SIDX) SIDX.stale = true;
+  const judged = SEARCHABLE.flatMap((v) => cardsIn($("v-" + v)).filter(verdictOf).map((c) => [v, c]));
+  $("st-claims").textContent = fmt(judged.length);
+  $("st-verses").textContent = fmt(D.N);
+  $("st-xrefs").textContent = fmt(D.E);
+  GAME.all = judged.filter(([, c]) => verdictOf(c) !== "part");
+  nextClaim();
+}
+function nextClaim() {
+  if (!GAME.pool.length) GAME.pool = GAME.all.map((x) => [Math.random(), x]).sort((a, b) => a[0] - b[0]).map((x) => x[1]);
+  const [v, c] = (GAME.cur = GAME.pool.pop());
+  $("game").innerHTML = `<span class="where">From ${VIEW_INFO[v][0]}</span><p class="q">${esc(c.querySelector(":scope > h4").textContent)}</p>
+    <div class="row"><button type="button" data-g="true">Real</button><button type="button" class="ghost" data-g="myth">Myth</button><span class="score">${GAME.n ? `${GAME.right} of ${GAME.n} right` : "Real history, or a myth?"}</span></div><div class="ans" id="game-ans" aria-live="polite"></div>`;
+}
+$("game").addEventListener("click", (ev) => {
+  const b = ev.target.closest("button");
+  if (!b) return;
+  if (b.dataset.next) return nextClaim();
+  if (!b.dataset.g || $("game-ans").innerHTML) return;
+  const [v, c] = GAME.cur, ok = verdictOf(c) === b.dataset.g, p = c.querySelector(":scope > p");
+  GAME.n++; if (ok) GAME.right++;
+  $("game").querySelectorAll("button[data-g]").forEach((x) => { x.disabled = true; });
+  $("game").querySelector(".score").textContent = `${GAME.right} of ${GAME.n} right`;
+  $("game-ans").innerHTML = `<div class="row"><strong>${ok ? "Right." : "Not quite."}</strong>${c.querySelector(":scope > .pill").outerHTML}</div>${p ? `<p>${p.innerHTML}</p>` : ""}<div class="row"><button type="button" data-next="1">Next claim</button><a class="ref" href="#${v}/${c.id}">Read the card</a></div>`;
+});
 
 // ---------- arcs ----------
 let arcBook = -1, arcGeom = null;
@@ -1523,7 +1900,7 @@ function tlCam(s) {
 }
 function initTimeline() {
   STEPS[STEPS.length - 1].b = `The ${fmt(D.places.length)} places the Bible names, each at its most likely modern location. Scroll back up to travel again, or open any tab to explore.`;
-  $("tl-steps").innerHTML = STEPS.map((s, k) => `<div class="tl-step" data-k="${k}"><div class="card"><span class="when">${s.d}</span><h4>${s.t}</h4>${s.img ? fig(s.img) : ""}<p>${s.b}</p>${(s.r || []).map((r) => quote(...r)).join("")}${s.go ? `<button type="button" class="ghost" data-go="${s.go[0]}" style="justify-self:start">More: ${s.go[1]}</button>` : ""}</div></div>`).join("");
+  $("tl-steps").innerHTML = STEPS.map((s, k) => `<div class="tl-step" id="t-${k}" data-k="${k}"><div class="card"><span class="when">${s.d}</span><h4>${s.t}</h4>${s.img ? fig(s.img) : ""}<p>${s.b}</p>${(s.r || []).map((r) => quote(...r)).join("")}${s.go ? `<button type="button" class="ghost" data-go="${s.go[0]}" style="justify-self:start">More: ${s.go[1]}</button>` : ""}</div></div>`).join("");
   $("tl-steps").querySelectorAll("button[data-go]").forEach((b) => { b.onclick = () => { go(b.dataset.go); window.scrollTo({ top: 0 }); }; });
   // Land in raw lon/lat, projected by the canvas transform, so a frame costs one fill
   const path = (rings, close) => { const p = new Path2D(); rings.forEach((r) => { r.forEach(([lon, lat], i) => (i ? p.lineTo(lon, lat) : p.moveTo(lon, lat))); if (close) p.closePath(); }); return p; };
@@ -2596,7 +2973,7 @@ function initNumbers() {
 }
 
 // ---------- boot ----------
-load().then(() => { $("loading").hidden = true; route(); }).catch((err) => {
+load().then(() => { $("loading").hidden = true; route(); setTimeout(homeData, 30); }).catch((err) => {
   $("loading").textContent = `Couldn't load the data (${err.message}). Reload the page to try again.`;
 });
 route();
