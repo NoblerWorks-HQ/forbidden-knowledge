@@ -8,6 +8,10 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+# Live sitemap saved before publishing, so the notifier can diff it against dist/ (IndexNow + Search Console)
+SITEMAP_BEFORE="$(mktemp -t forbidden-sitemap-before.XXXXXX)"
+node scripts/seo/notify-search-engines.mjs --snapshot "$SITEMAP_BEFORE" >/dev/null 2>&1 || { echo "WARN: could not snapshot the live sitemap - search engines will not be told what changed"; SITEMAP_BEFORE=""; }
+
 python3 scripts/build_data.py
 python3 scripts/build_site.py
 
@@ -38,3 +42,12 @@ git -C "$tmp" -c user.name="$(git config user.name)" -c user.email="$(git config
   commit -q -m "Deploy site from ${rev}"
 git -C "$tmp" push -q "$remote" HEAD:gh-pages
 echo "published gh-pages from ${rev}; check https://forbidden.noblerworks.com/ in a minute"
+
+# Pages takes a minute or two to serve the new files; IndexNow checks the live key file first, so wait for it.
+key=$(node -p 'require("./scripts/seo/notify-search-engines.config.json").indexNowKey')
+for _ in $(seq 1 40); do curl -sf "https://forbidden.noblerworks.com/${key}.txt" | grep -q "$key" && break; sleep 6; done
+# Loud on failure, never fails the deploy (the site is already live). Recovery: node scripts/seo/notify-search-engines.mjs --all
+if [[ -n "$SITEMAP_BEFORE" ]]; then
+  node scripts/seo/notify-search-engines.mjs --before "$SITEMAP_BEFORE" --after dist/sitemap.xml \
+    || echo "WARN: search-engine notification failed - retry: node scripts/seo/notify-search-engines.mjs --all"
+fi

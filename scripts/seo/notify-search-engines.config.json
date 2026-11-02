@@ -1,0 +1,9 @@
+{
+  "site": "https://forbidden.noblerworks.com",
+  "indexNowKey": "ce1d1d5464565586a4b0a99b0dad1a90",
+  "gscProperty": "sc-domain:noblerworks.com",
+  "awsProfile": "noblerworks",
+  "awsRegion": "us-east-1",
+  "wifAudience": "//iam.googleapis.com/projects/822136630919/locations/global/workloadIdentityPools/aws-lambda-pool/providers/aws-lambda-provider",
+  "reportingServiceAccount": "nobler-reporting@nobler-os.iam.gserviceaccount.com"
+}

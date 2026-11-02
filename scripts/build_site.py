@@ -183,6 +183,9 @@ def main():
                                       + "".join(f"<url><loc>{u}</loc></url>\n" for u in urls) + "</urlset>\n")
     (DIST / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
     (DIST / "CNAME").write_text(HOST + "\n")
+    # IndexNow key (public by design): the deploy pings Bing & co. through scripts/seo/notify-search-engines.mjs
+    key = json.loads((ROOT / "scripts/seo/notify-search-engines.config.json").read_text())["indexNowKey"]
+    (DIST / f"{key}.txt").write_text(key)
     (DIST / ".nojekyll").write_text("")
     if len(urls) != 1189 + 2:
         sys.exit(f"expected 1,191 sitemap URLs, built {len(urls)}")
