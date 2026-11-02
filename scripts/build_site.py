@@ -4,6 +4,8 @@
 - dist/index.html: the app, wrapped in a full HTML document (the artifact host adds this wrapper itself)
 - dist/read/<book>/<chapter>.html: one indexable page per chapter (1,189), each verse with its
   strongest cross-references linking to other chapter pages
+- dist/<section>/index.html: a share link per section (forbidden.noblerworks.com/dante/) carrying that
+  section's preview image from site/og/ (made by build_og.py), which opens the app at /#<section>
 - dist/read/index.html, sitemap.xml, robots.txt, CNAME, .nojekyll, 404.html
 """
 import html
@@ -62,13 +64,18 @@ def slug(name):
     return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
 
 
-def doc(title, desc, canonical, body, extra_head=""):
+def doc(title, desc, canonical, body, extra_head="", og="home"):
+    img = f"{BASE}/og/{og}.jpg"
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">'
             f"<title>{html.escape(title)}</title><meta name=\"description\" content=\"{html.escape(desc)}\">"
             f'<link rel="canonical" href="{canonical}"><meta property="og:title" content="{html.escape(title)}">'
             f'<meta property="og:description" content="{html.escape(desc)}"><meta property="og:url" content="{canonical}">'
-            f'<meta property="og:type" content="website">{ICON}{extra_head}</head><body>{body}</body></html>')
+            f'<meta property="og:type" content="website"><meta property="og:site_name" content="Forbidden Knowledge">'
+            f'<meta property="og:image" content="{img}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">'
+            f'<meta property="og:image:alt" content="{html.escape(title)}"><meta name="twitter:card" content="summary_large_image">'
+            f'<meta name="twitter:title" content="{html.escape(title)}"><meta name="twitter:description" content="{html.escape(desc)}">'
+            f'<meta name="twitter:image" content="{img}">{ICON}{extra_head}</head><body>{body}</body></html>')
 
 
 def main():
@@ -83,12 +90,33 @@ def main():
         shutil.rmtree(DIST)
     shutil.copytree(data, DIST / "data")
     shutil.copytree(SITE / "img", DIST / "img")  # public-domain images, credited in the page
+    shutil.copytree(SITE / "og", DIST / "og")  # social previews, from build_og.py
 
     # The app: the artifact page is a fragment (title, style, markup, script); give it a real document.
     app = (SITE / "index.html").read_text()
     app = re.sub(r'<meta charset="utf-8">\s*|<title>.*?</title>\s*|<meta name="claude:viewport-fit-sides"[^>]*>\s*', "", app, count=3)
     # The artifact host's wrapper zeroes the body margin; do the same here.
     (DIST / "index.html").write_text(doc("Forbidden Knowledge", DESC, BASE + "/", app, "<style>body{margin:0}</style>"))
+
+    # One share link per section: its own preview, then straight into the app (keeping any #card after it)
+    block = app[app.index("const VIEW_INFO = {"):]
+    info = {k: json.loads(v) for k, v in re.findall(r'^  (\w+): (\[.*\]),$', block[:block.index("\n};")], re.M)}
+    shares = 0
+    for key, (name, blurb, *_) in info.items():
+        if key == "home":
+            continue
+        if not (SITE / "og" / f"{key}.jpg").exists():
+            sys.exit(f"site/og/{key}.jpg is missing - run scripts/build_og.py")
+        go = f"/#{key}"
+        page = DIST / key / "index.html"
+        page.parent.mkdir(parents=True, exist_ok=True)
+        page.write_text(doc(f"{name} · Forbidden Knowledge", blurb + ".", f"{BASE}/{key}/",
+                            f'<script>location.replace("{go}" + (location.hash ? "/" + location.hash.slice(1) : ""))</script>'
+                            f'<p><a href="{go}">{html.escape(name)} on Forbidden Knowledge</a></p>',
+                            f'<meta name="robots" content="noindex"><meta http-equiv="refresh" content="1;url={go}">', og=key))
+        shares += 1
+    if shares < 25:
+        sys.exit(f"only {shares} section share links")
 
     # verse index -> (book, chapter, verse)
     loc = []
@@ -137,7 +165,7 @@ def main():
                 f'<nav class="pn">{prev_l}{next_l}</nav>{FOOTER}</main>')
         page = DIST / "read" / slug(name) / f"{c}.html"
         page.parent.mkdir(parents=True, exist_ok=True)
-        page.write_text(doc(title, desc, canonical, body, FONTS + f"<style>{PAGE_CSS}</style>"))
+        page.write_text(doc(title, desc, canonical, body, FONTS + f"<style>{PAGE_CSS}</style>", og="read"))
         urls.append(canonical)
 
     idx = "".join(f'<div><b>{html.escape(name)}</b>' + "".join(f'<a href="/read/{slug(name)}/{c}.html">{c}</a> ' for c in range(1, len(counts) + 1)) + "</div>"
@@ -146,7 +174,7 @@ def main():
         "Read the King James Bible with cross-references", "Every chapter of the King James Bible, each verse with its strongest cross-references.",
         BASE + "/read/", f'<main><header><a class="mark" href="/">Forbidden <span>Knowledge</span></a><a href="/">Explore</a></header><h1>Read</h1>'
         f'<p class="sub">All 66 books and 1,189 chapters of the King James Version.</p><div class="books">{idx}</div>{FOOTER}</main>',
-        FONTS + f"<style>{PAGE_CSS}</style>"))
+        FONTS + f"<style>{PAGE_CSS}</style>", og="read"))
 
     (DIST / "404.html").write_text(doc("Not found · Forbidden Knowledge", "Page not found.", BASE + "/404.html",
                                        f'<main><h1>Not found</h1><p><a href="/">Go to Forbidden Knowledge</a> or <a href="/read/">read by chapter</a>.</p></main>',

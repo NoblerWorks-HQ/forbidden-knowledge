@@ -1164,7 +1164,9 @@ document.addEventListener("click", (ev) => {
   if (!t) return;
   if (t.matches(".cardlink")) {
     ev.preventDefault();
-    const url = location.href.split("#")[0] + t.getAttribute("href");
+    // On the public site, hand out the section's share link (/dante/#card) so the pasted link previews that section
+    const [view, arg] = t.getAttribute("href").slice(1).split("/");
+    const url = location.host === "forbidden.noblerworks.com" ? `${location.origin}/${view}/#${arg}` : location.href.split("#")[0] + t.getAttribute("href");
     history.replaceState(null, "", t.getAttribute("href"));
     (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(() => toast("Link copied"), () => toast("Link is in the address bar"));
   } else if (t.dataset.to) {
