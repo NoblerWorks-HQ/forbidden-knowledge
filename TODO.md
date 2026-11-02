@@ -5,6 +5,7 @@ Working task list for **forbidden-knowledge**. Read this at the start of a work 
 ---
 
 ## Prototype (2026-11-01)
+- [ ] 2026-11-02 nav regrouped (pushed 60835e6, not deployed): run `scripts/deploy-pages.sh`, republish the artifact. Left: retire Mysteries (Egypt-in-Bible/Moses -> Egypt, Masonic ritual/Hogan -> Secret Traditions, Dead Sea Scrolls -> Beyond the Canon; redirect `#mysteries`); re-run `build_og.py` only if VIEW_INFO text changes.
 - [ ] Pat: decide whether Forbidden Knowledge goes on the noblerworks.com showcase (`noblerworks/website/src/lib/showcase.ts`) and gets IndexNow like ironsight./wargames.
 - [x] 2026-11-01 v2 published: Ladder, Myths, Theories, Map, Beyond the Canon tabs
 - [x] 2026-11-01 v3 published: History tab (papal timeline, legends) + Enoch/Thomas/Mary readers and Enoch-Bible parallels
