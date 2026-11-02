@@ -448,7 +448,7 @@ ol.deny .t { white-space: normal; }
     <div class="home-h"><h3>Tools &amp; games</h3></div>
     <div class="tools" id="home-tools"></div>
     <div class="home-h"><h3>More from Nobler Works</h3><span class="status">Our other apps and open-source projects</span></div>
-    <div class="tools" id="home-apps"></div>
+    <div class="tiles" id="home-apps"></div>
   </section>
 
   <section id="v-arcs" hidden>
@@ -807,6 +807,18 @@ ol.deny .t { white-space: normal; }
     <div class="cards" id="ufo-cards"></div>
   </section>
 
+  <section id="v-copied" hidden>
+    <h2>Who copied whom</h2>
+    <p class="lede">Eight bodies of writing, from Hammurabi's laws to Dante, on one timeline. Texts borrow from each other more than most people expect: Proverbs from an Egyptian teacher, Genesis from Babylon, Jude from Enoch, the Book of Mormon from the King James Bible. Solid lines are borrowings the texts themselves show or scholars agree on; dashed lines are striking parallels where copying is argued but not shown, or only claimed. The axis is stretched in places so the crowded centuries stay readable. Click a dot for its story.</p>
+    <div class="legend"><span><svg width="28" height="8" aria-hidden="true"><line x1="0" x2="28" y1="4" y2="4" stroke-width="2" style="stroke:var(--ink)" stroke-opacity=".6"/></svg>Documented: one text draws on the other</span><span><svg width="28" height="8" aria-hidden="true"><line x1="0" x2="28" y1="4" y2="4" stroke-width="2" stroke-dasharray="4 4" style="stroke:var(--muted)"/></svg>Parallel or claimed: copying argued, not shown</span></div>
+    <div class="chart trad-chart" id="cp-chart"></div>
+    <div class="card" id="cp-detail" style="margin-top:14px"></div>
+    <div class="trad-links">
+      <div><h3>Documented</h3><ul class="rank" id="cp-doc"></ul></div>
+      <div><h3>Parallel or claimed</h3><ul class="rank" id="cp-claim"></ul></div>
+    </div>
+  </section>
+
   <section id="v-north" hidden>
     <h2>Celts &amp; Norse</h2>
     <p class="lede">The stone circles of Britain and Ireland, the Druids nobody wrote down, and the Norse gods who survived in Icelandic poetry. Much of what people “know” about all three was invented in the last three hundred years.</p>
@@ -944,7 +956,7 @@ ol.deny .t { white-space: normal; }
   </section>
 
   <footer>
-    Cross-references from <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY), based on the <em>Treasury of Scripture Knowledge</em> with reader votes. Place identifications from <a href="https://github.com/openbibleinfo/Bible-Geocoding-Data" target="_blank" rel="noopener">OpenBible.info Bible Geocoding Data</a> (CC BY 4.0). Built by <a href="https://noblerworks.com" target="_blank" rel="noopener">Nobler Works</a>, who also make <a href="https://gitgood.dev" target="_blank" rel="noopener">gitGood</a>, <a href="https://semantix.chat" target="_blank" rel="noopener">Semantix</a>, <a href="https://achilles.fit" target="_blank" rel="noopener">Achilles</a> and <a href="https://ufoexplorer.xyz" target="_blank" rel="noopener">UFO Explorer</a>. Map shapes from <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>. Popes from <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a> (CC0). 1 Enoch in R. H. Charles's 1917 translation (public domain) via <a href="https://en.wikisource.org/wiki/The_Book_of_Enoch_(Charles)" target="_blank" rel="noopener">Wikisource</a>. Gospels of Thomas and Mary in Mark M. Mattison's public-domain translations from <a href="https://www.gospels.net/" target="_blank" rel="noopener">gospels.net</a>. The King James Version, American Standard Version and <em>Moby Dick</em> (Project Gutenberg) are in the public domain. The Quran in Marmaduke Pickthall's 1930 translation via <a href="https://tanzil.net/" target="_blank" rel="noopener">Tanzil.net</a>; the Book of Mormon (1830), the <em>Analects</em> (Legge) and the <em>Dhammapada</em> (Müller) from Project Gutenberg, all public domain. The Apocrypha (KJV 1611, via scrollmapper), the Epic of Gilgamesh (R. Campbell Thompson, 1928, via the Internet Archive), the Code of Hammurabi (C. H. W. Johns), the <em>Tao Te Ching</em> (Legge) and the <em>Bhagavad Gita</em> (Arnold), all public domain. Religion figures from the <a href="https://www.pewresearch.org/religion/2025/06/09/how-the-global-religious-landscape-changed-from-2010-to-2020/" target="_blank" rel="noopener">Pew Research Center</a>. Built by Nobler Works.
+    Cross-references from <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY), based on the <em>Treasury of Scripture Knowledge</em> with reader votes. Place identifications from <a href="https://github.com/openbibleinfo/Bible-Geocoding-Data" target="_blank" rel="noopener">OpenBible.info Bible Geocoding Data</a> (CC BY 4.0). Built by <a href="https://noblerworks.com" target="_blank" rel="noopener">Nobler Works</a>, who also make <a href="https://gitgood.dev" target="_blank" rel="noopener">gitGood</a>, <a href="https://semantix.chat" target="_blank" rel="noopener">Semantix</a>, <a href="https://achilles.fit" target="_blank" rel="noopener">Achilles</a> and <a href="https://ufoexplorer.xyz" target="_blank" rel="noopener">UFO Explorer</a>. Map shapes from <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>. Popes from <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a> (CC0). 1 Enoch in R. H. Charles's 1917 translation (public domain) via <a href="https://en.wikisource.org/wiki/The_Book_of_Enoch_(Charles)" target="_blank" rel="noopener">Wikisource</a>. Gospels of Thomas and Mary in Mark M. Mattison's public-domain translations from <a href="https://www.gospels.net/" target="_blank" rel="noopener">gospels.net</a>. The King James Version, American Standard Version and <em>Moby Dick</em> (Project Gutenberg) are in the public domain. The Quran in Marmaduke Pickthall's 1930 translation via <a href="https://tanzil.net/" target="_blank" rel="noopener">Tanzil.net</a>; the Book of Mormon (1830), the <em>Analects</em> (Legge) and the <em>Dhammapada</em> (Müller) from Project Gutenberg, all public domain. The Apocrypha (KJV 1611, via scrollmapper), the Epic of Gilgamesh (R. Campbell Thompson, 1928, via the Internet Archive), the Code of Hammurabi (C. H. W. Johns), the <em>Tao Te Ching</em> (Legge) and the <em>Bhagavad Gita</em> (Arnold), all public domain. Religion figures from the <a href="https://www.pewresearch.org/religion/2025/06/09/how-the-global-religious-landscape-changed-from-2010-to-2020/" target="_blank" rel="noopener">Pew Research Center</a>.
   </footer>
 </div>
 
@@ -1037,8 +1049,8 @@ darkMQ.addEventListener("change", applyTheme);
 applyTheme();
 
 // ---------- routing ----------
-const VIEWS = ["home", "dante", "egypt", "phoenicia", "mesopotamia", "cults", "kabbalah", "americas", "olmec", "maya", "north", "aliens", "ufo", "traditions", "library", "religions", "philosophy", "lost", "conspiracies", "arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "people", "translations", "numbers", "codes"];
-const INIT = { home: initHome, egypt: initEgypt, phoenicia: initPhoenicia, mesopotamia: initMesopotamia, cults: initCults, kabbalah: initKabbalah, americas: initAmericas, olmec: initOlmec, maya: initMaya, ufo: initUfo, north: initNorth, aliens: initAliens, dante: initDante, arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, library: initLibrary, religions: initReligions, philosophy: initPhilosophy, lost: initLost, traditions: initTraditions, conspiracies: initConspiracies, timeline: initTimeline, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes };
+const VIEWS = ["home", "dante", "egypt", "phoenicia", "mesopotamia", "cults", "kabbalah", "americas", "olmec", "maya", "north", "aliens", "ufo", "traditions", "library", "copied", "religions", "philosophy", "lost", "conspiracies", "arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "people", "translations", "numbers", "codes"];
+const INIT = { home: initHome, egypt: initEgypt, phoenicia: initPhoenicia, mesopotamia: initMesopotamia, cults: initCults, kabbalah: initKabbalah, americas: initAmericas, olmec: initOlmec, maya: initMaya, ufo: initUfo, north: initNorth, aliens: initAliens, dante: initDante, arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, library: initLibrary, copied: initCopied, religions: initReligions, philosophy: initPhilosophy, lost: initLost, traditions: initTraditions, conspiracies: initConspiracies, timeline: initTimeline, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes };
 const rendered = {};
 let curView = null;
 function route() {
@@ -1065,7 +1077,7 @@ window.addEventListener("hashchange", route);
 function go(view) { if (location.hash !== "#" + view) location.hash = view; else route(); }
 
 // ---------- navigation ----------
-const NAV = { primary: ["timeline"], ancient: ["mesopotamia", "egypt", "phoenicia", "cults", "north", "olmec", "maya", "americas", "lost", "aliens"], hidden: ["traditions", "kabbalah", "conspiracies", "ufo", "dante"], faiths: ["religions", "library", "canon", "history", "philosophy"], bible: ["myths", "theories", "people", "map", "numbers", "translations"], tools: ["verse", "arcs", "path", "ladder", "codes"] };
+const NAV = { primary: ["timeline"], ancient: ["mesopotamia", "egypt", "phoenicia", "cults", "north", "olmec", "maya", "americas", "lost", "aliens"], hidden: ["traditions", "kabbalah", "conspiracies", "ufo", "dante"], faiths: ["religions", "library", "copied", "canon", "history", "philosophy"], bible: ["myths", "theories", "people", "map", "numbers", "translations"], tools: ["verse", "arcs", "path", "ladder", "codes"] };
 const NAV_ORDER = Object.values(NAV).flat();
 const MENUS = { ancient: "Ancient World", hidden: "Hidden Knowledge", faiths: "Faiths & Texts", bible: "The Bible", tools: "Tools & Games" };
 // [title, one line, image in img/, glyph when there is no image]
@@ -1083,6 +1095,7 @@ const VIEW_INFO = {
   americas: ["The Americas", "Nazca, Teotihuacan's mercury, the Aztecs, the mound builders, and who reached America first", "whitesands"],
   north: ["Celts & Norse", "Stonehenge, the Druids, Odin on the tree, the runes, and the Vikings' missing horns", "stonehenge"],
   dante: ["Dante's Afterlife", "Hell's nine circles, Purgatory's mountain and Heaven's spheres, and how much of “Hell” is Dante's", "dlucifer"],
+  copied: ["Who Copied Whom", "Hammurabi, Gilgamesh, Amenemope, Enoch, the Bible, the Quran, the Book of Mormon and Dante: who drew on whom, and where it is only claimed", "floodtablet"],
   ufo: ["UFOs & UAP", "Roswell, the Navy's Tic Tac, Tehran, Rendlesham and Congress: what is explained, what is disputed, what is still open", "battlela"],
   aliens: ["Ancient Aliens", "Pakal's “astronaut”, Baalbek, the Dogon, Ezekiel's wheel, Roswell: every claim checked", "baalbek"],
   traditions: ["Secret Traditions", "Alchemists, Gnostics, Templars, Rosicrucians, Masons and the Illuminati, and what really links them", "khunrath"],
@@ -1301,19 +1314,19 @@ document.addEventListener("click", (ev) => { if (ev.target.closest("[data-search
 // ---------- home ----------
 function initHome() {
   const NW_APPS = [
-    ["gitGood", "https://gitgood.dev", "Train for the role, not just the interview: practice questions, system design and AI mock interviews for technologists"],
-    ["Semantix", "https://semantix.chat", "An AI language tutor you talk to, with flashcards made from your own conversations"],
-    ["Achilles", "https://achilles.fit", "A stoic AI coach for training: chat to log workouts and get a plan"],
-    ["UFO Explorer", "https://ufoexplorer.xyz", "A 3D globe of famous sightings, declassified files and whistleblower dossiers"],
-    ["IRONSIGHT", "https://ironsight.noblerworks.com", "An open-source OSINT terminal"],
-    ["WarGames", "https://wargames.noblerworks.com", "An open-source AI war-games demo"],
-    ["Zero to Hero", "https://cloud.noblerworks.com", "Free cloud, data, security and AI study guides"],
-    ["Nobler Works", "https://noblerworks.com", "The studio behind all of it, and where to hire us"],
+    ["gitGood", "https://gitgood.dev", "Train for the role, not just the interview: practice questions, system design and AI mock interviews for technologists", "gitgood"],
+    ["Semantix", "https://semantix.chat", "An AI language tutor you talk to, with flashcards made from your own conversations", "semantix"],
+    ["Achilles", "https://achilles.fit", "A stoic AI coach for training: chat to log workouts and get a plan", "achilles"],
+    ["UFO Explorer", "https://ufoexplorer.xyz", "A 3D globe of famous sightings, declassified files and whistleblower dossiers", "ufoexplorer"],
+    ["IRONSIGHT", "https://ironsight.noblerworks.com", "An open-source OSINT terminal", "ironsight"],
+    ["WarGames", "https://wargames.noblerworks.com", "An open-source AI war-games demo", "wargames"],
+    ["Zero to Hero", "https://cloud.noblerworks.com", "Free cloud, data, security and AI study guides", "zerotohero"],
+    ["Nobler Works", "https://noblerworks.com", "The studio behind all of it, and where to hire us", "noblerworks"],
   ];
   const tile = (v) => { const [t, d, img, glyph] = VIEW_INFO[v]; return `<a class="tile" href="#${v}"><div class="pic${img ? "" : " glyph"}"${img ? ` style="background-image:url(img/${img}.jpg)"` : ""} aria-hidden="true">${img ? "" : glyph}</div><div class="txt"><b>${t}</b><span>${d}</span></div></a>`; };
   $("home-tiles").innerHTML = `<div class="tiles">${NAV.primary.map(tile).join("")}</div>` + ["ancient", "hidden", "faiths", "bible"].map((k) => `<h4 class="grp">${MENUS[k]}</h4><div class="tiles">${NAV[k].map(tile).join("")}</div>`).join("");
   $("home-tools").innerHTML = NAV.tools.map((v) => `<a href="#${v}"><b>${VIEW_INFO[v][0]}</b><span>${VIEW_INFO[v][1]}</span></a>`).join("");
-  $("home-apps").innerHTML = NW_APPS.map(([n, u, d]) => `<a href="${u}" target="_blank" rel="noopener"><b>${n} ↗</b><span>${d}</span></a>`).join("");
+  $("home-apps").innerHTML = NW_APPS.map(([n, u, d, img]) => `<a class="tile" href="${u}" target="_blank" rel="noopener"><div class="pic" style="background-image:url(img/app-${img}.jpg);filter:none" aria-hidden="true"></div><div class="txt"><b>${n} ↗</b><span>${d}</span></div></a>`).join("");
   homeData();
 }
 const GAME = { pool: [], right: 0, n: 0 };
@@ -2962,6 +2975,83 @@ function initOlmec() {
   $("ol-chrono").innerHTML = chronoStrip(-1700, 100, OL_CHRONO, OL_MARKS, "Olmec history from 1700 BC to AD 100");
   $("ol-cards").innerHTML = OL_CARDS.map(cardImg).join("");
   wireGo($("ol-cards"));
+}
+// ---------- who copied whom ----------
+const CP_LANES = [["meso", "Mesopotamia", "#f97316"], ["egypt", "Egypt", "#eab308"], ["heb", "Hebrew Bible", "#10b981"], ["apoc", "Apocrypha", "#a855f7"], ["nt", "New Testament", "#ef4444"], ["quran", "Quran", "#ec4899"], ["bom", "Book of Mormon", "#0ea5e9"], ["dante", "Dante", "#6366f1"]];
+// [id, lane, year, label, dates, title, what it is]
+const CP_NODES = [
+  ["hammurabi", "meso", -1754, "Hammurabi's laws", "c. 1754 BC", "Code of Hammurabi", "282 laws cut on a basalt pillar by the king of Babylon, found at Susa in 1901. It is the best-known law code of the ancient Near East."],
+  ["atrahasis", "meso", -1700, "Atrahasis", "c. 1700 BC", "Atrahasis", "A Babylonian epic of creation and a flood sent by the gods to silence humankind's noise. The hero builds a boat and survives."],
+  ["gilg", "meso", -1200, "Gilgamesh XI", "c. 1200–1000 BC", "Gilgamesh, Tablet XI", "The flood story in the standard Babylonian Gilgamesh: Utnapishtim builds a boat, sends out a dove, a swallow and a raven, and offers a sacrifice when he lands. The tablet George Smith read in 1872 is from Nineveh, about 650 BC."],
+  ["bod", "egypt", -1550, "Book of the Dead", "c. 1550 BC and later", "Book of the Dead", "Spells to guide the dead through judgement, including the 42 denials said before the gods. Its roots are older still, in the Pyramid and Coffin Texts."],
+  ["amen", "egypt", -1100, "Amenemope", "c. 1300–1075 BC", "Instruction of Amenemope", "An Egyptian scribe's advice to his son in 30 chapters, on honesty, anger and not robbing the poor. It survives on a papyrus in the British Museum."],
+  ["covenant", "heb", -750, "Exodus 21–23", "c. 8th–6th century BC (debated)", "The Covenant Code", "Laws in Exodus 21–23 on slaves, injury and property, among them the goring ox. When and how it was written is debated."],
+  ["isaiah", "heb", -700, "Isaiah", "8th–6th century BC", "Isaiah", "The prophet's book, which the New Testament quotes more than any other prophet, and which the Book of Mormon copies at length."],
+  ["prov", "heb", -600, "Proverbs 22–24", "c. 700–500 BC", "Proverbs 22:17–24:22", "“The sayings of the wise”, thirty sayings that follow the Egyptian Instruction of Amenemope closely."],
+  ["flood", "heb", -550, "Genesis flood", "6th–5th century BC (debated)", "The flood, Genesis 6–9", "Noah builds an ark, sends out a raven and a dove, and offers a sacrifice on landing."],
+  ["rabbah", "heb", 400, "Genesis Rabbah", "c. AD 400–450", "Genesis Rabbah", "A collection of rabbis' stories on Genesis, including the tale of Abraham smashing his father's idols."],
+  ["watchers", "apoc", -250, "Book of the Watchers", "3rd century BC", "1 Enoch: the Watchers", "An expansion of Genesis 6:1–4: angels who came down to earth, taught forbidden arts and fathered giants. It is part of the Ethiopian canon."],
+  ["infthomas", "apoc", 150, "Infancy Gospel of Thomas", "2nd century", "Infancy Gospel of Thomas", "Tales of the child Jesus, including shaping sparrows from clay and bringing them to life."],
+  ["visio", "apoc", 400, "Apocalypse of Paul", "late 4th century", "Apocalypse of Paul", "A tour of heaven and hell said to be Paul's, with sinners punished in fire according to their sins. Very popular in the Middle Ages."],
+  ["jude", "nt", 65, "Jude", "c. AD 65–90", "The letter of Jude", "A short letter that quotes the prophecy of Enoch in verses 14–15."],
+  ["matt", "nt", 85, "Matthew", "c. AD 80–90", "The Gospel of Matthew", "The Gospel that most often says an event happened “to fulfil” a prophet, and the source of the Sermon on the Mount (chapters 5–7)."],
+  ["rev", "nt", 95, "Revelation", "c. AD 95", "Revelation", "John's visions on Patmos of heaven, judgement and a new Jerusalem, full of images from Daniel, Ezekiel and Isaiah."],
+  ["quran", "quran", 650, "The Quran", "revealed AD 610–632, compiled by about 650", "The Quran", "Retells the stories of Noah, Abraham, Moses, Mary and Jesus, and names the Torah (Tawrat) and Gospel (Injil) as earlier revelations."],
+  ["dante", "dante", 1320, "Divine Comedy", "AD 1320", "Dante's Divine Comedy", "A poem about a journey through Hell, Purgatory and Heaven, written in exile and completed in 1320."],
+  ["bom", "bom", 1830, "Book of Mormon", "AD 1830", "The Book of Mormon", "Published by Joseph Smith in 1830. Large parts of it are in the language of the 1611 King James Bible."],
+];
+// [from, to, documented?, note]
+const CP_LINKS = [
+  ["atrahasis", "gilg", true, "Gilgamesh XI takes its flood from Atrahasis: the same plot, with the hero renamed Utnapishtim."],
+  ["gilg", "flood", true, "Genesis follows the Mesopotamian flood story's plot: a boat, birds sent out to find land, a sacrifice after landing. Scholars have said so since George Smith read the tablet in 1872."],
+  ["amen", "prov", true, "Proverbs 22:17–24:22 follows Amenemope's thirty chapters saying by saying. Most scholars say Proverbs borrowed from the Egyptian text."],
+  ["hammurabi", "covenant", false, "Some laws match, such as the goring ox (Exodus 21:28–36 and Hammurabi 250–252). Both may come from one Near Eastern legal tradition; David Wright argues the Hebrew authors copied the Babylonian code."],
+  ["bod", "covenant", false, "The 42 denials are compared with the Ten Commandments. The lists differ and no copying has been shown."],
+  ["flood", "watchers", true, "1 Enoch retells and enlarges Genesis 6:1–4."],
+  ["watchers", "jude", true, "Jude 14–15 quotes 1 Enoch 1:9 by name."],
+  ["isaiah", "matt", true, "Matthew quotes Isaiah and the other prophets as fulfilled."],
+  ["isaiah", "bom", true, "The Book of Mormon reproduces many chapters of Isaiah in King James wording."],
+  ["matt", "bom", true, "The Sermon on the Mount in 3 Nephi 12–14 follows Matthew 5–7 in King James wording."],
+  ["flood", "quran", true, "The Quran retells Noah's flood, with a different ending: his unbelieving son drowns (11:42–43)."],
+  ["infthomas", "quran", false, "Jesus breathes life into clay birds in the Infancy Gospel of Thomas and in Quran 3:49. Direct copying is argued; oral transmission is likelier."],
+  ["rabbah", "quran", false, "Abraham smashes his people's idols in Genesis Rabbah 38 and Quran 21:51–70. A shared story, with the direction argued."],
+  ["rev", "dante", true, "Dante builds the Comedy's visions and its Heaven on Revelation and Paul."],
+  ["visio", "dante", false, "Dante names Paul's journey to the afterlife, and the Apocalypse of Paul's punishments that fit the sin resemble his. Whether he knew the text is debated."],
+  ["quran", "dante", false, "Miguel Asín Palacio argued in 1919 that Dante drew on Muhammad's night journey. A Latin translation of that story from 1264 makes it possible; the case is still debated."],
+];
+function initCopied() {
+  const by = Object.fromEntries(CP_NODES.map((n) => [n[0], { id: n[0], l: n[1], y: n[2], s: n[3], d: n[4], c: n[5], b: n[6] }])), lane = Object.fromEntries(CP_LANES.map(([k], i) => [k, i])), H = 58, top = 34;
+  const stops = [[-1800, 140], [-1000, 260], [-500, 380], [1, 500], [300, 590], [700, 690], [1300, 850], [1900, 990]];
+  const X = (y) => { for (let i = 1; i < stops.length; i++) if (y <= stops[i][0]) return stops[i - 1][1] + (y - stops[i - 1][0]) / (stops[i][0] - stops[i - 1][0]) * (stops[i][1] - stops[i - 1][1]); return 990; };
+  const Y = (n) => top + lane[n.l] * H + H / 2, nodes = Object.values(by);
+  const used = CP_LANES.map(() => [-1e9, -1e9]), labels = [];
+  for (const n of [...nodes].sort((a, b) => a.y - b.y)) {
+    const x = X(n.y), w = n.s.length * 5.6 + 8, u = used[lane[n.l]];
+    const side = x - w / 2 > u[0] ? 0 : x - w / 2 > u[1] ? 1 : -1;
+    if (side < 0) continue;
+    u[side] = x + w / 2;
+    labels.push(`<text x="${Math.max(w / 2 + 2, Math.min(998 - w / 2, x))}" y="${Y(n) + (side ? 19 : -11)}" text-anchor="middle" font-size="10" style="fill:var(--muted)">${esc(n.s)}</text>`);
+  }
+  const ticks = [-1800, -1000, -500, 1, 300, 700, 1300, 1900];
+  $("cp-chart").innerHTML = `<svg viewBox="0 0 1000 ${top + CP_LANES.length * H + 6}" role="img" aria-label="Eight bodies of writing on one timeline and the links between them">
+    ${ticks.map((y) => `<line x1="${X(y)}" x2="${X(y)}" y1="${top - 8}" y2="${top + CP_LANES.length * H}" style="stroke:var(--rule)"/><text x="${X(y)}" y="${top - 14}" text-anchor="middle" font-size="10" style="fill:var(--muted)">${y < 0 ? -y + " BC" : y === 1 ? "AD 1" : y}</text>`).join("")}
+    ${CP_LANES.map(([k, n, col], i) => `<line x1="140" x2="990" y1="${top + i * H + H / 2}" y2="${top + i * H + H / 2}" stroke="${col}" stroke-opacity=".35" stroke-width="2"/><text x="6" y="${top + i * H + H / 2 + 4}" font-size="12" font-weight="600" fill="${col}">${n}</text>`).join("")}
+    ${CP_LINKS.map(([a, b, doc, note]) => { const x1 = X(by[a].y), y1 = Y(by[a]), x2 = X(by[b].y), y2 = Y(by[b]), m = (y1 + y2) / 2; return `<path d="M${x1} ${y1} C${x1} ${m} ${x2} ${m} ${x2} ${y2}" fill="none" stroke-width="1.6" style="stroke:${doc ? "var(--ink)" : "var(--muted)"}" stroke-opacity="${doc ? 0.55 : 0.8}"${doc ? "" : ' stroke-dasharray="4 4"'}><title>${esc(note)}</title></path>`; }).join("")}
+    ${labels.join("")}
+    ${nodes.map((n) => `<circle class="tr-dot" data-id="${n.id}" cx="${X(n.y)}" cy="${Y(n)}" r="6" fill="${CP_LANES[lane[n.l]][2]}" style="stroke:var(--surface)" stroke-width="2"><title>${esc(n.d)}: ${esc(n.c)}</title></circle>`).join("")}
+  </svg>`;
+  const liN = ([a, b, doc, note]) => `<li><span class="t" style="white-space:normal">${esc(note)} <span class="status">${esc(by[a].c)} → ${esc(by[b].c)}</span></span></li>`;
+  $("cp-doc").innerHTML = CP_LINKS.filter((l) => l[2]).map(liN).join("");
+  $("cp-claim").innerHTML = CP_LINKS.filter((l) => !l[2]).map(liN).join("");
+  const show = (id) => {
+    const n = by[id], ins = CP_LINKS.filter((l) => l[1] === id), outs = CP_LINKS.filter((l) => l[0] === id);
+    const li = (l, other) => `<li>${l[2] ? "" : "<em>(parallel or claimed)</em> "}${esc(l[3])} <span class="status">${esc(other)}</span></li>`;
+    $("cp-detail").innerHTML = `<span class="when">${esc(n.d)} · ${esc(CP_LANES[lane[n.l]][1])}</span><h4>${esc(n.c)}</h4><p>${esc(n.b)}</p>` +
+      (ins.length ? `<p class="status">Draws on:</p><ul>${ins.map((l) => li(l, "from " + by[l[0]].c)).join("")}</ul>` : "") +
+      (outs.length ? `<p class="status">Drawn on by:</p><ul>${outs.map((l) => li(l, "in " + by[l[1]].c)).join("")}</ul>` : "");
+  };
+  $("cp-chart").querySelectorAll(".tr-dot").forEach((c) => { c.onclick = () => { show(c.dataset.id); $("cp-detail").scrollIntoView({ behavior: "smooth", block: "nearest" }); }; });
+  show("flood");
 }
 // ---------- ufos and uap ----------
 // Verdicts follow the status recorded on UFO Explorer (ufoexplorer.xyz); ux() links to the case file there
