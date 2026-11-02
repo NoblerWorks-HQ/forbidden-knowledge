@@ -5,8 +5,9 @@ Working task list for **forbidden-knowledge**. Read this at the start of a work 
 ---
 
 ## Prototype (2026-11-01)
-- [ ] 2026-11-02 nav regrouped + Mysteries retired into Egypt / Secret Traditions / Beyond the Canon / Conspiracies (pushed, not deployed): run `scripts/deploy-pages.sh`, republish the artifact; `#mysteries` redirects to Egypt.
-- [ ] Pat: decide whether Forbidden Knowledge goes on the noblerworks.com showcase (`noblerworks/website/src/lib/showcase.ts`) and gets IndexNow like ironsight./wargames.
+- [x] 2026-11-02 nav regrouped + Mysteries retired, deployed to gh-pages. Left: republish the claude.ai artifact (`site/index.html` + data + img)
+- [x] 2026-11-02 on the noblerworks.com /projects Open Source list (deployed); deploy-pages.sh now runs the IndexNow + Search Console notifier
+- [ ] 2026-11-03 IndexNow first submission got 403 SiteVerificationNotCompleted (new key, normal): re-run `node scripts/seo/notify-search-engines.mjs --all`; Search Console sitemap already re-submitted 2026-11-02
 - [x] 2026-11-01 v2 published: Ladder, Myths, Theories, Map, Beyond the Canon tabs
 - [x] 2026-11-01 v3 published: History tab (papal timeline, legends) + Enoch/Thomas/Mary readers and Enoch-Bible parallels
 - [x] 2026-11-01 v4 published: People, Translations, Numbers tabs; fulfilment quotes; mood by book; Thomas/Mary now match against the WEB
