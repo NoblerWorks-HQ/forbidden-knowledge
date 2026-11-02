@@ -343,6 +343,7 @@ section[id^="v-"]:not([hidden]) { animation: viewin .25s ease-out; }
 @media (max-width: 820px) { .hero { grid-template-columns: minmax(0, 1fr); } .hero figure img { max-height: 240px; object-fit: cover; } .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .home-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 34px 0 12px; }
 .home-h h3 { margin: 0; }
+.grp { margin: 26px 0 10px; font: 600 13px var(--ui); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
 .tile { display: grid; grid-template-rows: 150px auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; text-decoration: none; color: var(--ink); transition: border-color .15s, transform .15s; }
 .tile:hover { border-color: var(--accent); transform: translateY(-2px); }
@@ -444,10 +445,10 @@ ol.deny .t { white-space: normal; }
       <figure><img src="img/flammarion.jpg" alt="A traveller kneels at the edge of the world and pushes his head through the sky to see the machinery beyond"><figcaption>The Flammarion engraving: a traveller looks through the edge of the sky. Often called medieval, it first appeared in a book by Camille Flammarion in 1888. <a href="https://commons.wikimedia.org/wiki/File:FlammarionWoodcut.jpg" target="_blank" rel="noopener">Artist unknown</a>, public domain.</figcaption></figure>
     </div>
     <div class="home-h"><h3>Explore</h3></div>
-    <div class="tiles" id="home-tiles"></div>
+    <div id="home-tiles"></div>
     <div class="home-h"><h3>Real or myth?</h3><span class="status">A random claim from the site</span></div>
     <div class="game" id="game"><p class="status">Loading the claims…</p></div>
-    <div class="home-h"><h3>Scripture tools</h3></div>
+    <div class="home-h"><h3>Tools &amp; games</h3></div>
     <div class="tools" id="home-tools"></div>
   </section>
 
@@ -1043,9 +1044,9 @@ window.addEventListener("hashchange", route);
 function go(view) { if (location.hash !== "#" + view) location.hash = view; else route(); }
 
 // ---------- navigation ----------
-const NAV = { primary: ["timeline", "lost", "traditions", "conspiracies", "library"], ancient: ["egypt", "mesopotamia", "phoenicia", "cults", "americas", "north"], more: ["aliens", "dante", "kabbalah", "mysteries", "religions", "philosophy", "canon", "history"], scripture: ["arcs", "verse", "path", "ladder", "myths", "theories", "map", "people", "translations", "numbers", "codes"] };
-const NAV_ORDER = [...NAV.primary, ...NAV.ancient, ...NAV.more, ...NAV.scripture];
-const MENUS = { ancient: "Ancient", more: "More", scripture: "Scripture" };
+const NAV = { primary: ["timeline"], ancient: ["mesopotamia", "egypt", "phoenicia", "cults", "north", "americas", "lost", "aliens"], hidden: ["traditions", "kabbalah", "conspiracies", "mysteries", "dante"], faiths: ["religions", "library", "canon", "history", "philosophy"], bible: ["myths", "theories", "people", "map", "numbers", "translations"], tools: ["verse", "arcs", "path", "ladder", "codes"] };
+const NAV_ORDER = Object.values(NAV).flat();
+const MENUS = { ancient: "Ancient World", hidden: "Hidden Knowledge", faiths: "Faiths & Texts", bible: "The Bible", tools: "Tools & Games" };
 // [title, one line, image in img/, glyph when there is no image]
 const VIEW_INFO = {
   home: ["Home", "Start here"],
@@ -1072,12 +1073,12 @@ const VIEW_INFO = {
   verse: ["Verse", "Any verse with its strongest cross-references"],
   path: ["Path", "The shortest chain of references between two verses"],
   ladder: ["Ladder", "A daily puzzle: climb from one verse to another"],
-  myths: ["Myths", "Things people think the Bible says, checked against the text"],
-  theories: ["Theories", "Scholars' theories about who wrote what, tested on the text"],
-  map: ["Map", "Every place the Bible names, on one map"],
-  people: ["People", "Lifespans, two genealogies of Jesus and every family tree"],
-  translations: ["Translations", "Six public-domain English Bibles side by side"],
-  numbers: ["Numbers", "Number words, gematria, ciphers and 666"],
+  myths: ["Myths", "Things people think the Bible says, checked against the text", null, "?!"],
+  theories: ["Theories", "Scholars' theories about who wrote what, tested on the text", null, "⌥"],
+  map: ["Map", "Every place the Bible names, on one map", null, "⌖"],
+  people: ["People", "Lifespans, two genealogies of Jesus and every family tree", null, "⚭"],
+  translations: ["Translations", "Six public-domain English Bibles side by side", null, "A ⇄ B"],
+  numbers: ["Numbers", "Number words, gematria, ciphers and 666", null, "666"],
   codes: ["Code Breaker", "Bible codes, with the odds of finding them by chance"],
 };
 const chev = '<span class="chev" aria-hidden="true">▼</span>';
@@ -1277,8 +1278,8 @@ document.addEventListener("click", (ev) => { if (ev.target.closest("[data-search
 // ---------- home ----------
 function initHome() {
   const tile = (v) => { const [t, d, img, glyph] = VIEW_INFO[v]; return `<a class="tile" href="#${v}"><div class="pic${img ? "" : " glyph"}"${img ? ` style="background-image:url(img/${img}.jpg)"` : ""} aria-hidden="true">${img ? "" : glyph}</div><div class="txt"><b>${t}</b><span>${d}</span></div></a>`; };
-  $("home-tiles").innerHTML = [...NAV.primary, ...NAV.ancient, ...NAV.more].map(tile).join("");
-  $("home-tools").innerHTML = NAV.scripture.map((v) => `<a href="#${v}"><b>${VIEW_INFO[v][0]}</b><span>${VIEW_INFO[v][1]}</span></a>`).join("");
+  $("home-tiles").innerHTML = `<div class="tiles">${NAV.primary.map(tile).join("")}</div>` + ["ancient", "hidden", "faiths", "bible"].map((k) => `<h4 class="grp">${MENUS[k]}</h4><div class="tiles">${NAV[k].map(tile).join("")}</div>`).join("");
+  $("home-tools").innerHTML = NAV.tools.map((v) => `<a href="#${v}"><b>${VIEW_INFO[v][0]}</b><span>${VIEW_INFO[v][1]}</span></a>`).join("");
   homeData();
 }
 const GAME = { pool: [], right: 0, n: 0 };
