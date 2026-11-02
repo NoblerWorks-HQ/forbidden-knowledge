@@ -5,6 +5,8 @@ Working task list for **forbidden-knowledge**. Read this at the start of a work 
 ---
 
 ## Prototype (2026-11-01)
+- [x] 2026-11-02 Olmec + Maya tabs (Ancient menu; 11 + 13 cards, Long Count converter moved to Maya, 5 timeline steps, 6 CC0/PD images, OG images). Left: republish the claude.ai artifact (index.html + data + img, now 130 images)
+- [ ] Pat: skim the Olmec + Maya cards (model-knowledge facts: Cascajal, Long Count dates, lidar counts) before promoting
 - [x] 2026-11-02 nav regrouped + Mysteries retired, deployed to gh-pages. Left: republish the claude.ai artifact (`site/index.html` + data + img)
 - [x] 2026-11-02 on the noblerworks.com /projects Open Source list (deployed); deploy-pages.sh now runs the IndexNow + Search Console notifier
 - [ ] 2026-11-03 IndexNow first submission got 403 SiteVerificationNotCompleted (new key, normal): re-run `node scripts/seo/notify-search-engines.mjs --all`; Search Console sitemap already re-submitted 2026-11-02
