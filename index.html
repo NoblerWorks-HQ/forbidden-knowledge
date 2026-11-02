@@ -1326,7 +1326,7 @@ function initHome() {
   const tile = (v) => { const [t, d, img, glyph] = VIEW_INFO[v]; return `<a class="tile" href="#${v}"><div class="pic${img ? "" : " glyph"}"${img ? ` style="background-image:url(img/${img}.jpg)"` : ""} aria-hidden="true">${img ? "" : glyph}</div><div class="txt"><b>${t}</b><span>${d}</span></div></a>`; };
   $("home-tiles").innerHTML = `<div class="tiles">${NAV.primary.map(tile).join("")}</div>` + ["ancient", "hidden", "faiths", "bible"].map((k) => `<h4 class="grp">${MENUS[k]}</h4><div class="tiles">${NAV[k].map(tile).join("")}</div>`).join("");
   $("home-tools").innerHTML = NAV.tools.map((v) => `<a href="#${v}"><b>${VIEW_INFO[v][0]}</b><span>${VIEW_INFO[v][1]}</span></a>`).join("");
-  $("home-apps").innerHTML = NW_APPS.map(([n, u, d, img]) => `<a class="tile" href="${u}" target="_blank" rel="noopener"><div class="pic" style="background-image:url(img/app-${img}.jpg);filter:none" aria-hidden="true"></div><div class="txt"><b>${n} ↗</b><span>${d}</span></div></a>`).join("");
+  $("home-apps").innerHTML = NW_APPS.map(([n, u, d, img]) => `<a class="tile" href="${u}" target="_blank" rel="noopener" style="grid-template-rows:auto 1fr"><div class="pic" style="background-image:url(img/app-${img}.jpg);filter:none;height:auto;min-height:0;aspect-ratio:1200/630" aria-hidden="true"></div><div class="txt"><b>${n} ↗</b><span>${d}</span></div></a>`).join("");
   homeData();
 }
 const GAME = { pool: [], right: 0, n: 0 };
