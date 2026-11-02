@@ -18,6 +18,7 @@ Working task list for **forbidden-knowledge**. Read this at the start of a work 
 - [x] 2026-11-02 Ancient Egypt + Phoenicians tabs; Book of the Dead (Budge 1901, Wikisource raw pages) as the Library's 12th book with 7 Bible parallels; 3 timeline steps
 - [x] 2026-11-02 Six more tabs (Mesopotamia, Mystery Cults, Kabbalah, Americas, Celts & Norse, Ancient Aliens) under a new Ancient menu; 4 timeline steps; 9 PD images
 - [ ] Pat: skim the Egypt, Phoenicians and six new tabs' cards (model-knowledge facts) before promoting
+- [x] 2026-11-02 White Sands footprints (timeline step, Americas card, USGS photo), sites older than Göbekli Tepe (Lost Worlds), Roswell recast as contested; timeline now starts 21,000 BC
 - [x] 2026-11-02 Popes as a scroll timeline with era context + Wikipedia summaries; verdict filter moved above its cards (sticky)
 - [x] 2026-11-01 UX pass: home page (tiles, Real-or-myth game, live stats), sticky nav with More/Scripture menus, site-wide search (/ or Ctrl+K, verses too), verdict filters + jump chips, shareable card links, prev/next, back-to-top
 - [ ] Pat: skim the Secret Traditions cards (model-knowledge facts) before promoting
