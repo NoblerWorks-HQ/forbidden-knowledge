@@ -5,6 +5,8 @@ Working task list for **forbidden-knowledge**. Read this at the start of a work 
 ---
 
 ## Prototype (2026-11-01)
+- [x] 2026-11-02 UFOs & UAP tab (20 cases from ufoexplorer.xyz data, each linking its case file) + "More from Nobler Works" app strip on home + footer line. Left: republish the claude.ai artifact (now 132 images)
+- [ ] Pat: skim the UFO cards (summaries from UFO Explorer notes + model knowledge, e.g. AARO 2024 report, Basel 1566) before promoting; ufo-explorer's own audit lists data bugs (/agency pages) I did not use
 - [x] 2026-11-02 Olmec + Maya tabs (Ancient menu; 11 + 13 cards, Long Count converter moved to Maya, 5 timeline steps, 6 CC0/PD images, OG images). Left: republish the claude.ai artifact (index.html + data + img, now 130 images)
 - [ ] Pat: skim the Olmec + Maya cards (model-knowledge facts: Cascajal, Long Count dates, lidar counts) before promoting
 - [x] 2026-11-02 nav regrouped + Mysteries retired, deployed to gh-pages. Left: republish the claude.ai artifact (`site/index.html` + data + img)
