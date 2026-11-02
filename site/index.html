@@ -3,7 +3,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Noto+Sans+Egyptian+Hieroglyphs&family=Noto+Sans+Phoenician&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Noto+Sans+Egyptian+Hieroglyphs&family=Noto+Sans+Phoenician&family=Noto+Sans+Runic&display=swap">
 <style>
 /* Layout: one reading column with a full-width instrument (the arc canvas) on top; tabs switch the instrument below a rubricated masthead. */
 :root {
@@ -387,6 +387,15 @@ section[id^="v-"]:not([hidden]) { animation: viewin .25s ease-out; }
 #ph-abc td { white-space: normal; }
 ol.deny li.hit { background: color-mix(in srgb, var(--accent) 10%, transparent); }
 ol.deny .t { white-space: normal; }
+.kab { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.kab .chart svg { min-width: 0; max-height: 560px; }
+.kab .sef { cursor: pointer; }
+.kab .sef.on circle { fill: var(--hit) !important; stroke-width: 3; }
+@media (max-width: 720px) { .kab { grid-template-columns: minmax(0, 1fr); } }
+.runes { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+.rune { background: var(--surface); padding: 10px 12px; display: grid; gap: 1px; font-size: 13px; }
+.rune .rg, .runeout { font: 30px/1.2 "Noto Sans Runic", var(--display); color: var(--rubric); }
+.runeout { margin-top: 8px; min-height: 40px; word-break: break-word; }
 [hidden] { display: none !important; }
 .card > h4 { padding-right: 26px; }
 </style>
@@ -711,6 +720,66 @@ ol.deny .t { white-space: normal; }
     <div class="cards" id="ph-cards"></div>
   </section>
 
+  <section id="v-mesopotamia" hidden>
+    <h2>Mesopotamia</h2>
+    <p class="lede">Between the Tigris and the Euphrates, in today's Iraq, people built the first cities, invented writing, and told the first stories of a flood and a tower. Abraham sets out from Ur, and the Bible's exile is spent in Babylon.</p>
+    <div class="chart" id="mes-chrono"></div>
+    <h2 class="sub">Kings before the flood</h2>
+    <p class="lede">The Sumerian King List gives the eight kings before the flood reigns of tens of thousands of years. Genesis gives its ten patriarchs before the flood lives of up to 969.</p>
+    <div class="chart" id="skl-chart"></div>
+    <p class="status" id="skl-note"></p>
+    <h2 class="sub">Claims and history</h2>
+    <div class="cards" id="mes-cards"></div>
+  </section>
+
+  <section id="v-cults" hidden>
+    <h2>Mystery cults</h2>
+    <p class="lede">Religions you had to be initiated into, with secrets promised to change your fate after death. They ran alongside the public gods of Greece, Persia and Rome, and early Christians were often accused of being one more.</p>
+    <div class="chart" id="cult-chrono"></div>
+    <h2 class="sub">Initiates, philosophers and prophets</h2>
+    <div class="cards" id="cult-cards"></div>
+  </section>
+
+  <section id="v-kabbalah" hidden>
+    <h2>Kabbalah</h2>
+    <p class="lede">The mystical tradition of Judaism, which reads the Torah as a code for the inner life of God. Click a sefirah on the Tree of Life.</p>
+    <div class="kab">
+      <div class="chart" id="kab-tree"></div>
+      <div class="card" id="kab-info"></div>
+    </div>
+    <h2 class="sub">The tradition and its claims</h2>
+    <div class="cards" id="kab-cards"></div>
+  </section>
+
+  <section id="v-americas" hidden>
+    <h2>The Americas</h2>
+    <p class="lede">Civilisations that grew up with no contact with Europe, Asia or Africa, and the theories that keep trying to give their achievements to someone else.</p>
+    <div class="checker">
+      <h3>The Maya Long Count</h3>
+      <form class="controls" id="maya-form"><label class="f">Date <input type="date" id="maya-in"></label><button type="submit">Convert</button><button type="button" class="ghost" id="maya-2012">21 December 2012</button></form>
+      <div id="maya-out"></div>
+    </div>
+    <h2 class="sub">Claims and history</h2>
+    <div class="cards" id="am-cards"></div>
+  </section>
+
+  <section id="v-north" hidden>
+    <h2>Celts &amp; Norse</h2>
+    <p class="lede">The stone circles of Britain and Ireland, the Druids nobody wrote down, and the Norse gods who survived in Icelandic poetry. Much of what people “know” about all three was invented in the last three hundred years.</p>
+    <h2 class="sub">The runes</h2>
+    <p class="lede">The Elder Futhark, the oldest runic alphabet, used from about AD 150 to 800. Its 24 names are reconstructed from later poems; “?” marks the uncertain ones.</p>
+    <div class="runes" id="rune-abc"></div>
+    <div class="checker" style="margin-top:14px"><label class="f">Write your name in runes <input type="text" id="rune-in" value="Odin" autocomplete="off"></label><div class="runeout" id="rune-out"></div></div>
+    <h2 class="sub">Claims and history</h2>
+    <div class="cards" id="north-cards"></div>
+  </section>
+
+  <section id="v-aliens" hidden>
+    <h2>Ancient aliens</h2>
+    <p class="lede">The idea that visitors from space built the pyramids, taught the Sumerians or left their portraits in Maya stone, popularised by Erich von Däniken's <em>Chariots of the Gods?</em> in 1968 and by television since. Each claim, with what the evidence shows.</p>
+    <div class="cards" id="alien-cards"></div>
+  </section>
+
   <section id="v-traditions" hidden>
     <h2>Secret traditions</h2>
     <p class="lede">Smiths, alchemists, Hermetists, Gnostics, Templars, Rosicrucians, Freemasons and the Illuminati, on one timeline. Every one of these orders told a story about its own ancient lineage. Solid lines are links historians can document; dashed lines are links the traditions claimed, or their enemies did. Click a dot to jump to its card.</p>
@@ -920,8 +989,8 @@ darkMQ.addEventListener("change", applyTheme);
 applyTheme();
 
 // ---------- routing ----------
-const VIEWS = ["home", "egypt", "phoenicia", "traditions", "library", "religions", "philosophy", "lost", "conspiracies", "arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
-const INIT = { home: initHome, egypt: initEgypt, phoenicia: initPhoenicia, arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, library: initLibrary, religions: initReligions, philosophy: initPhilosophy, lost: initLost, traditions: initTraditions, conspiracies: initConspiracies, timeline: initTimeline, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes };
+const VIEWS = ["home", "egypt", "phoenicia", "mesopotamia", "cults", "kabbalah", "americas", "north", "aliens", "traditions", "library", "religions", "philosophy", "lost", "conspiracies", "arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
+const INIT = { home: initHome, egypt: initEgypt, phoenicia: initPhoenicia, mesopotamia: initMesopotamia, cults: initCults, kabbalah: initKabbalah, americas: initAmericas, north: initNorth, aliens: initAliens, arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, library: initLibrary, religions: initReligions, philosophy: initPhilosophy, lost: initLost, traditions: initTraditions, conspiracies: initConspiracies, timeline: initTimeline, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes };
 const rendered = {};
 let curView = null;
 function route() {
@@ -948,9 +1017,9 @@ window.addEventListener("hashchange", route);
 function go(view) { if (location.hash !== "#" + view) location.hash = view; else route(); }
 
 // ---------- navigation ----------
-const NAV = { primary: ["timeline", "lost", "egypt", "traditions", "conspiracies", "library"], more: ["mysteries", "phoenicia", "religions", "philosophy", "canon", "history"], scripture: ["arcs", "verse", "path", "ladder", "myths", "theories", "map", "people", "translations", "numbers", "codes"] };
-const NAV_ORDER = [...NAV.primary, ...NAV.more, ...NAV.scripture];
-const MENUS = { more: "More", scripture: "Scripture" };
+const NAV = { primary: ["timeline", "lost", "traditions", "conspiracies", "library"], ancient: ["egypt", "mesopotamia", "phoenicia", "cults", "americas", "north"], more: ["aliens", "kabbalah", "mysteries", "religions", "philosophy", "canon", "history"], scripture: ["arcs", "verse", "path", "ladder", "myths", "theories", "map", "people", "translations", "numbers", "codes"] };
+const NAV_ORDER = [...NAV.primary, ...NAV.ancient, ...NAV.more, ...NAV.scripture];
+const MENUS = { ancient: "Ancient", more: "More", scripture: "Scripture" };
 // [title, one line, image in img/, glyph when there is no image]
 const VIEW_INFO = {
   home: ["Home", "Start here"],
@@ -958,6 +1027,12 @@ const VIEW_INFO = {
   lost: ["Lost Worlds", "Atlantis, Giza, lost technology and giants: real finds and wild theories, each with a verdict", "atlantis"],
   egypt: ["Ancient Egypt", "The gods, the Book of the Dead and its 42 denials, the Mysteries of Isis, and what is really under Giza", "judgement"],
   phoenicia: ["Phoenicians", "The people who gave the world its alphabet, Tyrian purple and Carthage, and the Bible's Tyre", "tyreships"],
+  mesopotamia: ["Mesopotamia", "Sumer, Babylon and Assyria: the first writing, the first flood story, the Tower of Babel and the Anunnaki", "babel"],
+  cults: ["Mystery Cults", "Eleusis, Orpheus, Pythagoras, the Oracle of Delphi, Zoroaster, the Magi and Mithras", "delphi"],
+  kabbalah: ["Kabbalah", "The Tree of Life, the Zohar, God's 72 names and gematria, from Safed to the red string", null, "כתר"],
+  americas: ["The Americas", "The Maya calendar and 2012, Olmec heads, Nazca, Teotihuacan's mercury, and who reached America first", "copan"],
+  north: ["Celts & Norse", "Stonehenge, the Druids, Odin on the tree, the runes, and the Vikings' missing horns", "stonehenge"],
+  aliens: ["Ancient Aliens", "Pakal's “astronaut”, Baalbek, the Dogon, Ezekiel's wheel, Roswell: every claim checked", "baalbek"],
   traditions: ["Secret Traditions", "Alchemists, Gnostics, Templars, Rosicrucians, Masons and the Illuminati, and what really links them", "khunrath"],
   conspiracies: ["Conspiracies", "The Illuminati, the Protocols, Bible Mandela effects and two thousand years of antichrists", "seal"],
   mysteries: ["Mysteries", "Egypt in the Bible, Moses and Thutmose, Masonic ritual, the Dead Sea Scrolls and Tim Hogan's claims", "sphinx"],
@@ -1083,7 +1158,7 @@ function focusTarget(id) {
 
 // ---------- search ----------
 // History redraws its canvas when shown, so it is safe to render while hidden; canvas views without a redraw are left out
-const SEARCHABLE = ["lost", "egypt", "phoenicia", "traditions", "conspiracies", "mysteries", "religions", "philosophy", "theories", "canon", "history"];
+const SEARCHABLE = ["lost", "egypt", "phoenicia", "mesopotamia", "cults", "kabbalah", "americas", "north", "aliens", "traditions", "conspiracies", "mysteries", "religions", "philosophy", "theories", "canon", "history"];
 // Render the card views in the background so search and the home page can see every card
 function warmViews() {
   if (!D) return;
@@ -1173,7 +1248,7 @@ document.addEventListener("click", (ev) => { if (ev.target.closest("[data-search
 // ---------- home ----------
 function initHome() {
   const tile = (v) => { const [t, d, img, glyph] = VIEW_INFO[v]; return `<a class="tile" href="#${v}"><div class="pic${img ? "" : " glyph"}"${img ? ` style="background-image:url(img/${img}.jpg)"` : ""} aria-hidden="true">${img ? "" : glyph}</div><div class="txt"><b>${t}</b><span>${d}</span></div></a>`; };
-  $("home-tiles").innerHTML = [...NAV.primary, ...NAV.more].map(tile).join("");
+  $("home-tiles").innerHTML = [...NAV.primary, ...NAV.ancient, ...NAV.more].map(tile).join("");
   $("home-tools").innerHTML = NAV.scripture.map((v) => `<a href="#${v}"><b>${VIEW_INFO[v][0]}</b><span>${VIEW_INFO[v][1]}</span></a>`).join("");
   homeData();
 }
@@ -1935,6 +2010,8 @@ function initMap() {
 const STEPS = [
   { y: -9500, d: "c. 9500 BC", era: "Before farming", t: "Göbekli Tepe", b: "Hunter-gatherers raise rings of carved stone pillars on a hill in south-east Turkey, seven thousand years before Stonehenge's stones and before farming, pottery or writing. It is the oldest monumental site known.", pins: [["Göbekli Tepe", 38.922, 37.223]], span: 16, go: ["lost", "Lost civilizations"] },
   { y: -5000, d: "c. 5000 BC", era: "The first metal", t: "Fire turns rock into metal", b: "At Belovode in Serbia, people smelt copper out of green malachite: the oldest securely dated smelting anywhere. Genesis credits the first smith, Tubal-cain, to the line of Cain, and 1 Enoch says a fallen angel taught the art.", pins: [["Belovode", 21.416, 44.328]], span: 12, go: ["traditions", "Secret Traditions"] },
+  { y: -3200, d: "c. 3200 BC", era: "Sumer", t: "Writing begins", img: "babel", b: "At Uruk in southern Iraq, accountants press marks into clay to count grain, beer and sheep. Within a few centuries the marks become cuneiform, the first full writing, and with it come the first literature: hymns, laws, and the stories of Gilgamesh and the flood.", pins: [["Uruk", 45.637, 31.322], ["Ur", 46.103, 30.963]], span: 4, go: ["mesopotamia", "Mesopotamia"] },
+  { y: -3000, d: "c. 3000–1500 BC", era: "Stone circles", t: "Stonehenge", img: "stonehenge", b: "On Salisbury Plain, farmers begin a circle that will take 1,500 years to finish, with bluestones dragged from Wales and an altar stone from the far north of Scotland. It lines up with the midsummer sunrise. Ireland's Newgrange, built about 3200 BC, catches the midwinter one.", pins: [["Stonehenge", -1.826, 51.179], ["Newgrange", -6.475, 53.694]], span: 9, go: ["north", "Celts & Norse"] },
   { y: -2560, d: "c. 2560 BC", era: "Egypt", t: "The Great Pyramid", b: "Pharaoh Khufu's pyramid rises at Giza, more than a thousand years before any date proposed for the Exodus. The Bible never mentions pyramids, and the builders were Egyptian work crews housed in a town beside the site.", pins: [["Giza", 31.134, 29.979]], span: 9, go: ["mysteries", "Egypt in the Bible"] },
   { y: -2350, d: "c. 2350 BC", era: "Egypt", t: "The oldest religious writing", img: "judgement", b: "Inside the pyramid of King Unas at Saqqara, spells for the king's journey to the stars are carved on the walls: the Pyramid Texts, the oldest religious writing known. A thousand years later they have grown into the Book of the Dead, sold to anyone who can pay, with its weighing of the heart.", pins: [["Saqqara", 31.216, 29.871]], span: 4, go: ["egypt", "Ancient Egypt"] },
   { y: -1900, d: "c. 2000–1800 BC (traditional)", era: "The patriarchs", t: "Abraham leaves Ur", b: "Genesis follows Abram from Ur of the Chaldees to Harran, into Canaan, and down to Egypt in a famine. The date comes from adding up the ages in Genesis; no inscription names Abraham.", pins: [["Ur", 46.103, 30.962], ["Harran", 39.031, 36.865], ["Shechem", 35.281, 32.213], ["Egypt", 31.3, 30.1]], route: true, r: [["Gen", 12, 1], ["Gen", 12, 10]], books: ["Gen"] },
@@ -1952,6 +2029,7 @@ const STEPS = [
   { y: -722, d: "722 BC", era: "Empires", t: "Assyria takes Samaria", b: "Assyria destroys the northern kingdom of Israel and deports its people, the origin of the “ten lost tribes”. About twenty years later Sennacherib besieges Jerusalem.", pins: [["Nineveh", 43.152, 36.359], ["Samaria", 35.19, 32.276], ["Jerusalem", 35.235, 31.778]], r: [["2Kgs", 17, 6], ["2Kgs", 19, 9]] },
   { y: -586, d: "586 BC", era: "Empires", t: "Babylon burns the Temple", b: "Nebuchadnezzar destroys Jerusalem and its Temple and carries its people into exile. The Ark of the Covenant is never mentioned again; Jeremiah says it will not be missed.", pins: [["Jerusalem", 35.235, 31.778], ["Babylon", 44.421, 32.536]], route: true, r: [["2Kgs", 25, 9], ["Jer", 3, 16]], go: ["history", "The arks"] },
   { y: -538, d: "538 BC", era: "Empires", t: "The return", b: "Cyrus of Persia takes Babylon and lets the exiles go home. Zerubbabel leads the rebuilding of the Temple, the story Freemasonry's Royal Arch degree retells.", pins: [["Babylon", 44.421, 32.536], ["Jerusalem", 35.235, 31.778]], route: true, r: [["Ezra", 1, 1], ["Ezra", 3, 8]] },
+  { y: -530, d: "c. 530 BC", era: "Axial Age", t: "Pythagoras' brotherhood", img: "pythagoreans", b: "In Croton, in southern Italy, Pythagoras founds a secret community that studies number and music, avoids beans, and believes souls are reborn. In Persia, Cyrus has just taken Babylon and let the Jewish exiles go home; Isaiah calls him the Lord's anointed.", pins: [["Croton", 17.125, 39.081], ["Babylon", 44.421, 32.536]], span: 30, go: ["cults", "Mystery Cults"] },
   { y: -500, d: "551–479 BC", era: "Axial Age", t: "Confucius", b: "In the state of Lu, Confucius teaches ritual, loyalty and reciprocity: “What you do not want done to yourself, do not do to others.” His followers collect his sayings as the <em>Analects</em>.", pins: [["Qufu", 116.99, 35.58]], span: 8 },
   { y: -450, d: "5th century BC", era: "Axial Age", t: "The Buddha", b: "Siddhartha Gautama, born at Lumbini, reaches awakening under a tree at Bodh Gaya and teaches a path out of suffering. His dates are uncertain; most scholars place his death around 400 BC.", pins: [["Lumbini", 83.276, 27.469], ["Bodh Gaya", 84.991, 24.696]], span: 6, go: ["religions", "The world's religions"] },
   { y: -250, d: "3rd century BC", era: "Second Temple", t: "The Septuagint and Enoch", b: "Jewish scholars in Alexandria translate the Law into Greek, the Septuagint. Around the same time the Book of the Watchers, the oldest part of 1 Enoch, expands Genesis 6's story of angels and giants.", pins: [["Alexandria", 29.919, 31.2], ["Jerusalem", 35.235, 31.778]], r: [["Gen", 6, 4]], go: ["canon", "Beyond the Canon"] },
@@ -1961,6 +2039,7 @@ const STEPS = [
   { y: 50, d: "AD 46–62", era: "The church", t: "Paul's journeys", b: "Paul carries the new faith from Antioch through Asia Minor and Greece, and finally reaches Rome as a prisoner. His letters are the oldest writings in the New Testament.", pins: [["Antioch", 36.161, 36.202], ["Ephesus", 27.341, 37.941], ["Philippi", 24.286, 41.012], ["Corinth", 22.879, 37.906], ["Rome", 12.484, 41.891]], route: true, r: [["Acts", 13, 4], ["Acts", 28, 16]], books: ["Acts"] },
   { y: 70, d: "AD 70", era: "The church", t: "The Temple falls", b: "Roman legions under Titus destroy Jerusalem and the Second Temple. The Arch of Titus in Rome still shows the Temple's menorah carried in his triumph.", pins: [["Jerusalem", 35.235, 31.778], ["Rome", 12.484, 41.891]], r: [["Matt", 24, 2]] },
   { y: 95, d: "c. AD 95", era: "The church", t: "Revelation on Patmos", b: "Exiled on the island of Patmos, John writes Revelation, with its beast whose number is 666, or 616 in some early copies.", pins: [["Patmos", 26.547, 37.31]], span: 3, r: [["Rev", 1, 9], ["Rev", 13, 18]], go: ["numbers", "666, or 616?"] },
+  { y: 250, d: "c. AD 100–550", era: "The Americas", t: "Teotihuacan", img: "copan", b: "In the Valley of Mexico rises a city of perhaps 100,000 people, with the Pyramids of the Sun and the Moon. Under its Temple of the Feathered Serpent, sealed around 250, a tunnel ends at pools of liquid mercury. Far to the south, Maya cities are raising stelae dated in the Long Count.", pins: [["Teotihuacan", -98.844, 19.692], ["Copán", -89.141, 14.838]], span: 18, go: ["americas", "The Americas"] },
   { y: 300, d: "c. AD 300", era: "Alchemy", t: "The first alchemists", img: "zosimos", b: "In Roman Egypt, Zosimos of Panopolis writes about stills, furnaces and turning base metal into gold, and cites Hermes Trismegistus and an earlier woman alchemist, Maria the Jewess. Alchemy began in metalworkers' recipe books for imitating gold.", pins: [["Panopolis", 31.745, 26.565], ["Alexandria", 29.92, 31.2]], span: 7, go: ["traditions", "Secret Traditions"] },
   { y: 325, d: "AD 325 and 367", era: "The empire", t: "Nicaea, and the list of books", b: "The Council of Nicaea argues over whether Jesus is fully divine and when to keep Easter; it does not choose the books of the Bible. In 367 Athanasius of Alexandria writes the first surviving list of today's 27 New Testament books.", pins: [["Nicaea", 29.72, 40.43], ["Alexandria", 29.919, 31.2]] },
   { y: 380, d: "4th century", era: "The empire", t: "Books buried at Nag Hammadi", img: "thomas", b: "Someone buries a jar of leather-bound Coptic books near Nag Hammadi in Upper Egypt, among them the Gospel of Thomas. Farmers dig it up in December 1945.", pins: [["Nag Hammadi", 32.242, 26.049]], span: 5, go: ["canon", "Beyond the Canon"] },
@@ -2288,6 +2367,15 @@ const IMG = {
   punic: ["Phoenician and Punic letter forms across a thousand years", "Julius Euting, 1872", "Julius Euting's Punische Steine Table Comparison table 1.jpg"],
   tyreships: ["Phoenician ships fleeing Tyre: a modern drawing after an Assyrian relief from Sennacherib's palace, c. 700 BC", "Drawing released into the public domain, 2018", "Elulay escape.jpg"],
   carthage: ["Marius Amid the Ruins of Carthage", "John Vanderlyn, 1807", "John Vanderlyn 002.jpg"],
+  babel: ["The Tower of Babel", "Pieter Bruegel the Elder, 1563", "Pieter Bruegel the Elder - The Tower of Babel (Vienna) - Google Art Project.jpg"],
+  delphi: ["Priestess of Delphi", "John Collier, 1891", "John Collier - Priestess of Delphi - Google Art Project.jpg"],
+  pythagoreans: ["Pythagoreans' Hymn to the Rising Sun", "Fyodor Bronnikov, 1869", "HYMN OF THE PYTHAGOREANS TO THE RISING SUN.jpg"],
+  mithras: ["Mithras killing the bull, after a Roman relief", "Speculum Romanae Magnificentiae, 1564; Rijksmuseum", "Mithras doodt een heilige stier Speculum Romanae Magnificentiae (serietitel), RP-P-2016-345-41.jpg"],
+  copan: ["A Maya stela at Copán", "Frederick Catherwood, 1844", "Catherwood stela d.jpg"],
+  dresden: ["A page of the Dresden Codex, one of four surviving Maya books", "Maya, c. 1200; 1880 facsimile", "Dresden Codex p09.jpg"],
+  stonehenge: ["Stonehenge", "John Constable, 1835", "John Constable - Stonehenge - Google Art Project.jpg"],
+  odin: ["Odin's self-sacrifice on the world tree", "Lorenz Frølich, 1895", "The Sacrifice of Odin by Frølich.jpg"],
+  baalbek: ["The temple of Jupiter at Baalbek", "Félix Bonfils, 1867", "Félix Bonfils, Temple de Jupiter à Baalbek (Syrie).jpg"],
   seal: ["William Barton's design for the reverse of the Great Seal: an eye over an unfinished pyramid", "William Barton, 1782", "BartonGreatSealDesignReverse.jpg"],
 };
 const fig = (k) => { const [cap, by, f] = IMG[k]; return `<figure class="fig"><img src="img/${k}.jpg" alt="${esc(cap)}" loading="lazy"><figcaption>${esc(cap)}. <a href="https://commons.wikimedia.org/wiki/File:${encodeURIComponent(f.replace(/ /g, "_"))}" target="_blank" rel="noopener">${esc(by)}</a>, public domain.</figcaption></figure>`; };
@@ -2550,6 +2638,167 @@ function initPhoenicia() {
   $("ph-abc").innerHTML = `<thead><tr><th>Phoenician</th><th>Name</th><th>Meaning</th><th>Hebrew</th><th>Greek</th><th>Latin</th></tr></thead><tbody>${PH_ABC.map(([p, n, m, h, g, l]) => `<tr><td class="phx">${p}</td><td>${n}</td><td class="status">${m}</td><td class="heb">${h}</td><td>${g}</td><td>${l}</td></tr>`).join("")}</tbody>`;
   $("ph-cards").innerHTML = PH_CARDS.map(cardImg).join("");
 }
+
+// ---------- mesopotamia ----------
+const MES_CHRONO = [[-3500, -3100, "Uruk"], [-2900, -2334, "Sumerian city-states"], [-2334, -2154, "Akkad"], [-2112, -2004, "Ur III"], [-1894, -1595, "Old Babylon"], [-1595, -1155, "Kassites", true], [-911, -609, "Assyria", false, 1], [-626, -539, "Babylon"], [-539, -331, "Persia", true]];
+const MES_MARKS = [[-3200, "Writing"], [-2700, "Gilgamesh, king of Uruk?"], [-2285, "Enheduanna"], [-1754, "Hammurabi"], [-1700, "Atrahasis flood epic"], [-1100, "Enuma Elish"], [-701, "Sennacherib at Jerusalem"], [-650, "Ashurbanipal's library"], [-586, "Jerusalem burned"], [-539, "Cyrus takes Babylon"]];
+// The Sumerian King List's kings before the flood (Weld-Blundell prism): [king, city, years]
+const SKL = [["Alulim", "Eridu", 28800], ["Alalngar", "Eridu", 36000], ["En-men-lu-ana", "Bad-tibira", 43200], ["En-men-gal-ana", "Bad-tibira", 28800], ["Dumuzid the Shepherd", "Bad-tibira", 36000], ["En-sipad-zid-ana", "Larag", 28800], ["En-men-dur-ana", "Sippar", 21000], ["Ubara-Tutu", "Shuruppak", 18600]];
+const MES_CARDS = [
+  { c: "Writing was invented here", v: ["Real", "true"], b: "The first writing appears at Uruk around 3200 BC: clay tablets recording grain, beer and livestock. Cuneiform, wedges pressed into clay, was used for three thousand years for a dozen languages; the last datable tablet is an astronomical text from about AD 75." },
+  { c: "The first author with a name", v: ["Real", "true"], b: "Enheduanna, daughter of Sargon of Akkad and high priestess of the moon god at Ur around 2285 BC, wrote hymns to Inanna that were copied for centuries. She is the earliest author known by name, man or woman." },
+  { c: "Enuma Elish and Genesis 1", v: ["Related, not copied", "part"], img: "babel", b: "In Babylon's creation epic the god Marduk kills the sea monster Tiamat and splits her body to make the sky and the earth. Genesis opens with darkness on “the deep”, Hebrew <em>tehom</em>, a word related to Tiamat. Most scholars see Genesis 1 answering the Babylonian story rather than copying it: here the deep is just water, and God has no rival to fight.", r: [["Gen", 1, 2]] },
+  { c: "An older flood: Atrahasis", v: ["Real", "true"], b: "Around 1700 BC, a millennium before the oldest Bible manuscripts, the epic of Atrahasis tells how the gods, kept awake by noisy humans, send a flood; the god Enki warns Atrahasis to build a boat. Its flood story was retold in Gilgamesh, whose Tablet XI is in the Library beside Genesis.", go: ["library", "Gilgamesh in the Library"] },
+  { c: "The Tower of Babel was a real ziggurat", v: ["Real building behind the story", "part"], b: "Babylon's great ziggurat Etemenanki, “house of the foundation of heaven and earth”, stood about 90 metres high and was rebuilt by Nebuchadnezzar. Babel is the Akkadian <em>bab-ili</em>, “gate of the god”; Genesis turns it into a pun on Hebrew <em>balal</em>, “to confuse”.", r: [["Gen", 11, 9]] },
+  { c: "Weeping for Tammuz", v: ["In the text", "true"], b: "Ezekiel sees women at the Temple gate “weeping for Tammuz”. Tammuz is the Sumerian Dumuzi, Inanna's husband, who dies and spends half the year in the underworld; his death was mourned every summer across Mesopotamia. A month of the Jewish calendar is still called Tammuz.", r: [["Ezek", 8, 14]] },
+  { c: "Sennacherib's prism and 2 Kings", v: ["Both sides recorded", "true"], b: "Sennacherib's annals say he took 46 walled towns of Judah in 701 BC and shut Hezekiah up in Jerusalem “like a bird in a cage”, and received heavy tribute. They do not claim he took the city. 2 Kings agrees about the towns and the tribute, and says an angel struck the Assyrian camp.", r: [["2Kgs", 18, 13]] },
+  { c: "Belshazzar never existed", v: ["Wrong: he did", "true"], b: "Critics once pointed out that no record named Belshazzar, Daniel's last king of Babylon. Cylinders found in 1854 name him as the son of King Nabonidus, and other texts show he ruled Babylon while his father stayed in Arabia, which is why Daniel is offered only “the third ruler in the kingdom”.", r: [["Dan", 5, 29]] },
+  { c: "The Hanging Gardens of Babylon", v: ["Maybe in Nineveh", "part"], b: "Greek writers listed them among the Seven Wonders, but no Babylonian text mentions them and excavators never found them. The Assyriologist Stephanie Dalley argues they were Sennacherib's gardens at Nineveh, watered by his aqueducts, which his own inscriptions describe." },
+  { c: "Sixty minutes, 360 degrees", v: ["Real", "true"], b: "Mesopotamian mathematics counted in base 60, which divides evenly by 2, 3, 4, 5, 6, 10, 12, 15, 20 and 30. It survives in every clock and compass: 60 seconds, 60 minutes, 360 degrees." },
+  { c: "What the tablets say about the Anunnaki", v: ["Real myth", "true"], b: "“Anunnaki” is a name for a group of great gods, roughly “offspring of An”, the sky god. In the Atrahasis epic the lesser gods rebel against digging canals, so the gods make humans from clay mixed with the blood of a slain god, to do the work instead." },
+  { c: "The Anunnaki were aliens from Nibiru", v: ["Myth", "myth"], b: "Zecharia Sitchin's <em>The 12th Planet</em> (1976) claimed the Anunnaki came from a hidden planet, Nibiru, on a 3,600-year orbit and engineered humans 450,000 years ago to mine gold. In the tablets Nibiru is a star or point in the sky linked to Marduk, probably Jupiter; no tablet describes a planet with such an orbit. Assyriologists reject his readings, and the predicted collisions with Nibiru (2003, then 2012, then 2017) did not happen.", go: ["aliens", "Ancient Aliens, checked"] },
+];
+function initMesopotamia() {
+  $("mes-chrono").innerHTML = chronoStrip(-3500, -300, MES_CHRONO, MES_MARKS, "Mesopotamian history from Uruk to Persia");
+  // The King List against Genesis, on a log scale so 930 and 43,200 both fit
+  const gen = D.more.lifespans.slice(0, 10), rows = [...SKL.map(([n, c, y]) => [n, `${c}, Sumerian King List`, y, "var(--accent)"]), ...gen.map(([n, y]) => [n, "Genesis 5", y, "var(--muted)"])];
+  const L = (v) => Math.log10(v), x0 = 230, w = 500, mx = L(50000), rowH = 24;
+  $("skl-chart").innerHTML = `<svg viewBox="0 0 800 ${rows.length * rowH + 30}" role="img" aria-label="Reigns of the Sumerian kings before the flood against the lifespans of Genesis">${rows.map(([n, src, y, col], k) => `<text x="${x0 - 8}" y="${k * rowH + 16}" text-anchor="end" font-size="12" style="fill:var(--ink)">${esc(n)}</text><rect x="${x0}" y="${k * rowH + 5}" width="${L(y) / mx * w}" height="15" rx="2" style="fill:${col}"><title>${esc(src)}</title></rect><text x="${x0 + L(y) / mx * w + 6}" y="${k * rowH + 16}" font-size="11" style="fill:var(--muted)">${fmt(y)} years</text>`).join("")}<text x="${x0}" y="${rows.length * rowH + 22}" font-size="11" style="fill:var(--muted)">Log scale: each step to the right is ten times longer. Accent: reigns of kings before the flood. Grey: lifespans in Genesis 5, counted from the text.</text></svg>`;
+  const tot = SKL.reduce((a, r) => a + r[2], 0), gtot = gen.reduce((a, r) => a + r[1], 0);
+  $("skl-note").textContent = `The eight Sumerian kings reign ${fmt(tot)} years in all; Genesis' ten patriarchs live ${fmt(gtot)}. Both lists have a line of long-lived men before a flood, and the King List's lives shrink sharply afterwards, as Genesis' do.`;
+  $("mes-cards").innerHTML = MES_CARDS.map(cardImg).join("");
+  wireGo($("mes-cards"));
+}
+
+// ---------- mystery cults ----------
+const CULT_CHRONO = [[-1500, -1100, "Mycenaean Greece", true], [-800, -323, "Classical Greece"], [-323, -31, "Hellenistic", true], [-31, 476, "Roman Empire"], [-550, -330, "Achaemenid Persia", false, 1]];
+const CULT_MARKS = [[-1200, "Zoroaster? (date argued)"], [-650, "Hymn to Demeter"], [-530, "Pythagoras at Croton"], [-415, "Alcibiades profanes the Mysteries"], [-400, "Orphic gold tablets"], [-539, "Cyrus, “the anointed”"], [100, "Mithras spreads"], [392, "Mysteries banned"]];
+const CULT_CARDS = [
+  { c: "The Eleusinian Mysteries", v: ["Real", "true"], b: "For about a thousand years, thousands of people a year walked from Athens to Eleusis to be initiated into the mysteries of Demeter and her daughter Persephone, who spends a third of each year in the underworld. Initiates drank the <em>kykeon</em>, barley water with mint, and saw something in the hall at night. They were sworn to secrecy, and the secret held: no ancient source reveals it. Theodosius banned pagan rites in 392, and Alaric's Goths sacked the sanctuary in 396." },
+  { c: "The secret of Eleusis was a drug", v: ["Speculation", "part"], b: "In 1978 Gordon Wasson, Albert Hofmann (the chemist who discovered LSD) and Carl Ruck proposed that the kykeon contained ergot, a grain fungus with LSD-like alkaloids. It would explain visions, but no residue from Eleusis has been tested, and the idea remains a hypothesis." },
+  { c: "Orphic gold tablets", v: ["Real", "true"], b: "From about 400 BC some Greeks were buried with thin gold leaves telling the soul what to say in the underworld: avoid the spring by the white cypress, drink from the lake of Memory, and tell the guards, “I am a child of Earth and starry Heaven.” It is the same idea as the Egyptian Book of the Dead: the dead need the right words.", go: ["egypt", "The Book of the Dead"] },
+  { c: "Pythagoras' brotherhood", v: ["Real", "true"], img: "pythagoreans", b: "Around 530 BC Pythagoras founded a community at Croton in southern Italy with secret teachings, a vow of silence for new members, rules against eating beans, and a belief that souls are reborn. Members shared property and attributed every discovery to the master. Their meeting houses were burned in an uprising around 450 BC." },
+  { c: "Hippasus was drowned for revealing √2", v: ["Legend", "myth"], b: "The story says a Pythagorean who proved that the square root of 2 cannot be written as a fraction, wrecking the belief that everything is whole-number ratios, was drowned by the gods or his brothers. It comes from writers centuries later, who disagree about what he revealed and how he died." },
+  { c: "Pythagoras learned his wisdom in Egypt", v: ["Possible", "part"], b: "Isocrates, writing within about 150 years, says Pythagoras studied in Egypt, and Herodotus links Greek ideas of reincarnation to Egypt (the Egyptians did not in fact teach it). The detailed accounts of his travels, to Egypt, Babylon and the Magi, come from biographies written 800 years later." },
+  { c: "The Oracle of Delphi was breathing gas", v: ["Debated", "part"], img: "delphi", b: "Plutarch, who served as a priest at Delphi, wrote of a sweet-smelling vapour. In 2001 geologists found two faults crossing under the temple and traces of ethylene, a sweet-smelling gas that can cause trance, in a nearby spring. Later measurements found far too little gas to affect anyone, so the question is open." },
+  { c: "Zoroaster", v: ["Real", "true"], b: "The Persian prophet whose hymns, the Gathas, teach that the wise lord Ahura Mazda is at war with the destructive spirit, that every soul crosses a bridge to judgment after death, and that the world will end with a final victory of good, a resurrection and a saviour. His dates are argued anywhere from 1500 to 500 BC. The religion survives among Parsis in India and in Iran." },
+  { c: "Zoroastrianism shaped the Bible", v: ["Debated", "part"], b: "Jews lived under Persian rule for two centuries, and the books written after the exile have much more about angels, Satan as an adversary, the resurrection of the dead and a final judgment. Many scholars see Persian influence; others think the ideas grew from Jewish sources and only flourished in the same period." },
+  { c: "Cyrus, the Persian messiah", v: ["In the text", "true"], b: "Isaiah calls Cyrus the Great, the Persian king who let the exiles go home, God's “anointed”: in Hebrew, <em>mashiach</em>, messiah. Cyrus' own clay cylinder boasts of returning conquered peoples and their gods to their homes, though it does not mention Judah.", r: [["Isa", 45, 1]] },
+  { c: "The Magi were Persian priests", v: ["Likely meant", "part"], b: "Matthew's wise men from the east are <em>magoi</em>, the Greek name for the Persian priestly caste; the word “magic” comes from it. Later Christian tradition made them three kings, from the three gifts; Matthew gives neither their number nor royalty.", r: [["Matt", 2, 1]] },
+  { c: "Mithras was a copy of Jesus, or Jesus of Mithras", v: ["Mostly myth", "myth"], img: "mithras", b: "The Roman cult of Mithras, spread by soldiers from the 1st century AD, met in cave-like temples showing the god killing a bull. Claims of a virgin birth on 25 December and twelve disciples are modern: Mithras was born from a rock. One real overlap: Justin Martyr, around AD 150, complained that the Mithraists imitated the Eucharist with bread and a cup." },
+  { c: "A temple of Mithras under a church in Rome", v: ["Real", "true"], b: "Beneath the Basilica of San Clemente in Rome are a 4th-century church and, below that, a 2nd-century Mithraeum with its altar still in place. Visitors walk down through three layers of Roman religion." },
+  { c: "Dionysus turned water into wine", v: ["A parallel", "part"], b: "Pausanias reports that at the Dionysian festival in Elis, three empty jars sealed overnight in the temple were found full of wine in the morning. John's Gospel has Jesus turn water into wine at Cana. Whether the Gospel answers the Dionysus cult is argued.", r: [["John", 2, 9]] },
+];
+function initCults() {
+  $("cult-chrono").innerHTML = chronoStrip(-1500, 500, CULT_CHRONO, CULT_MARKS, "Greek, Persian and Roman mystery religions");
+  $("cult-cards").innerHTML = CULT_CARDS.map(cardImg).join("");
+  wireGo($("cult-cards"));
+}
+
+// ---------- kabbalah ----------
+// [Hebrew, name, meaning, x, y, note]
+const SEFIROT = [["כתר", "Keter", "Crown", 0, 0, "The hidden will of God, beyond thought."], ["חכמה", "Chokhmah", "Wisdom", 1, 0.8, "The first flash of thought, the father."], ["בינה", "Binah", "Understanding", -1, 0.8, "Wisdom given shape, the mother."], ["חסד", "Chesed", "Mercy", 1, 2.2, "Boundless love and giving."], ["גבורה", "Gevurah", "Strength", -1, 2.2, "Judgment and limits."], ["תפארת", "Tiferet", "Beauty", 0, 3, "Harmony of mercy and judgment, linked to Jacob."], ["נצח", "Netzach", "Victory", 1, 4, "Endurance."], ["הוד", "Hod", "Splendour", -1, 4, "Glory and submission."], ["יסוד", "Yesod", "Foundation", 0, 4.8, "The channel to the world, linked to Joseph."], ["מלכות", "Malkhut", "Kingdom", 0, 6, "God's presence in the world, the Shekhinah."]];
+// The 22 paths of the Kircher tree, one for each Hebrew letter
+const PATHS = [[0, 1], [0, 2], [0, 5], [1, 2], [1, 5], [1, 3], [2, 5], [2, 4], [3, 4], [3, 5], [3, 6], [4, 5], [4, 7], [5, 6], [5, 8], [5, 7], [6, 7], [6, 8], [6, 9], [7, 8], [7, 9], [8, 9]];
+const KAB_CARDS = [
+  { c: "What Kabbalah is", v: ["Real", "true"], b: () => `Jewish mysticism; the word means “received tradition”. Its oldest book, the short <em>Sefer Yetzirah</em> (written sometime between the 2nd and 6th centuries AD), says God created the world with ten <em>sefirot</em> and the 22 letters of the Hebrew alphabet. Pair the letters every way and you get ${22 * 21 / 2}, the book's “231 gates”.` },
+  { c: "The Zohar is ancient", v: ["Medieval", "myth"], b: "The Zohar, the central book of Kabbalah, presents itself as the teaching of Rabbi Shimon bar Yochai in 2nd-century Galilee. It appeared in Castile in the 1280s through Moses de León, and the scholar Gershom Scholem showed in the 20th century that its Aramaic and ideas point to de León himself. Many traditional Jews still regard it as ancient." },
+  { c: "Isaac Luria and the broken vessels", v: ["Real", "true"], b: "In Safed in Galilee in the 1570s, Isaac Luria taught that God contracted himself to make room for the world, that the vessels meant to hold his light shattered, and that human acts gather the scattered sparks: <em>tikkun olam</em>, repairing the world. He died at 38, and his disciples wrote down his teaching." },
+  { c: "God's name adds up to 26", v: ["Computed", "true"], b: () => `In gematria every Hebrew letter is a number. The four-letter name of God, ${"יהוה"}, adds up to ${hebSum("יהוה")}; <em>chai</em>, “life”, ${"חי"}, to ${hebSum("חי")}, which is why Jewish gifts often come in multiples of 18. Kabbalists read meaning into words with equal sums.`, go: ["numbers", "Gematria calculator"] },
+  { c: "The 72 names of God", v: ["Real", "true"], b: "Exodus 14:19–21, the parting of the Red Sea, is three verses of exactly 72 Hebrew letters each. Kabbalists write them one above another, reading the middle one backwards, and take each column of three letters as one of 72 names of God.", r: [["Exod", 14, 21]] },
+  { c: "Ezekiel's chariot", v: ["Real", "true"], b: "The earliest Jewish mystics, from around the 2nd century, practised <em>merkavah</em> mysticism: visionary ascents through heavenly palaces to the throne-chariot of Ezekiel 1. The Mishnah forbids teaching it except to a single wise student.", r: [["Ezek", 1, 4]] },
+  { c: "You must be 40 and married to study it", v: ["Later custom", "part"], b: "The Talmud warns about teaching the mysteries of creation and the chariot. The age-40 rule is a later custom, set down by rabbis in the 17th century, and many Kabbalists ignored it: Luria taught as a young man." },
+  { c: "Christian and occult Kabbalah", v: ["Real", "true"], b: "Pico della Mirandola brought Kabbalah into Christian thought in 1486, arguing it proved Christianity. Jesuit Athanasius Kircher drew the Tree of Life in 1652 in the form most people know, the one drawn here. The Golden Dawn in the 1890s mapped its 22 paths onto the tarot's 22 trumps; that “Qabalah” is a different thing from the Jewish one.", go: ["traditions", "Secret Traditions"] },
+  { c: "The Golem of Prague", v: ["Legend", "myth"], b: "The story of Rabbi Judah Loew making a clay man and animating it with a divine name is first attached to him in the 19th century, two hundred years after his death. Older golem stories exist, but there is no record of Loew telling one." },
+  { c: "The red string and the Kabbalah Centre", v: ["Real", "true"], b: "Philip Berg's Kabbalah Centre, founded in the US in the 1960s, made Kabbalah popular with celebrities such as Madonna in the 1990s, along with red string bracelets against the evil eye. Orthodox rabbis and scholars criticise it as commercial and far from traditional Kabbalah." },
+];
+function initKabbalah() {
+  const X = (x) => 200 + x * 110, Y = (y) => 40 + y * 70, R = 30;
+  $("kab-tree").innerHTML = `<svg viewBox="0 0 400 500" role="img" aria-label="The Tree of Life: ten sefirot joined by 22 paths">${PATHS.map(([a, b]) => `<line x1="${X(SEFIROT[a][3])}" y1="${Y(SEFIROT[a][4])}" x2="${X(SEFIROT[b][3])}" y2="${Y(SEFIROT[b][4])}" style="stroke:var(--rule)" stroke-width="6"/>`).join("")}${SEFIROT.map(([h, n, m, x, y], k) => `<g class="sef" data-k="${k}" tabindex="0" role="button" aria-label="${n}, ${m}"><circle cx="${X(x)}" cy="${Y(y)}" r="${R}" style="fill:var(--surface);stroke:var(--accent)" stroke-width="2"/><text x="${X(x)}" y="${Y(y) - 2}" text-anchor="middle" font-size="15" class="heb" style="fill:var(--ink)">${h}</text><text x="${X(x)}" y="${Y(y) + 14}" text-anchor="middle" font-size="9.5" style="fill:var(--muted)">${n}</text></g>`).join("")}</svg>`;
+  const show = (k) => { const [h, n, m, , , note] = SEFIROT[k]; $("kab-info").innerHTML = `<div class="heb" style="font-size:30px;color:var(--rubric)">${h}</div><h4>${n}: ${m}</h4><p>${note}</p><p class="status">Sefirah ${k + 1} of 10.</p>`; $("kab-tree").querySelectorAll(".sef").forEach((g) => g.classList.toggle("on", +g.dataset.k === k)); };
+  $("kab-tree").querySelectorAll(".sef").forEach((g) => { g.onclick = () => show(+g.dataset.k); g.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); show(+g.dataset.k); } }; });
+  show(0);
+  $("kab-cards").innerHTML = KAB_CARDS.map(cardImg).join("");
+  wireGo($("kab-cards"));
+}
+
+// ---------- the americas ----------
+const TZ = ["Imix", "Ik'", "Ak'bal", "K'an", "Chikchan", "Kimi", "Manik'", "Lamat", "Muluk", "Ok", "Chuwen", "Eb", "Ben", "Ix", "Men", "Kib", "Kaban", "Etz'nab", "Kawak", "Ajaw"];
+const HAAB = ["Pop", "Wo'", "Sip", "Sotz'", "Sek", "Xul", "Yaxk'in", "Mol", "Ch'en", "Yax", "Sak'", "Keh", "Mak", "K'ank'in", "Muwan", "Pax", "K'ayab", "Kumk'u", "Wayeb"];
+// Days since the Long Count's zero, 11 August 3114 BC (GMT correlation, Julian day 584283)
+const mayaDays = (d) => Math.floor(d.getTime() / 864e5) + 2440588 - 584283;
+function longCount(n) {
+  const lc = [144000, 7200, 360, 20, 1].map((u) => { const q = Math.floor(n / u); n -= q * u; return q; });
+  return lc;
+}
+const AM_CARDS = [
+  { c: "The Maya predicted the world would end in 2012", v: ["Myth", "myth"], img: "dresden", b: "On 21 December 2012 the Long Count calendar reached 13.0.0.0.0, the end of the 13th <em>b'ak'tun</em>, like an odometer rolling over. No Maya text predicts an end of the world; an inscription at Palenque refers to a date in AD 4772. The only ancient mention of 2012, on a damaged monument from Tortuguero, speaks of a god descending, not a catastrophe." },
+  { c: "The Maya used zero", v: ["Real", "true"], img: "copan", b: "The Long Count needs a sign for an empty place, and Mesoamericans had one by about the start of the Christian era, centuries before India's zero reached Europe. The Maya wrote numbers in base 20 with dots, bars and a shell for zero." },
+  { c: "The Olmec heads show Africans", v: ["Myth", "myth"], b: "Seventeen colossal basalt heads, carved by the Olmec around 1200–400 BC, show broad noses and full lips. The claim that they portray African visitors was popularised by Ivan Van Sertima in 1976; the features match local people, and no African artefact, plant or gene from that era has been found in Mexico." },
+  { c: "The Nazca lines are landing strips", v: ["Myth", "myth"], b: "The lines were made between about 500 BC and AD 500 by moving dark surface stones to expose lighter ground: shallow scratches that could never bear an aircraft. Erich von Däniken's 1968 runway idea ignores that many figures can be seen from nearby hills. In 2024 a team using AI found 303 new figures, mostly small ones beside footpaths." },
+  { c: "Teotihuacan's tunnel of mercury", v: ["Real", "true"], b: "Under the Temple of the Feathered Serpent at Teotihuacan, archaeologist Sergio Gómez spent a decade clearing a tunnel 100 metres long and 18 metres deep, sealed around AD 250. In 2015 he found pools of liquid mercury at its end, perhaps an underworld lake, along with thousands of offerings. The city's builders are still unknown; the Aztecs found it already in ruins." },
+  { c: "The serpent of Chichen Itza", v: ["Real; intent argued", "part"], b: "On afternoons near the equinoxes, the stepped edge of El Castillo casts triangles of light down the north staircase, joining a stone serpent's head at the bottom. It draws crowds every March. Whether the builders designed it is argued; it is visible for weeks around each equinox." },
+  { c: "Cortés was taken for the god Quetzalcoatl", v: ["Probably myth", "myth"], b: "The story that Moctezuma thought Cortés was the returning feathered-serpent god appears only in sources written decades after the conquest. Historians such as Camilla Townsend argue it was invented afterwards; the letters Cortés wrote at the time never mention it." },
+  { c: "Thousands of skulls at the Templo Mayor", v: ["Real", "true"], b: "Excavations in Mexico City from 2015 uncovered the Huey Tzompantli, the Aztec skull rack, and a tower of more than 600 skulls set in mortar, including women and children. The sacrifices Spanish writers described were real, though their numbers are argued." },
+  { c: "A lost white race built the mounds", v: ["Myth", "myth"], b: "Nineteenth-century Americans claimed the great earthworks of the Ohio and Mississippi valleys were built by a vanished race, Israelites or Atlanteans, not by Native Americans. A Smithsonian survey led by Cyrus Thomas showed in 1894 that Native peoples built them. Cahokia, near St Louis, was a city of perhaps 15,000 people around AD 1100." },
+  { c: "Book of Mormon peoples in ancient America", v: ["No support", "myth"], b: "The Book of Mormon describes Israelite nations in the Americas from about 600 BC with horses, steel, chariots and wheat. Archaeology has found no trace of them, and DNA shows Native Americans descend from Asian populations; a 2014 Latter-day Saints essay accepts the DNA evidence and argues the Book's peoples were a small group. The Church takes no official position on where its events happened.", go: ["religions", "The Book of Mormon beside the KJV"] },
+  { c: "Vikings reached America first", v: ["Real", "true"], b: "Norse sagas tell of Vinland, and in 1960 Helge and Anne Stine Ingstad found a Norse settlement at L'Anse aux Meadows in Newfoundland. A 2021 study dated wood cut with metal tools there to exactly AD 1021, using a burst of radiation from a solar storm recorded in tree rings." },
+  { c: "The Kensington Runestone", v: ["Hoax", "myth"], b: "A Minnesota farmer said in 1898 he found a stone carved with runes telling of Norsemen there in 1362. Its runes and grammar match 19th-century Swedish rather than medieval Norse, and most scholars consider it a hoax." },
+];
+function initAmericas() {
+  const run = () => {
+    const v = $("maya-in").value, d = v ? new Date(v + "T12:00:00Z") : new Date();
+    const n = mayaDays(d), lc = longCount(n), tz = ((n + 3) % 13 + 13) % 13 + 1, tn = TZ[((n + 19) % 20 + 20) % 20], hp = ((n + 348) % 365 + 365) % 365;
+    $("maya-out").innerHTML = `<div class="ans num">${lc.join(".")}</div><p>${tz} ${tn} · ${hp % 20} ${HAAB[Math.floor(hp / 20)]} · day ${fmt(n)} of the Long Count</p><p class="status">Long Count: <em>b'ak'tun</em> (144,000 days), <em>k'atun</em> (7,200), <em>tun</em> (360), <em>winal</em> (20), <em>k'in</em> (1 day). Then the 260-day sacred count and the 365-day solar year, computed with the standard GMT correlation.</p>`;
+  };
+  $("maya-in").value = new Date().toISOString().slice(0, 10);
+  $("maya-form").onsubmit = (e) => { e.preventDefault(); run(); };
+  $("maya-2012").onclick = () => { $("maya-in").value = "2012-12-21"; run(); };
+  run();
+  $("am-cards").innerHTML = AM_CARDS.map(cardImg).join("");
+  wireGo($("am-cards"));
+}
+
+// ---------- celts and norse ----------
+// Elder Futhark: [rune, reconstructed name, meaning, sound]
+const FUTHARK = [["ᚠ", "fehu", "cattle, wealth", "f"], ["ᚢ", "ūruz", "aurochs", "u"], ["ᚦ", "þurisaz", "giant", "th"], ["ᚨ", "ansuz", "a god", "a"], ["ᚱ", "raidō", "ride", "r"], ["ᚲ", "kaunan", "sore? torch?", "k"], ["ᚷ", "gebō", "gift", "g"], ["ᚹ", "wunjō", "joy", "w"], ["ᚺ", "hagalaz", "hail", "h"], ["ᚾ", "naudiz", "need", "n"], ["ᛁ", "īsaz", "ice", "i"], ["ᛃ", "jēra", "year, harvest", "j"], ["ᛇ", "eihwaz", "yew", "ï"], ["ᛈ", "perþ", "unknown", "p"], ["ᛉ", "algiz", "elk? protection?", "z"], ["ᛊ", "sōwilō", "sun", "s"], ["ᛏ", "tīwaz", "the god Tyr", "t"], ["ᛒ", "berkanan", "birch", "b"], ["ᛖ", "ehwaz", "horse", "e"], ["ᛗ", "mannaz", "man", "m"], ["ᛚ", "laguz", "water", "l"], ["ᛜ", "ingwaz", "the god Ing", "ng"], ["ᛞ", "dagaz", "day", "d"], ["ᛟ", "ōþila", "inheritance", "o"]];
+const NORTH_CARDS = [
+  { c: "Stonehenge", v: ["Real", "true"], img: "stonehenge", b: "Built in stages from about 3000 to 1500 BC. Its smaller bluestones were dragged some 225 km from the Preseli Hills in Wales, and in 2024 the six-tonne Altar Stone was traced to north-east Scotland, over 700 km away. The monument is aligned on the midsummer sunrise and the midwinter sunset." },
+  { c: "The Druids built Stonehenge", v: ["Myth", "myth"], b: "The Druids first appear in history around 2,000 years after Stonehenge was begun. The link was made by the antiquarians John Aubrey in the 1600s and William Stukeley in the 1700s, and modern Druid orders took it up." },
+  { c: "What we know about the Druids", v: ["Little, from outsiders", "part"], b: "Only Greeks and Romans wrote about them. Caesar says they memorised verses for twenty years, taught the soul passes to another body, and burned victims in wicker figures; Pliny describes them cutting mistletoe from an oak with a golden sickle. Roman writers had reasons to make enemies look savage, and Rome destroyed their stronghold on Anglesey in AD 60." },
+  { c: "The forger who invented Druid ritual", v: ["Real", "true"], b: "Edward Williams, a Welsh stonemason who called himself Iolo Morganwg, forged “ancient” bardic manuscripts and in 1792 held the first Gorsedd of Bards on Primrose Hill in London. His invented ceremony is still part of the National Eisteddfod of Wales." },
+  { c: "Newgrange catches the midwinter sun", v: ["Real", "true"], b: "A passage tomb in Ireland built about 3200 BC, older than the Great Pyramid. For a few days around the winter solstice the rising sun shines through a slot above the entrance and lights the chamber 19 metres inside. The effect was rediscovered in 1967 by the archaeologist Michael O'Kelly." },
+  { c: "Odin hung on the tree", v: ["A parallel; direction unclear", "part"], img: "odin", b: "In the poem <em>Hávamál</em> Odin says: “I know that I hung on a windy tree nine long nights, wounded with a spear, given to Odin, myself to myself,” and took up the runes. A god pierced by a spear and hung on a tree recalls the crucifixion; but the poem was written down in Christian Iceland in the 1200s, so influence may run either way." },
+  { c: "Ragnarök and the Christian end", v: ["Real mixing", "true"], b: "The Völuspá foretells the gods' last battle, the world burning and a green earth rising again. The 10th-century Gosforth Cross in Cumbria carves Ragnarök scenes next to the crucifixion: Norse settlers in England telling both stories at once." },
+  { c: "Vikings wore horned helmets", v: ["Myth", "myth"], b: "The horns come from Carl Emil Doepler's costumes for the first full staging of Wagner's Ring cycle in 1876. The only nearly complete Viking helmet found, at Gjermundbu in Norway, is a plain iron cap. Horned helmets did exist in Bronze Age Scandinavia, about 1,700 years before the Vikings." },
+  { c: "Runes are a magic script", v: ["Mostly an alphabet", "part"], b: "Runes were used for everyday writing: hundreds of rune-sticks from medieval Bergen carry business notes, prayers and a message reading “Kiss me”. Some carry charms too. Modern rune divination comes mostly from Guido von List in 1908, whose rune mysticism fed Nazi symbolism, and from a 1982 bestseller by Ralph Blum." },
+  { c: "The SS and the runes", v: ["Real", "true"], b: "The SS badge is two sowilō runes, the sun rune, drawn as lightning. Heinrich Himmler founded the Ahnenerbe to prove a Germanic master race, and planned the castle of Wewelsburg as an SS order-castle with a mystic crypt. The swastika, an ancient Indian symbol, came the same way." },
+  { c: "Yule became Christmas", v: ["Partly true", "part"], b: "Yule was a pagan midwinter feast in Scandinavia. Snorri Sturluson says King Haakon the Good, in the 10th century, moved it to coincide with Christmas when he brought Christianity to Norway, which is why Scandinavian languages still call Christmas <em>jul</em>. The date of Christmas itself was set in Rome centuries before." },
+  { c: "Halloween is the Celtic Samhain", v: ["Debated", "part"], b: "Samhain on 1 November marked the start of winter in Ireland, a time when the otherworld was close. All Saints' Day was moved to 1 November in the 8th–9th century, and whether that was done to replace Samhain is argued; the historian Ronald Hutton doubts it. Many Halloween customs come from both." },
+];
+function initNorth() {
+  $("rune-abc").innerHTML = FUTHARK.map(([r, n, m, s]) => `<div class="rune"><span class="rg">${r}</span><b>${n}</b><span class="status">${m}</span><span class="num">${s}</span></div>`).join("");
+  $("rune-in").oninput = () => { const map = { th: "ᚦ", ng: "ᛜ" }, one = Object.fromEntries(FUTHARK.map(([r, , , s]) => [s, r])); Object.assign(one, { c: "ᚲ", q: "ᚲ", v: "ᚹ", x: "ᚲᛊ", y: "ᛃ" }); const t = $("rune-in").value.toLowerCase(); let out = ""; for (let i = 0; i < t.length; i++) { const two = t.slice(i, i + 2); if (map[two]) { out += map[two]; i++; } else out += one[t[i]] || (t[i] === " " ? " · " : t[i]); } $("rune-out").textContent = out; };
+  $("rune-in").oninput();
+  $("north-cards").innerHTML = NORTH_CARDS.map(cardImg).join("");
+}
+
+// ---------- ancient aliens ----------
+const ALIEN_CARDS = [
+  { c: "Pakal's lid shows an astronaut", v: ["Myth", "myth"], b: "The carved lid of King Pakal's sarcophagus at Palenque (AD 683) was read by Erich von Däniken in 1968 as a man at the controls of a rocket. Maya scholars read it as Pakal falling into, or rising from, the underworld at the foot of the world tree, a common Maya scene, with the glyphs naming him." },
+  { c: "Baalbek's stones were too big for humans", v: ["Roman, and real", "true"], img: "baalbek", b: "The Roman temple of Jupiter at Baalbek in Lebanon rests on three stones of about 800 tonnes each, and the nearby quarry holds even larger ones, including a block of about 1,650 tonnes found in 2014. Quarry marks, unfinished blocks and Roman lifting machinery explain them: they are an astonishing feat of engineering, and a human one." },
+  { c: "The Dogon knew about Sirius B", v: ["Myth", "myth"], b: "French anthropologists Marcel Griaule and Germaine Dieterlen reported in the 1930s–50s that the Dogon of Mali knew of a tiny heavy star circling Sirius. Robert Temple's <em>The Sirius Mystery</em> (1976) made them alien contactees. When Walter van Beek's team did fieldwork in the 1980s, no Dogon knew the story; it probably came from the researchers' own questions." },
+  { c: "Ezekiel saw a spaceship", v: ["Myth", "myth"], b: "In 1974 the NASA engineer Josef Blumrich published <em>The Spaceships of Ezekiel</em>, reconstructing a lander from Ezekiel 1. The vision of wheels within wheels full of eyes belongs to a long tradition of throne visions, and Jewish mystics built a whole school on it.", r: [["Ezek", 1, 16]], go: ["kabbalah", "Ezekiel's chariot in Kabbalah"] },
+  { c: "The Nephilim were aliens", v: ["Myth", "myth"], b: "Genesis 6 has the “sons of God” father the Nephilim on human women; 1 Enoch makes them fallen angels, the Watchers. Reading them as extraterrestrials is a 20th-century idea from Sitchin and von Däniken.", go: ["lost", "Giants in Lost Worlds"] },
+  { c: "Ancient Indian flying machines", v: ["Myth", "myth"], b: "The <em>Vaimanika Shastra</em>, offered as an ancient Sanskrit manual for building aircraft, was dictated between 1918 and 1923 by Pandit Subbaraya Shastry, who said it came to him psychically. A 1974 study at the Indian Institute of Science found its designs could not fly. The flying chariots of the epics, like Ravana's Pushpaka, are poetry." },
+  { c: "The Saqqara bird is a glider", v: ["Probably a toy", "myth"], b: "A wooden bird about 18 cm long, from a tomb at Saqqara around 200 BC, was claimed in the 1970s to be a model glider. It has no horizontal tail, which a glider needs, and has painted eyes and feathers. Egyptologists think it was a toy or a weather vane." },
+  { c: "The Dendera light bulb", v: ["Myth", "myth"], b: "Reliefs in the Hathor temple at Dendera (about 50 BC) show a snake rising from a lotus flower inside a long bubble. Fringe writers read it as an electric lamp. The texts beside it describe the snake as a form of the sun god emerging at creation, and no Egyptian lamp residue or wiring has ever been found.", go: ["egypt", "Ancient Egypt"] },
+  { c: "Roswell", v: ["A spy balloon", "myth"], b: "In 1947 a rancher found debris near Roswell, New Mexico; the army first said “flying disc”, then “weather balloon”. A 1994 US Air Force report confirmed it was Project Mogul, a classified balloon train listening for Soviet nuclear tests. The alien bodies entered the story in the late 1970s." },
+  { c: "The government studies UFOs", v: ["True, no aliens", "part"], b: "The Pentagon did run UFO programmes, and since 2022 its All-domain Anomaly Resolution Office collects reports. Its 2024 historical review found no evidence of alien technology in any US programme; most cases turn out to be balloons, drones, birds or sensor errors, and some remain unexplained." },
+  { c: "The Wow! signal", v: ["Unexplained", "part"], b: "On 15 August 1977 the Big Ear radio telescope in Ohio recorded a strong narrowband signal from Sagittarius for 72 seconds; the astronomer Jerry Ehman circled it and wrote “Wow!”. It was never heard again. A 2024 study proposed a natural cause: a hydrogen cloud suddenly brightened by a passing flare." },
+  { c: "Why the ancient-aliens idea spreads", v: ["Critique", "part"], b: "Archaeologists note that the theory is almost always applied to monuments in Egypt, the Americas, Africa and Asia, rarely to cathedrals, and that it echoes 19th-century claims that non-European peoples could not have built their own monuments. The evidence for how each site was built, quarries, tools, workers' towns, is usually on display at the site itself." },
+];
+function initAliens() { $("alien-cards").innerHTML = ALIEN_CARDS.map(cardImg).join(""); wireGo($("alien-cards")); }
 
 // ---------- conspiracies ----------
 const CONSP = [
