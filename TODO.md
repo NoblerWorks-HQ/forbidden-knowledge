@@ -21,3 +21,6 @@ Working task list for **forbidden-knowledge**. Read this at the start of a work 
 - [x] 2026-11-02 Moved to forbidden.noblerworks.com (repo name unchanged)
 - [x] 2026-11-02 Old versegraph.noblerworks.com CNAME deleted (no redirect; site was unannounced)
 - [ ] Ideas: Verse Ladder as its own shareable page, word/topic drift by book, OT-quoted-in-NT view
+
+## Public API ideas (2026-11-01) - from github.com/public-apis/public-apis; check license + commercial terms before use
+- [ ] Sefaria API (open Jewish texts, free) for the religions section.
