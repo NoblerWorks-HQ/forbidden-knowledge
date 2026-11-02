@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Build the public site and publish it to the gh-pages branch (GitHub Pages serves it at
-# versegraph.noblerworks.com). No CI: dist/ is built here and committed on top of gh-pages,
+# forbidden.noblerworks.com). No CI: dist/ is built here and committed on top of gh-pages,
 # replacing the previous site's files.
 #
 # Usage: scripts/deploy-pages.sh            # build + publish
@@ -37,4 +37,4 @@ fi
 git -C "$tmp" -c user.name="$(git config user.name)" -c user.email="$(git config user.email)" \
   commit -q -m "Deploy site from ${rev}"
 git -C "$tmp" push -q "$remote" HEAD:gh-pages
-echo "published gh-pages from ${rev}; check https://versegraph.noblerworks.com/ in a minute"
+echo "published gh-pages from ${rev}; check https://forbidden.noblerworks.com/ in a minute"

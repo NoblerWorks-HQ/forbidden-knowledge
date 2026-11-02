@@ -15,7 +15,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE, DIST = ROOT / "site", ROOT / "dist"
-HOST = "versegraph.noblerworks.com"
+HOST = "forbidden.noblerworks.com"
 BASE = f"https://{HOST}"
 DESC = ("Lost civilizations, secret societies, banned books and Bible codes, every claim checked against the sources: "
         "an 11,000-year scroll-through timeline, Giza theories, giants, alchemy, Gnostics, Templars, Rosicrucians, Freemasons and the Illuminati, the Book of Enoch, "

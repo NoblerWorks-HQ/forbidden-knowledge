@@ -1266,7 +1266,7 @@ function showVerse(v) {
     <h3>Cross-references, strongest first${out.length > 60 ? " (top 60)" : ""}</h3>
     ${out.length ? `<ul class="xr">${rows}</ul>` : `<p class="status">No outgoing cross-references for this verse.</p>`}`;
   // The public site is the shareable address, also when this page runs as an artifact
-  const link = "https://versegraph.noblerworks.com/#verse/" + verseKey(v);
+  const link = "https://forbidden.noblerworks.com/#verse/" + verseKey(v);
   $("verse-link").onclick = () => navigator.clipboard.writeText(link).then(() => { $("verse-link").textContent = "Copied"; }, () => { $("verse-link").textContent = link; });
   if (location.hash.startsWith("#verse")) history.replaceState(null, "", "#verse/" + verseKey(v));
 }

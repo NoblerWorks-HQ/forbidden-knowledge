@@ -1,7 +1,7 @@
 # Forbidden Knowledge
 
 Lost civilizations, secret societies, banned books and Bible codes: every claim checked against the
-sources. Live at https://versegraph.noblerworks.com (the repo and domain keep the original name,
+sources. Live at https://forbidden.noblerworks.com (the repo keeps the original name,
 Versegraph, from when this was only a Bible data explorer).
 
 Underneath is real data work: 341,282 reader-voted cross-references between the 31,102 verses of the
@@ -45,7 +45,7 @@ python3 -m http.server -d site  # then open http://localhost:8000
 
 `scripts/deploy-pages.sh` rebuilds the data, builds `dist/` (the app plus one indexable page per
 chapter, sitemap, CNAME) and commits it to the `gh-pages` branch, which GitHub Pages serves at
-https://versegraph.noblerworks.com. `--dry-run` builds without pushing.
+https://forbidden.noblerworks.com. `--dry-run` builds without pushing.
 
 ## Sources and licenses
 

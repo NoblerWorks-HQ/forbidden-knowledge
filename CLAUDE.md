@@ -7,4 +7,4 @@ Nobler Works open-source demo, branded "Forbidden Knowledge" since 2026-11-01: l
 - Keep the OpenBible CC BY attribution in the footer. Code Breaker always shows chance baselines; never present ELS hits as meaningful.
 - `site/img/` holds public-domain Wikimedia Commons images only (checked license, resized to 720px); credit each in `IMG` in index.html.
 - Myth and canon cards are factual claims: verify against the text (or a cited source) before adding; evidence counts are computed live.
-- Public site: `scripts/deploy-pages.sh` -> gh-pages -> versegraph.noblerworks.com (Route 53 CNAME in NW, like ironsight./wargames.).
+- Public site: `scripts/deploy-pages.sh` -> gh-pages -> forbidden.noblerworks.com (Route 53 CNAME in NW, since 2026-11-02). versegraph.noblerworks.com is a redirect served by the `NoblerWorks-HQ/versegraph-redirect` Pages repo.
