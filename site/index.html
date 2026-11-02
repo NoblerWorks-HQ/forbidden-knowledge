@@ -3,7 +3,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Noto+Sans+Egyptian+Hieroglyphs&family=Noto+Sans+Phoenician&display=swap">
 <style>
 /* Layout: one reading column with a full-width instrument (the arc canvas) on top; tabs switch the instrument below a rubricated masthead. */
 :root {
@@ -248,7 +248,7 @@ table.gen td { font-family: var(--scripture); }
 .navbar.stuck { border-bottom-color: var(--rule); }
 .navbar nav.tabs { flex: 1; min-width: 0; flex-wrap: nowrap; overflow-x: auto; margin: 0; gap: 2px; scrollbar-width: none; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); padding-right: 24px; }
 .navbar nav.tabs::-webkit-scrollbar { display: none; }
-.navbar nav.tabs a, .navmenu { white-space: nowrap; padding: 6px 12px; flex: none; }
+.navbar nav.tabs a, .navmenu { white-space: nowrap; padding: 6px 10px; flex: none; }
 .navmenu { font: 500 15px var(--ui); color: var(--muted); background: none; border: 1px solid transparent; border-radius: 999px; cursor: pointer; }
 .navmenu:hover, .navmenu[aria-expanded="true"] { color: var(--ink); border-color: var(--rule); }
 .navmenu.cur { color: var(--ink); background: var(--surface); border-color: var(--rule); }
@@ -330,7 +330,7 @@ section[id^="v-"]:not([hidden]) { animation: viewin .25s ease-out; }
 @media (max-width: 820px) { .hero { grid-template-columns: minmax(0, 1fr); } .hero figure img { max-height: 240px; object-fit: cover; } .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .home-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 34px 0 12px; }
 .home-h h3 { margin: 0; }
-.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
 .tile { display: grid; grid-template-rows: 150px auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; text-decoration: none; color: var(--ink); transition: border-color .15s, transform .15s; }
 .tile:hover { border-color: var(--accent); transform: translateY(-2px); }
 .tile .pic { background: var(--bg) center 30% / cover no-repeat; position: relative; filter: grayscale(.25); transition: filter .2s; }
@@ -380,6 +380,13 @@ section[id^="v-"]:not([hidden]) { animation: viewin .25s ease-out; }
 .pp-era .when { font: 600 12px var(--ui); color: var(--rubric); }
 .pp-era p { margin: 0; color: var(--muted); max-width: 62ch; }
 @media (max-width: 820px) { .ptl { grid-template-columns: minmax(0, 1fr); gap: 12px; } .ptl-stage { order: -1; top: 56px; z-index: 2; } .ptl-box { padding: 12px 14px; gap: 6px; } .ptl-ctx, .ptl-rail { display: none; } .ptl-year { font-size: 30px; } }
+.gods { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-top: 14px; }
+.god .glyph { font: 40px/1.1 "Noto Sans Egyptian Hieroglyphs", var(--display); color: var(--rubric); }
+.god p { font-size: 14px; }
+.phx { font: 26px "Noto Sans Phoenician", var(--display); color: var(--rubric); }
+#ph-abc td { white-space: normal; }
+ol.deny li.hit { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+ol.deny .t { white-space: normal; }
 [hidden] { display: none !important; }
 .card > h4 { padding-right: 26px; }
 </style>
@@ -410,7 +417,7 @@ section[id^="v-"]:not([hidden]) { animation: viewin .25s ease-out; }
         <h2>Lost civilizations, secret societies and banned books</h2>
         <p class="lede">Atlantis, the Templars, the Book of Enoch, Bible codes and the Illuminati, sorted into what the evidence supports, what is argued and what is myth. Every card gives its verdict, and every Bible figure is counted live from the text.</p>
         <div class="hero-cta"><a class="btn" href="#timeline">Start the timeline <span aria-hidden="true">→</span></a><button type="button" class="ghost" data-search>Search everything <kbd>/</kbd></button></div>
-        <div class="stats"><div><b id="st-claims" class="num">…</b><span>claims with a verdict</span></div><div><b id="st-verses" class="num">31,102</b><span>verses searchable</span></div><div><b id="st-xrefs" class="num">341,282</b><span>cross-references</span></div><div><b class="num">11</b><span>sacred books compared</span></div></div>
+        <div class="stats"><div><b id="st-claims" class="num">…</b><span>claims with a verdict</span></div><div><b id="st-verses" class="num">31,102</b><span>verses searchable</span></div><div><b id="st-xrefs" class="num">341,282</b><span>cross-references</span></div><div><b class="num">12</b><span>sacred books compared</span></div></div>
       </div>
       <figure><img src="img/flammarion.jpg" alt="A traveller kneels at the edge of the world and pushes his head through the sky to see the machinery beyond"><figcaption>The Flammarion engraving: a traveller looks through the edge of the sky. Often called medieval, it first appeared in a book by Camille Flammarion in 1888. <a href="https://commons.wikimedia.org/wiki/File:FlammarionWoodcut.jpg" target="_blank" rel="noopener">Artist unknown</a>, public domain.</figcaption></figure>
     </div>
@@ -672,6 +679,38 @@ section[id^="v-"]:not([hidden]) { animation: viewin .25s ease-out; }
     <div class="cards" id="lost-forbidden"></div>
   </section>
 
+  <section id="v-egypt" hidden>
+    <h2>Ancient Egypt</h2>
+    <p class="lede">Three thousand years of pharaohs, the gods who outlived them in Greek and Christian dress, the spells buried with the dead, and the theories about what lies under Giza. Each claim has its verdict.</p>
+    <div class="chart" id="eg-chrono"></div>
+    <h2 class="sub">The gods</h2>
+    <p class="lede">Sixteen of the most important, with their names in hieroglyphs.</p>
+    <div class="gods" id="eg-gods"></div>
+    <h2 class="sub">The Book of the Dead</h2>
+    <p class="lede">The spells that carried the dead through judgment. The whole of Budge's 1901 selection, 89 chapters, is in the Library, linked to the Bible where they meet.</p>
+    <div class="cards" id="eg-book"></div>
+    <h3 style="margin-top:22px">The 42 denials (Spell 125, the “Negative Confession”)</h3>
+    <ol class="rank deny" id="eg-42"></ol>
+    <p class="status" id="eg-42-note"></p>
+    <button type="button" class="ghost" id="eg-read">Read the Book of the Dead in the Library</button>
+    <h2 class="sub">Mysteries</h2>
+    <div class="cards" id="eg-myst"></div>
+    <h2 class="sub">Under Giza</h2>
+    <p class="lede">What has actually been found under and inside the plateau, and what has only been claimed.</p>
+    <div class="cards" id="eg-giza"></div>
+  </section>
+
+  <section id="v-phoenicia" hidden>
+    <h2>The Phoenicians</h2>
+    <p class="lede">Canaanite sailors from Tyre, Sidon and Byblos on the coast of Lebanon, who traded from Cyprus to Spain, founded Carthage, built Solomon's Temple with him, and gave the world its alphabet. Most of what they wrote, on papyrus, has rotted; we know them mostly through their enemies and neighbours.</p>
+    <div class="chart" id="ph-chrono"></div>
+    <h2 class="sub">The alphabet, letter by letter</h2>
+    <p class="lede">Each Phoenician letter was named after a thing whose name began with its sound. Meanings marked “?” are uncertain.</p>
+    <div class="tablewrap"><table id="ph-abc"></table></div>
+    <h2 class="sub">Claims and history</h2>
+    <div class="cards" id="ph-cards"></div>
+  </section>
+
   <section id="v-traditions" hidden>
     <h2>Secret traditions</h2>
     <p class="lede">Smiths, alchemists, Hermetists, Gnostics, Templars, Rosicrucians, Freemasons and the Illuminati, on one timeline. Every one of these orders told a story about its own ancient lineage. Solid lines are links historians can document; dashed lines are links the traditions claimed, or their enemies did. Click a dot to jump to its card.</p>
@@ -881,8 +920,8 @@ darkMQ.addEventListener("change", applyTheme);
 applyTheme();
 
 // ---------- routing ----------
-const VIEWS = ["home", "traditions", "library", "religions", "philosophy", "lost", "conspiracies", "arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
-const INIT = { home: initHome, arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, library: initLibrary, religions: initReligions, philosophy: initPhilosophy, lost: initLost, traditions: initTraditions, conspiracies: initConspiracies, timeline: initTimeline, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes };
+const VIEWS = ["home", "egypt", "phoenicia", "traditions", "library", "religions", "philosophy", "lost", "conspiracies", "arcs", "timeline", "verse", "path", "ladder", "myths", "theories", "map", "canon", "history", "mysteries", "people", "translations", "numbers", "codes"];
+const INIT = { home: initHome, egypt: initEgypt, phoenicia: initPhoenicia, arcs: initArcs, verse: () => showVerse(parseRef($("verse-in").value)), path: runPath, ladder: initLadder, myths: initMyths, theories: initTheories, map: initMap, canon: initCanon, history: initHistory, library: initLibrary, religions: initReligions, philosophy: initPhilosophy, lost: initLost, traditions: initTraditions, conspiracies: initConspiracies, timeline: initTimeline, mysteries: initMysteries, people: initPeople, translations: initTranslations, numbers: initNumbers, codes: runCodes };
 const rendered = {};
 let curView = null;
 function route() {
@@ -909,7 +948,7 @@ window.addEventListener("hashchange", route);
 function go(view) { if (location.hash !== "#" + view) location.hash = view; else route(); }
 
 // ---------- navigation ----------
-const NAV = { primary: ["timeline", "lost", "traditions", "conspiracies", "mysteries", "library"], more: ["religions", "philosophy", "canon", "history"], scripture: ["arcs", "verse", "path", "ladder", "myths", "theories", "map", "people", "translations", "numbers", "codes"] };
+const NAV = { primary: ["timeline", "lost", "egypt", "traditions", "conspiracies", "library"], more: ["mysteries", "phoenicia", "religions", "philosophy", "canon", "history"], scripture: ["arcs", "verse", "path", "ladder", "myths", "theories", "map", "people", "translations", "numbers", "codes"] };
 const NAV_ORDER = [...NAV.primary, ...NAV.more, ...NAV.scripture];
 const MENUS = { more: "More", scripture: "Scripture" };
 // [title, one line, image in img/, glyph when there is no image]
@@ -917,10 +956,12 @@ const VIEW_INFO = {
   home: ["Home", "Start here"],
   timeline: ["Timeline", "Eleven thousand years on a map that flies as you scroll", "nebra"],
   lost: ["Lost Worlds", "Atlantis, Giza, lost technology and giants: real finds and wild theories, each with a verdict", "atlantis"],
+  egypt: ["Ancient Egypt", "The gods, the Book of the Dead and its 42 denials, the Mysteries of Isis, and what is really under Giza", "judgement"],
+  phoenicia: ["Phoenicians", "The people who gave the world its alphabet, Tyrian purple and Carthage, and the Bible's Tyre", "tyreships"],
   traditions: ["Secret Traditions", "Alchemists, Gnostics, Templars, Rosicrucians, Masons and the Illuminati, and what really links them", "khunrath"],
   conspiracies: ["Conspiracies", "The Illuminati, the Protocols, Bible Mandela effects and two thousand years of antichrists", "seal"],
   mysteries: ["Mysteries", "Egypt in the Bible, Moses and Thutmose, Masonic ritual, the Dead Sea Scrolls and Tim Hogan's claims", "sphinx"],
-  library: ["Library", "Gilgamesh, Hammurabi, the Tao, the Gita, the Quran and more, with the threads between them", "thomas"],
+  library: ["Library", "Gilgamesh, the Book of the Dead, the Tao, the Gita, the Quran and more, with the threads between them", "thomas"],
   religions: ["Religions", "How the world believes, with the Quran and the Book of Mormon beside the Bible", null, "✡ ✝ ☪ ☸ ॐ"],
   philosophy: ["Philosophy", "Pascal's wager, the great arguments, and quotes nobody actually said", "athens"],
   canon: ["Beyond the Canon", "Enoch, Thomas, Mary and the books left out of the Bible", "abraxas"],
@@ -953,7 +994,7 @@ document.addEventListener("click", (ev) => { if (!$("menupanel").hidden && !ev.t
 function setNavCurrent(name) {
   const tabs = $("tabs");
   tabs.querySelectorAll("a").forEach((a) => { if (a.dataset.view === name) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
-  tabs.querySelectorAll(".navmenu").forEach((b) => { const inside = NAV[b.dataset.menu].includes(name); b.classList.toggle("cur", inside); b.querySelector(".ml").textContent = inside ? `${MENUS[b.dataset.menu]} · ${VIEW_INFO[name][0]}` : MENUS[b.dataset.menu]; });
+  tabs.querySelectorAll(".navmenu").forEach((b) => { const inside = NAV[b.dataset.menu].includes(name); b.classList.toggle("cur", inside); b.querySelector(".ml").textContent = inside ? VIEW_INFO[name][0] : MENUS[b.dataset.menu]; });
   // Keep the current item in view when the bar scrolls sideways on a phone
   const cur = tabs.querySelector('[aria-current="page"], .navmenu.cur');
   if (cur && (cur.offsetLeft < tabs.scrollLeft || cur.offsetLeft + cur.offsetWidth > tabs.scrollLeft + tabs.clientWidth - 24)) tabs.scrollLeft = cur.offsetLeft - 16;
@@ -1042,7 +1083,7 @@ function focusTarget(id) {
 
 // ---------- search ----------
 // History redraws its canvas when shown, so it is safe to render while hidden; canvas views without a redraw are left out
-const SEARCHABLE = ["lost", "traditions", "conspiracies", "mysteries", "religions", "philosophy", "theories", "canon", "history"];
+const SEARCHABLE = ["lost", "egypt", "phoenicia", "traditions", "conspiracies", "mysteries", "religions", "philosophy", "theories", "canon", "history"];
 // Render the card views in the background so search and the home page can see every card
 function warmViews() {
   if (!D) return;
@@ -1895,6 +1936,7 @@ const STEPS = [
   { y: -9500, d: "c. 9500 BC", era: "Before farming", t: "Göbekli Tepe", b: "Hunter-gatherers raise rings of carved stone pillars on a hill in south-east Turkey, seven thousand years before Stonehenge's stones and before farming, pottery or writing. It is the oldest monumental site known.", pins: [["Göbekli Tepe", 38.922, 37.223]], span: 16, go: ["lost", "Lost civilizations"] },
   { y: -5000, d: "c. 5000 BC", era: "The first metal", t: "Fire turns rock into metal", b: "At Belovode in Serbia, people smelt copper out of green malachite: the oldest securely dated smelting anywhere. Genesis credits the first smith, Tubal-cain, to the line of Cain, and 1 Enoch says a fallen angel taught the art.", pins: [["Belovode", 21.416, 44.328]], span: 12, go: ["traditions", "Secret Traditions"] },
   { y: -2560, d: "c. 2560 BC", era: "Egypt", t: "The Great Pyramid", b: "Pharaoh Khufu's pyramid rises at Giza, more than a thousand years before any date proposed for the Exodus. The Bible never mentions pyramids, and the builders were Egyptian work crews housed in a town beside the site.", pins: [["Giza", 31.134, 29.979]], span: 9, go: ["mysteries", "Egypt in the Bible"] },
+  { y: -2350, d: "c. 2350 BC", era: "Egypt", t: "The oldest religious writing", img: "judgement", b: "Inside the pyramid of King Unas at Saqqara, spells for the king's journey to the stars are carved on the walls: the Pyramid Texts, the oldest religious writing known. A thousand years later they have grown into the Book of the Dead, sold to anyone who can pay, with its weighing of the heart.", pins: [["Saqqara", 31.216, 29.871]], span: 4, go: ["egypt", "Ancient Egypt"] },
   { y: -1900, d: "c. 2000–1800 BC (traditional)", era: "The patriarchs", t: "Abraham leaves Ur", b: "Genesis follows Abram from Ur of the Chaldees to Harran, into Canaan, and down to Egypt in a famine. The date comes from adding up the ages in Genesis; no inscription names Abraham.", pins: [["Ur", 46.103, 30.962], ["Harran", 39.031, 36.865], ["Shechem", 35.281, 32.213], ["Egypt", 31.3, 30.1]], route: true, r: [["Gen", 12, 1], ["Gen", 12, 10]], books: ["Gen"] },
   { y: -1800, d: "c. 1800 BC", era: "Mesopotamia", t: "Gilgamesh and the flood", b: "Old Babylonian scribes copy the Epic of Gilgamesh, the hero-king of Uruk. Its later Tablet XI tells of Utnapishtim, warned by a god to build a boat before a great flood, who sends out a dove, a swallow and a raven.", pins: [["Uruk", 45.64, 31.32], ["Nineveh", 43.152, 36.359]], r: [["Gen", 8, 7]], go: ["religions", "One idea, many traditions"] },
   { y: -1700, d: "Traditional date", era: "The patriarchs", t: "Joseph in Egypt", b: "Sold by his brothers, Joseph rises to govern Egypt, takes an Egyptian name and marries the daughter of a priest of On, the city of the sun god. His father is embalmed in the Egyptian way. No Egyptian record names him.", pins: [["On (Heliopolis)", 31.307, 30.129], ["Goshen", 31.9, 30.55], ["Hebron", 35.099, 31.529]], r: [["Gen", 41, 45], ["Gen", 50, 3]] },
@@ -1902,9 +1944,11 @@ const STEPS = [
   { y: -1350, d: "c. 1350 BC", era: "Egypt", t: "Akhenaten's one god", b: "At his new capital, Amarna, Pharaoh Akhenaten worships a single god, the sun disk Aten. A hymn found in a tomb there runs through the same scenes as Psalm 104. Freud later guessed that Moses was his follower; nothing links them.", pins: [["Amarna", 30.896, 27.645]], span: 6, r: [["Ps", 104, 24]] },
   { y: -1250, d: "c. 1446 BC or 1200s BC (disputed)", era: "The Exodus", t: "Out of Egypt", b: "Israel builds the store cities Pithom and Raamses, leaves Egypt, receives the law at Sinai and wanders to the edge of Canaan. 1 Kings implies about 1446 BC; the city of Raamses points to the 1200s. No Egyptian record mentions it, and both the route and the mountain are disputed.", pins: [["Raamses", 31.836, 30.799], ["Mount Sinai (traditional)", 33.975, 28.539], ["Kadesh-barnea", 34.42, 30.69], ["Mount Nebo", 35.725, 31.768]], route: true, r: [["Exod", 1, 11], ["Exod", 14, 21]], books: ["Exod", "Num"] },
   { y: -1208, d: "c. 1208 BC", era: "Egypt", t: "Israel carved in stone", b: "Pharaoh Merneptah's victory stele lists Israel among his defeated enemies: “Israel is laid waste; his seed is not.” Found at Thebes in 1896, it is the oldest mention of Israel outside the Bible.", pins: [["Thebes", 32.64, 25.72], ["Israel", 35.25, 32.1]] },
+  { y: -1050, d: "c. 1050–1000 BC", era: "The alphabet", t: "Twenty-two letters", img: "punic", b: "In Byblos and Tyre, Phoenician scribes write with 22 letters, one sign per sound, instead of hundreds of pictures. The coffin of King Ahiram of Byblos carries the oldest long inscription. Hebrew, Greek, Latin and Arabic all descend from this alphabet.", pins: [["Byblos", 35.648, 34.119], ["Tyre", 35.196, 33.271], ["Sidon", 35.371, 33.563]], span: 3, go: ["phoenicia", "The Phoenicians"] },
   { y: -1000, d: "c. 1000 BC", era: "The kingdom", t: "David takes Jerusalem", b: "David captures the stronghold of Zion and makes Jerusalem his capital. A stone from Tel Dan, carved about 150 years later, mentions the “House of David”.", pins: [["Jerusalem", 35.235, 31.778], ["Hebron", 35.099, 31.529], ["Tel Dan", 35.652, 33.248]], r: [["2Sam", 5, 7]], books: ["1Sam", "2Sam"] },
   { y: -960, d: "c. 960 BC", era: "The kingdom", t: "Solomon's Temple", b: "Solomon builds the Temple with cedar from Hiram, king of Tyre, and bronze cast by another Hiram, a widow's son from Tyre. Its two pillars, Jachin and Boaz, now stand in Masonic lodges. Solomon also marries Pharaoh's daughter.", pins: [["Jerusalem", 35.235, 31.778], ["Tyre", 35.195, 33.271]], span: 3, r: [["1Kgs", 7, 21], ["1Kgs", 3, 1]], go: ["mysteries", "The Bible in the Masonic lodge"] },
   { y: -925, d: "c. 925 BC", era: "The kingdom", t: "Shishak invades", b: "Five years after Solomon's death, Pharaoh Shoshenq I raids Judah and Israel. He listed the towns he took on a gate at Karnak, and part of his victory stele was dug up at Megiddo.", pins: [["Karnak", 32.657, 25.719], ["Megiddo", 35.184, 32.585], ["Jerusalem", 35.235, 31.778]], route: true, r: [["1Kgs", 14, 25]] },
+  { y: -814, d: "814 BC (traditional)", era: "Phoenicia", t: "Carthage", img: "tyreships", b: "Settlers from Tyre, led in legend by Queen Elissa, called Dido by the Romans, found Carthage, the “new city”. It grows into an empire of the western Mediterranean, sends Hannibal over the Alps in 218 BC, and is destroyed by Rome in 146 BC.", pins: [["Tyre", 35.196, 33.271], ["Carthage", 10.323, 36.853]], span: 8, go: ["phoenicia", "The Phoenicians"] },
   { y: -722, d: "722 BC", era: "Empires", t: "Assyria takes Samaria", b: "Assyria destroys the northern kingdom of Israel and deports its people, the origin of the “ten lost tribes”. About twenty years later Sennacherib besieges Jerusalem.", pins: [["Nineveh", 43.152, 36.359], ["Samaria", 35.19, 32.276], ["Jerusalem", 35.235, 31.778]], r: [["2Kgs", 17, 6], ["2Kgs", 19, 9]] },
   { y: -586, d: "586 BC", era: "Empires", t: "Babylon burns the Temple", b: "Nebuchadnezzar destroys Jerusalem and its Temple and carries its people into exile. The Ark of the Covenant is never mentioned again; Jeremiah says it will not be missed.", pins: [["Jerusalem", 35.235, 31.778], ["Babylon", 44.421, 32.536]], route: true, r: [["2Kgs", 25, 9], ["Jer", 3, 16]], go: ["history", "The arks"] },
   { y: -538, d: "538 BC", era: "Empires", t: "The return", b: "Cyrus of Persia takes Babylon and lets the exiles go home. Zerubbabel leads the rebuilding of the Temple, the story Freemasonry's Royal Arch degree retells.", pins: [["Babylon", 44.421, 32.536], ["Jerusalem", 35.235, 31.778]], route: true, r: [["Ezra", 1, 1], ["Ezra", 3, 8]] },
@@ -2238,6 +2282,12 @@ const IMG = {
   atalanta: ["“Its nurse is the earth”, a line of the Emerald Tablet, as Emblem II of Atalanta Fugiens", "Michael Maier, 1617", "Michael Maier Atalanta Fugiens Emblem 02.jpeg"],
   anderson: ["Frontispiece and title page of Anderson's Constitutions of the Free-Masons", "John Pine, 1723", "Anderson'sConstitutions.jpg"],
   weishaupt: ["Adam Weishaupt, founder of the Illuminati", "Friedrich Rossmässler, 1799", "Johann Adam Weishaupt.jpg"],
+  judgement: ["The weighing of the heart, from the papyrus of Hunefer: Anubis at the scales, Thoth writing, Ammit waiting", "c. 1275 BC, British Museum", "The judgement of the dead in the presence of Osiris.jpg"],
+  isis: ["Isis leads Queen Nefertari, from her tomb", "Facsimile by Charles K. Wilkinson, Metropolitan Museum; original c. 1250 BC", "Queen Nefertari being led by Isis MET DP167142.jpg"],
+  pyramidsec: ["Section of the Great Pyramid", "W. M. Flinders Petrie, in the 1911 Britannica", "EB1911 Pyramid - Section of Great Pyramid.jpg"],
+  punic: ["Phoenician and Punic letter forms across a thousand years", "Julius Euting, 1872", "Julius Euting's Punische Steine Table Comparison table 1.jpg"],
+  tyreships: ["Phoenician ships fleeing Tyre: a modern drawing after an Assyrian relief from Sennacherib's palace, c. 700 BC", "Drawing released into the public domain, 2018", "Elulay escape.jpg"],
+  carthage: ["Marius Amid the Ruins of Carthage", "John Vanderlyn, 1807", "John Vanderlyn 002.jpg"],
   seal: ["William Barton's design for the reverse of the Great Seal: an eye over an unfinished pyramid", "William Barton, 1782", "BartonGreatSealDesignReverse.jpg"],
 };
 const fig = (k) => { const [cap, by, f] = IMG[k]; return `<figure class="fig"><img src="img/${k}.jpg" alt="${esc(cap)}" loading="lazy"><figcaption>${esc(cap)}. <a href="https://commons.wikimedia.org/wiki/File:${encodeURIComponent(f.replace(/ /g, "_"))}" target="_blank" rel="noopener">${esc(by)}</a>, public domain.</figcaption></figure>`; };
@@ -2384,6 +2434,123 @@ function initTraditions() {
   $("trad-sections").querySelectorAll("button[data-go]").forEach((b) => { b.onclick = () => { go(b.dataset.go); window.scrollTo({ top: 0 }); }; });
 }
 
+// ---------- ancient egypt and the phoenicians ----------
+// A horizontal chronology: bars [from, to, label, faint?] and marks [year, label]
+function chronoStrip(lo, hi, bars, marks, label) {
+  // Bars sit in lanes (5th field); marks get labels on three staggered rows so neighbours don't collide
+  const W = 1000, lanes = Math.max(1, ...bars.map((b) => (b[4] || 0) + 1)), top = 76, BH = 24, ax = top + lanes * (BH + 6) + 14;
+  const X = (y) => 14 + (y - lo) / (hi - lo) * (W - 28), yl = (y) => (y < 0 ? `${-y} BC` : `AD ${y}`), clamp = (x, w) => Math.max(w / 2 + 2, Math.min(W - w / 2 - 2, x));
+  let s = `<svg viewBox="0 0 ${W} ${ax + 26}" role="img" aria-label="${esc(label)}">`;
+  bars.forEach(([a, b, t, faint, lane = 0]) => {
+    const x = X(a), w = X(b) - x, y = top + lane * (BH + 6);
+    s += `<rect x="${x}" y="${y}" width="${Math.max(2, w - 1.5)}" height="${BH}" rx="3" style="fill:${faint ? "var(--rule)" : "var(--accent)"}" opacity="${faint ? 1 : 0.85}"><title>${esc(t)}: ${yl(a)}–${yl(b)}</title></rect>`;
+    if (w > t.length * 5.6 + 8) s += `<text x="${x + w / 2}" y="${y + 16}" text-anchor="middle" font-size="10.5" style="fill:${faint ? "var(--muted)" : "#fff"}">${esc(t)}</text>`;
+  });
+  const ends = [-1e9, -1e9, -1e9, -1e9];
+  [...marks].sort((p, q) => p[0] - q[0]).forEach(([y, t]) => {
+    const x = X(y), w = t.length * 5.8, cx = clamp(x, w);
+    let row = ends.findIndex((e) => cx - w / 2 > e + 6);
+    if (row < 0) row = ends.indexOf(Math.min(...ends));
+    ends[row] = cx + w / 2;
+    const ty = 14 + row * 15;
+    s += `<line x1="${x}" x2="${x}" y1="${ty + 4}" y2="${top}" style="stroke:var(--ink)" stroke-opacity=".3"/><circle cx="${x}" cy="${top}" r="3" style="fill:var(--ink)"/><text x="${cx}" y="${ty}" text-anchor="middle" font-size="10.5" style="fill:var(--ink)">${esc(t)}</text>`;
+  });
+  const step = (hi - lo) > 2500 ? 500 : 100;
+  for (let y = Math.ceil(lo / step) * step; y <= hi; y += step) s += `<line x1="${X(y)}" x2="${X(y)}" y1="${ax - 4}" y2="${ax + 4}" style="stroke:var(--rule)"/><text x="${clamp(X(y), 50)}" y="${ax + 18}" text-anchor="middle" font-size="10" style="fill:var(--muted)">${y === 0 ? "AD 1" : yl(y)}</text>`;
+  return s + `<line x1="14" x2="${W - 14}" y1="${ax}" y2="${ax}" style="stroke:var(--rule)"/></svg>`;
+}
+const EG_CHRONO = [[-3100, -2686, "Early Dynastic"], [-2686, -2160, "Old Kingdom"], [-2160, -2055, "1st Int.", true], [-2055, -1650, "Middle Kingdom"], [-1650, -1550, "2nd Int.", true], [-1550, -1069, "New Kingdom"], [-1069, -664, "3rd Intermediate", true], [-664, -332, "Late Period"], [-332, -30, "Ptolemies"], [-30, 641, "Roman and Byzantine Egypt", true]];
+const EG_MARKS = [[-2560, "Great Pyramid"], [-2350, "Pyramid Texts"], [-1850, "First alphabet, in Sinai"], [-1550, "Book of the Dead"], [-1350, "Akhenaten"], [-1323, "Tutankhamun"], [-1208, "“Israel” on a stele"], [-925, "Shishak in Judah"], [-332, "Alexander"], [-30, "Cleopatra dies"], [394, "Last hieroglyphs"]];
+// [name, Egyptian name, hieroglyph, shown as, what they ruled, a note]
+const EG_GODS = [
+  ["Ra", "Re", "𓇳", "A falcon-headed man crowned with the sun", "The sun and creation", "He sails the sky by day and the underworld by night, where the serpent Apophis attacks his boat. In the New Kingdom he merged with Amun as Amun-Ra."],
+  ["Osiris", "Wesir", "𓊨𓁹", "A mummified king with green or black skin, holding crook and flail", "The dead, rebirth, the Nile flood", "Murdered and cut to pieces by his brother Set, reassembled by Isis, he rules the underworld and presides over the judgment of the dead."],
+  ["Isis", "Aset", "𓊨", "A woman with a throne on her head", "Magic, motherhood, protection", "She restored Osiris and hid their son Horus in the marshes. Her cult spread across the Roman Empire, with temples from Pompeii to Britain."],
+  ["Horus", "Heru", "𓅃", "A falcon, or a falcon-headed man", "The sky and kingship", "Every living pharaoh was Horus. His eye, torn out by Set and healed, became the wedjat amulet."],
+  ["Set", "Sutekh", "𓃩", "An animal no one has identified: long curved snout, square ears", "Desert, storms, foreigners, disorder", "The murderer of Osiris, yet also the god who stands at the prow of Ra's boat and spears Apophis."],
+  ["Anubis", "Inpu", "𓃢", "A black jackal, or a jackal-headed man", "Embalming and cemeteries", "He invented mummification for Osiris, and in the Book of the Dead he leads the dead in and checks the scales."],
+  ["Thoth", "Djehuty", "𓅝", "An ibis-headed man, or a baboon", "Writing, wisdom, the moon", "He records the verdict when the heart is weighed. The Greeks equated him with Hermes, and he became Hermes Trismegistus."],
+  ["Ma'at", "Maat", "𓆄", "A woman with an ostrich feather", "Truth, justice, cosmic order", "Not just a goddess but the order of the world. Her feather is the weight the heart is balanced against."],
+  ["Amun", "Imen", "𓇋𓏠𓈖", "A man with a tall double plume", "“The hidden one”, king of the gods at Thebes", "His priests became the richest in Egypt. Akhenaten had his name chiselled out across the country."],
+  ["Ptah", "Ptah", "𓊪𓏏𓎛", "A mummified man in a skullcap", "Craftsmen and creation at Memphis", "One text says he created the world by thinking it in his heart and speaking it with his tongue, an idea often compared with “In the beginning was the Word”."],
+  ["Hathor", "Hethert", "𓉡", "A cow, or a woman with cow horns and the sun", "Love, music, joy, foreign lands", "She was worshipped at the Sinai turquoise mines where the earliest alphabet inscriptions were found. Some scholars connect her cow form to the golden calf."],
+  ["Sekhmet", "Sekhmet", "𓃭", "A lioness, or a lion-headed woman", "War, plague and healing", "In one myth Ra sends her to destroy rebellious humans, and saves them by flooding the fields with beer dyed red, which she drinks and falls asleep."],
+  ["Bastet", "Bastet", "𓎰", "A cat, or a cat-headed woman", "The home, protection, pleasure", "Cat cemeteries held hundreds of thousands of mummified cats; in 1890 about 19 tons of them, from one at Beni Hasan, were shipped to Liverpool to be sold as fertiliser."],
+  ["Apophis", "Apep", "𓆙", "A giant serpent", "Chaos and darkness", "The enemy of creation, who tries to swallow the sun every night. Rituals and Book of the Dead spells exist to repel him."],
+  ["Aten", "Aten", "𓇶", "The sun disc, its rays ending in hands", "The one god of Akhenaten", "For about seventeen years a pharaoh worshipped this god alone. His hymn to the Aten reads remarkably like Psalm 104."],
+  ["Khnum", "Khnum", "𓃝", "A ram-headed man at a potter's wheel", "The source of the Nile, the maker of people", "He shapes each child on his wheel. Genesis has God form Adam from the dust, and Isaiah calls God the potter and us the clay."],
+];
+const EG_BOOK = [
+  { c: "What the Book of the Dead is", v: ["Real", "true"], img: "judgement", b: "Not a single book but some 190 spells, chosen and copied onto papyrus for each buyer and buried with them from about 1550 BC. The Egyptians called it the “Spells for Coming Forth by Day”. It grew out of the Pyramid Texts carved inside royal pyramids from about 2350 BC, the oldest religious writing known, and the Coffin Texts that followed. The scene above, from the papyrus of the scribe Hunefer (about 1275 BC), shows Anubis weighing his heart against the feather of Ma'at while Thoth writes down the result and the monster Ammit waits to eat a heart that fails." },
+  { c: "The weighing of the heart", v: ["Real", "true"], b: "Spell 30B is a plea to the dead man's own heart not to testify against him on the scales: “My heart, my mother!” It was inscribed on the heart scarab placed on the mummy's chest. If the heart balanced the feather, the dead joined Osiris; if not, Ammit ate it and the person ceased to exist." },
+  { c: "The 42 denials and the Ten Commandments", v: ["Real parallel", "true"], b: "In Spell 125 the dead man stands before 42 judges and denies a sin to each: “I have not slain man or woman”, “I have not committed theft”, “I have not uttered falsehood”. Several match Commandments in Exodus 20, which is younger; whether Israel knew the Egyptian text or both reflect common ethics of the region is argued. The full list is below." },
+  { c: "Budge stole the Papyrus of Ani", v: ["True", "true"], b: "E. A. Wallis Budge of the British Museum acquired the most famous copy in Luxor in 1888, evaded the Egyptian antiquities service, and cut the 24-metre roll into 37 sheets for shipping. His own account boasts about it. The translation in this site's Library is his." },
+];
+const EG_MYST = [
+  { c: "The Book of Thoth", v: ["Real tale", "part"], b: "A demotic story from Ptolemaic Egypt tells how Setna Khaemwaset, a real son of Ramesses II who restored old monuments, steals a book written by Thoth himself from a tomb. It holds spells to understand the speech of animals and see the gods, and it brings him only ruin until he returns it. Occultists later claimed the tarot was the lost Book of Thoth; the tarot was invented in 15th-century Italy as a card game." },
+  { c: "The Mysteries of Isis", v: ["Real", "true"], b: "A Roman-era cult with secret initiation. In Apuleius' novel <em>The Golden Ass</em> (2nd century AD) the hero, turned into a donkey, is restored by Isis and initiated, and says only that he “approached the boundary of death” and “saw the sun shining at midnight”. The last hieroglyphic inscription anyone carved, dated 24 August 394, is at her temple on Philae." },
+  { c: "Isis nursing Horus became the Madonna and Child", v: ["Debated", "part"], b: "Thousands of statuettes show Isis suckling the infant Horus, and Egypt was one of the earliest Christian lands. Some art historians see a direct model for images of Mary nursing Jesus; others think the pose is simply universal. The theory is plausible but unproven." },
+  { c: "Osiris died and rose, so Jesus is a copy", v: ["Mostly myth", "myth"], b: "Osiris is killed and restored, but he does not return to life on earth: he becomes king of the dead. The fuller claims, such as a virgin birth on 25 December and twelve disciples, come from 19th-century writers like Gerald Massey and the 2007 film <em>Zeitgeist</em>, not from Egyptian texts.", go: ["mysteries", "Horus and Jesus, checked"] },
+  { c: "The pharaohs' magicians", v: ["In the text", "true"], b: "Exodus has Egypt's magicians match Aaron's first wonders with their “enchantments”, until the plague of lice defeats them: “This is the finger of God.” Egyptian texts do describe priests who were lector-magicians, reading spells from scrolls.", r: [["Exod", 7, 11], ["Exod", 8, 19]] },
+  { c: "The curse of Tutankhamun", v: ["Myth", "myth"], b: "Lord Carnarvon, who paid for the dig, died in 1923 of an infected mosquito bite, and newspapers invented a curse inscribed in the tomb. Howard Carter, who opened it, lived until 1939. A 2002 study in the <em>British Medical Journal</em> found no shorter lives among the people present at the opening." },
+  { c: "Hermes is Thoth", v: ["Real link", "true"], b: "Greek settlers in Egypt identified Thoth with their Hermes, and “Hermes Trismegistus”, thrice-great Hermes, echoes Thoth's Egyptian title “great, great”. The Hermetic writings behind alchemy and Renaissance magic are Greek texts written in Roman Egypt.", go: ["traditions", "Hermetica in Secret Traditions"] },
+];
+const EG_GIZA = [
+  { c: "The Osiris Shaft", v: ["Real", "true"], img: "pyramidsec", b: "Under the causeway leading to Khafre's pyramid, a shaft drops about 30 metres through three levels to a flooded chamber with a granite sarcophagus, surrounded by a channel of water like an island. Cleared by Zahi Hawass's team in 1999, it is usually dated to the first millennium BC and read as a symbolic tomb of Osiris. Locals knew of it long before. (The image is Petrie's section of the Great Pyramid, from 1911.)" },
+  { c: "New spaces inside the Great Pyramid", v: ["Real", "true"], b: "The ScanPyramids project, imaging the pyramid with cosmic-ray muons, announced a void at least 30 metres long above the Grand Gallery in 2017. In 2023 a camera pushed through a joint confirmed a 9-metre corridor behind the chevron stones over the entrance. Neither has been entered, and nobody knows what the big void is for." },
+  { c: "Tunnels under the Sphinx", v: ["Real, and small", "true"], b: "Three known passages: one behind the head, one at the tail and one in the north side. Each was explored and runs only a few metres. Surveys with seismic and radar instruments in the 1990s found natural cavities in the rock, not halls." },
+  { c: "A vast city under Khafre's pyramid", v: ["Not supported", "myth"], b: "In March 2025 Corrado Malanga and Filippo Biondi announced that satellite radar showed eight shafts plunging more than 600 metres beneath Khafre's pyramid. The work was not peer reviewed, and radar specialists said the method cannot see through hundreds of metres of solid rock. Nothing has been found by drilling or excavation." },
+  { c: "Edgar Cayce's Hall of Records", v: ["No evidence", "myth"], b: "The American psychic said in the 1930s that Atlanteans hid their records in a chamber near the Sphinx, to be opened at the end of the 20th century. Searches funded by his followers found nothing.", go: ["lost", "Giza theories in Lost Worlds"] },
+];
+const PH_CHRONO = [[-1550, -1200, "Canaanite city-states", true], [-1200, -539, "Phoenician cities: Tyre, Sidon, Byblos"], [-539, -332, "Persian rule"], [-332, -64, "Greek kings", true], [-814, -146, "Carthage", false, 1]];
+const PH_MARKS = [[-1000, "Alphabet on Ahiram's coffin"], [-960, "Hiram and Solomon"], [-870, "Jezebel"], [-814, "Carthage founded"], [-600, "Round Africa?"], [-573, "Tyre outlasts Babylon"], [-332, "Alexander takes Tyre"], [-218, "Hannibal crosses the Alps"], [-146, "Rome destroys Carthage"]];
+// [Phoenician, name, meaning (? when unsure), Hebrew, Greek, Latin]
+const PH_ABC = [["𐤀", "aleph", "ox", "א", "Α", "A"], ["𐤁", "bet", "house", "ב", "Β", "B"], ["𐤂", "gimel", "throwing stick?", "ג", "Γ", "C, G"], ["𐤃", "dalet", "door", "ד", "Δ", "D"], ["𐤄", "he", "window?", "ה", "Ε", "E"], ["𐤅", "waw", "hook", "ו", "Ϝ, Υ", "F, U, V, W, Y"], ["𐤆", "zayin", "weapon", "ז", "Ζ", "Z"], ["𐤇", "het", "fence?", "ח", "Η", "H"], ["𐤈", "tet", "wheel?", "ט", "Θ", "—"], ["𐤉", "yod", "hand", "י", "Ι", "I, J"], ["𐤊", "kaph", "palm", "כ", "Κ", "K"], ["𐤋", "lamed", "ox goad", "ל", "Λ", "L"], ["𐤌", "mem", "water", "מ", "Μ", "M"], ["𐤍", "nun", "snake?", "נ", "Ν", "N"], ["𐤎", "samekh", "post?", "ס", "Ξ", "—"], ["𐤏", "ayin", "eye", "ע", "Ο", "O"], ["𐤐", "pe", "mouth", "פ", "Π", "P"], ["𐤑", "tsade", "plant?", "צ", "Ϻ", "—"], ["𐤒", "qoph", "needle's eye?", "ק", "Ϙ", "Q"], ["𐤓", "resh", "head", "ר", "Ρ", "R"], ["𐤔", "shin", "tooth", "ש", "Σ", "S"], ["𐤕", "taw", "mark", "ת", "Τ", "T"]];
+const PH_CARDS = [
+  { c: "The alphabet", v: ["Real", "true"], img: "punic", b: "Twenty-two letters, all consonants, written right to left: the script behind Hebrew, Greek, Latin, Arabic and almost every alphabet used today. Its ancestor was scratched by Semitic workers at Egypt's turquoise mines in Sinai around 1850 BC, who borrowed Egyptian pictures for sounds: the ox head became aleph, then A. The Greeks took it around 800 BC and added vowels, and Herodotus still called the letters <em>phoinikeia</em>, “Phoenician things”." },
+  { c: "Tyrian purple", v: ["Real", "true"], b: "A dye made from murex sea snails, thousands of them for a few grams, that did not fade. Mounds of crushed shells still lie outside Sidon. It was so costly that purple became the colour of kings and emperors, and the Greek name for the Phoenicians may itself mean “the purple people”. Solomon's craftsman from Tyre was skilled “in purple, in blue, and in fine linen”.", r: [["2Chr", 2, 14]] },
+  { c: "Hiram builds Solomon's Temple", v: ["Scripture", "part"], b: "The Bible has Hiram, king of Tyre, send cedar from Lebanon and craftsmen for Solomon's Temple and palace, and partner with Solomon in ships to Ophir. Hiram is named in Tyrian king lists quoted by the historian Josephus, but no inscription of his has been found. Freemasonry builds its legend on this partnership.", r: [["1Kgs", 5, 1]] },
+  { c: "Jezebel and the prophets of Baal", v: ["Scripture", "part"], e: ["“Baal” and “Baalim” in the KJV", /\bbaal(im)?\b/gi], b: "Ahab of Israel married Jezebel, daughter of the king of Sidon, and the Bible blames her for bringing in the worship of Baal and his consort Asherah. Elijah's contest on Mount Carmel, fire from heaven against Baal's 450 prophets, is the result. Tyrian king lists quoted by the historian Josephus name a king Ithobaal, who matches the Bible's Ethbaal.", r: [["1Kgs", 16, 31]] },
+  { c: "The King of Tyre is Lucifer", v: ["A reading", "part"], b: "Ezekiel's lament over the king of Tyre says he was “in Eden the garden of God” and an “anointed cherub”, cast out for pride. Christian writers from Origen onwards read it, with Isaiah 14's Lucifer, as the fall of Satan. In context both are taunts against human kings, Tyre's and Babylon's.", r: [["Ezek", 28, 13], ["Ezek", 28, 14]] },
+  { c: "Ezekiel's list of Tyre's trade", v: ["In the text", "true"], b: "Ezekiel 27 pictures Tyre as a great ship and lists who traded with her and in what: silver, iron, tin and lead from Tarshish, slaves and bronze from Greece and Anatolia, horses from Togarmah, ivory and ebony, spices and gold from Sheba. It is the best ancient picture of Phoenicia's trade network.", r: [["Ezek", 27, 12]] },
+  { c: "They sailed round Africa", v: ["Possible", "part"], b: "Herodotus says Pharaoh Necho II sent a Phoenician crew around Africa about 600 BC, a voyage of three years. He did not believe their report that in the far south the sun was on their right, to the north, but that detail is exactly what a crew south of the equator would see, which is why many historians think the voyage happened." },
+  { c: "Children were sacrificed at Carthage", v: ["Debated", "part"], b: "The Tophet of Carthage holds thousands of urns with the burned bones of infants and young animals. Greek and Roman writers, and the Bible's warnings about passing children through fire to Molech, describe child sacrifice. Some archaeologists argue many of the infants died naturally; a larger group, citing inscriptions that speak of vows, think sacrifice was real." },
+  { c: "Rome salted the earth of Carthage", v: ["Myth", "myth"], b: "Rome did destroy Carthage in 146 BC and sold its people into slavery. No ancient source mentions salt: the story is modern, first found in 19th- and 20th-century histories, and Rome refounded the city as a colony a century later." },
+  { c: "Punic people were Phoenicians by blood", v: ["Mostly not", "myth"], b: "A 2025 study in <em>Nature</em> sequenced the genomes of more than 200 people from Punic sites across the Mediterranean and found very little ancestry from the Levant; most resembled people from Sicily and the Aegean. Phoenician culture, language and gods spread far more than Phoenician families did." },
+  { c: "Phoenicians reached America", v: ["No evidence", "myth"], b: "A Phoenician inscription reported from Paraíba, Brazil, in 1872 was declared a hoax, and the stone was never found. The Bat Creek Stone from Tennessee, once read as Hebrew, turned out in 1991 to copy an illustration in an 1870 Masonic book. No Phoenician object has been excavated in the Americas." },
+  { c: "Phoenicians came to Cornwall for tin", v: ["No evidence", "myth"], b: "Greek writers knew of distant “Tin Islands”, and from the 1500s English antiquarians decided Phoenician traders had sailed to Cornwall. No Phoenician object or inscription has been found in Britain; the tin probably reached the Mediterranean through Gaul." },
+];
+async function loadLib() { LIB = LIB || await fetch("data/library.json").then((r) => { if (!r.ok) throw new Error("library.json " + r.status); return r.json(); }); return LIB; }
+function openInLibrary(text) {
+  go("library");
+  let n = 0; const t = setInterval(() => { const sel = $("lib-text"); if (sel && [...sel.options].some((o) => o.value === text)) { clearInterval(t); sel.value = text; sel.dispatchEvent(new Event("change")); sel.scrollIntoView({ block: "start" }); } else if (++n > 50) clearInterval(t); }, 100);
+}
+const godCard = ([n, eg, g, shown, rule, note]) => `<div class="card god"><div class="glyph" aria-hidden="true">${g}</div><h4>${n}</h4><span class="status">${eg === n ? "" : `Egyptian: ${eg} · `}${shown}</span><p><b>${rule}.</b> ${note}</p></div>`;
+const cardImg = (m) => card(m).replace('<div class="card">', `<div class="card">${m.img ? fig(m.img) : ""}`).replace(/<\/div>$/, (m.go ? `<button type="button" class="ghost" data-go="${m.go[0]}" style="justify-self:start">${m.go[1]}</button>` : "") + "</div>");
+const wireGo = (el) => el.querySelectorAll("button[data-go]").forEach((b) => { b.onclick = () => { go(b.dataset.go); window.scrollTo({ top: 0 }); }; });
+async function initEgypt() {
+  $("eg-chrono").innerHTML = chronoStrip(-3200, 700, EG_CHRONO, EG_MARKS, "Egyptian history from 3100 BC to the Arab conquest");
+  $("eg-gods").innerHTML = EG_GODS.map(godCard).join("");
+  $("eg-book").innerHTML = EG_BOOK.map(cardImg).join("");
+  $("eg-myst").innerHTML = EG_MYST.map(cardImg).join("");
+  $("eg-giza").innerHTML = EG_GIZA.map(cardImg).join("");
+  [$("eg-myst"), $("eg-giza")].forEach(wireGo);
+  $("eg-read").onclick = () => openInLibrary("bod");
+  try {
+    // Some lines in the source run two denials together ("10. … 11. …"), so split on the numbers
+    const all = (await loadLib()).passages.bod.filter(([l]) => l.startsWith("The Negative Confession")).map(([, t]) => t).join(" ");
+    const bod = [...all.matchAll(/(?:^|\s)(\d{1,2})\. ([^]*?)(?=\s\d{1,2}\. |$)/g)].filter((m, k, a) => +m[1] === k + 1).map((m) => ["", `${m[1]}. ${m[2].trim()}`]);
+    const cmd = { 5: "Exodus 20:13", 4: "Exodus 20:15", 9: "Exodus 20:16", 6: "Leviticus 19:36" };
+    $("eg-42").innerHTML = bod.map(([, t]) => { const m = t.match(/^(\d+)\. (.*)$/), n = +m[1], deny = m[2].replace(/^“/, "").match(/(I have .*|I am not .*|I have never .*)$/); return `<li${cmd[n] ? ' class="hit"' : ""}><span class="i">${n}</span><span class="t">${esc(deny ? deny[1] : m[2])}${cmd[n] ? ` <span class="pill v-true">${cmd[n]}</span>` : ""}</span></li>`; }).join("");
+    $("eg-42-note").textContent = `All ${bod.length} denials as Budge translated them from the papyrus of Nebseni (the god each is addressed to is left out). Highlighted ones have a twin in the Law of Moses.`;
+  } catch (e) { $("eg-42-note").textContent = `Couldn't load the text (${e.message}).`; }
+}
+function initPhoenicia() {
+  $("ph-chrono").innerHTML = chronoStrip(-1600, -100, PH_CHRONO, PH_MARKS, "Phoenician history from 1550 BC to the fall of Carthage");
+  $("ph-abc").innerHTML = `<thead><tr><th>Phoenician</th><th>Name</th><th>Meaning</th><th>Hebrew</th><th>Greek</th><th>Latin</th></tr></thead><tbody>${PH_ABC.map(([p, n, m, h, g, l]) => `<tr><td class="phx">${p}</td><td>${n}</td><td class="status">${m}</td><td class="heb">${h}</td><td>${g}</td><td>${l}</td></tr>`).join("")}</tbody>`;
+  $("ph-cards").innerHTML = PH_CARDS.map(cardImg).join("");
+}
+
 // ---------- conspiracies ----------
 const CONSP = [
   { c: "The Illuminati", v: ["Real, then gone", "part"], b: "Adam Weishaupt, a law professor, founded the Bavarian Illuminati on 1 May 1776 as a secret society for Enlightenment ideas. Bavaria banned secret societies in 1784–85 and the order collapsed. In 1797 Augustin Barruel and John Robison blamed it for the French Revolution, and the idea of a hidden Illuminati has outlived the order by two centuries; the 1970s <em>Illuminatus!</em> novels turned it into pop culture." },
@@ -2491,7 +2658,7 @@ function renderLibPars() {
 }
 // Reading parts: chapters where the labels have them, otherwise runs of 30 passages
 function libGroups(t) {
-  const ps = libFlat[t], key = { apoc: (l) => l.replace(/:\d+$/, ""), gilgamesh: (l) => l.replace(/\.\d+$/, ""), gita: (l) => l.replace(/\.\d+$/, ""), quran: (l) => l.replace(/:\d+$/, ""), bom: (l) => l.replace(/:\d+$/, ""), enoch: (l) => l.replace(/:[\da-d]+$/, "") }[t];
+  const ps = libFlat[t], key = { bod: (l) => l.replace(/ \d+$/, ""), apoc: (l) => l.replace(/:\d+$/, ""), gilgamesh: (l) => l.replace(/\.\d+$/, ""), gita: (l) => l.replace(/\.\d+$/, ""), quran: (l) => l.replace(/:\d+$/, ""), bom: (l) => l.replace(/:\d+$/, ""), enoch: (l) => l.replace(/:[\da-d]+$/, "") }[t];
   const out = [];
   ps.forEach(([l], i) => { const g = key ? key(l) : `${Math.floor(i / 30) * 30}`; if (!out.length || out[out.length - 1][0] !== g) out.push([g, i, i]); out[out.length - 1][2] = i; });
   return out.map(([g, a, b]) => [key ? g.replace(/^.*?, /, "") : `${libFlat[t][a][0].replace(/^.*?, /, "")} – ${libFlat[t][b][0].replace(/^.*?, /, "")}`, a, b]);

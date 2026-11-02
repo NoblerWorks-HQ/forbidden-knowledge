@@ -9,9 +9,12 @@ Connections are passages that share unusually many distinctive words (IDF-weight
 vocabulary and stories, not proof of borrowing, and translators' styles matter: Pickthall, the Book of Mormon
 and Charles all write in KJV-like English. Landmark parallels are curated and asserted against the text.
 """
+import html
+import json
 import math
 import re
 import sys
+import urllib.parse
 
 SB = "https://raw.githubusercontent.com/scrollmapper/bible_databases/master/formats/json/"
 SOURCES = {
@@ -27,6 +30,7 @@ SOURCES = {
 TEXTS = [
     ("gilgamesh", "Epic of Gilgamesh", "Mesopotamia", "c. 1800–1200 BC", -1800, "R. Campbell Thompson, 1928"),
     ("hammurabi", "Code of Hammurabi", "Mesopotamia", "c. 1754 BC", -1754, "C. H. W. Johns, 1903"),
+    ("bod", "Book of the Dead", "Ancient Egypt", "c. 1550–50 BC; spells far older", -1550, "E. A. Wallis Budge, 1901"),
     ("kjv", "The Bible", "Judaism and Christianity", "c. 1000 BC – AD 100", -1000, "King James Version, 1611/1769"),
     ("tao", "Tao Te Ching", "Taoism", "c. 4th century BC", -350, "James Legge, 1891"),
     ("enoch", "1 Enoch", "Second Temple Judaism", "c. 300–1 BC", -300, "R. H. Charles, 1917"),
@@ -95,6 +99,77 @@ def build_hammurabi(fetch):
         sys.exit(f"Hammurabi: {len(out)} laws parsed")
     return out
 
+
+WS_PARSE = "https://en.wikisource.org/w/api.php?action=parse&prop=text%7Cwikitext&format=json&page="
+BOD_ROOT = "Egyptian Literature/The Book of the Dead"
+
+
+def build_bod(fetch, sources):
+    """Budge's 1901 selection from the Book of the Dead (Wikisource), chapter by chapter in the book's order, found by
+    following each page's "next" link. Each chapter is rebuilt from the raw scanned pages it transcludes, because
+    Wikisource's own rendering drops pages that lack section markers (the Negative Confession loses denials 26-42).
+    One passage per paragraph, labelled "<chapter> <n>"."""
+    raw = lambda n: json.loads(fetch_page(fetch, sources, n))
+    out, page, seen, count = [], BOD_ROOT, set(), {}
+    while page and page not in seen:
+        seen.add(page)
+        name = "lib/bod/" + re.sub(r"[^A-Za-z0-9]+", "_", page) + ".json"
+        sources[name] = WS_PARSE + urllib.parse.quote(page)
+        w = json.loads(fetch(name))["parse"]["wikitext"]["*"]
+        nxt = re.search(r"\|\s*next\s*=\s*\[\[([^|\]]+)", w)
+        link = nxt.group(1).strip() if nxt else ""
+        page = page + link if link.startswith("/") else page.rsplit("/", 1)[0] + "/" + link[3:] if link.startswith("../") else None
+        if len(seen) == 1:
+            continue  # the contents page
+        t = re.search(r"section\s*=\s*\[\[[^\]]*\]\]:\s*(.+)", w)
+        title = t.group(1).strip() if t else name
+        text = ""
+        for m in re.finditer(r"<pages\s+([^>]*?)/>", w):
+            attrs = dict(re.findall(r'(\w+)="?([^"]*?)"?(?=\s+\w+=|\s*$)', m.group(1).strip()))
+            sec = attrs.get("onlysection") or attrs.get("fromsection") or attrs.get("tosection")
+            nums = [int(attrs["include"])] if "include" in attrs else range(int(attrs["from"]), int(attrs["to"]) + 1)
+            for n in nums:
+                pg = raw(n)
+                if sec and "<section" in pg:
+                    if f'begin="{sec}"' not in pg and f'end="{sec}"' not in pg:
+                        continue  # a page of other chapters only
+                    pg = pg.split(f'<section begin="{sec}" />', 1)[-1].split(f'<section end="{sec}" />', 1)[0]
+                text += "\n\n" + pg
+        paras = [clean_ws(x) for x in re.split(r"\n\s*\n", text)]
+        for x in paras:
+            if len(x) > 3 and x.upper() != x:  # drop headings in capitals
+                count[title] = count.get(title, 0) + 1  # a chapter split over pages, "(1)" and "(2)", keeps counting
+                out.append([f"{title} {count[title]}", x])
+    chapters = len({re.sub(r" \d+$", "", l) for l, _ in out})
+    if chapters < 85 or len(out) < 480:
+        sys.exit(f"Book of the Dead: {chapters} chapters, {len(out)} passages; expected 85+ and 480+ (110 pages, numbered parts share a chapter)")
+    confession = [x for l, x in out if l.startswith("The Negative Confession")]
+    if not any(x.startswith("42.") for x in confession):
+        sys.exit("Book of the Dead: the Negative Confession is missing denial 42")
+    return out
+
+
+WS_RAW = "https://en.wikisource.org/w/api.php?action=query&prop=revisions&rvprop=content&rvslots=main&format=json&titles="
+
+
+def fetch_page(fetch, sources, n):
+    name = f"lib/bodpage/{n:03d}.json"
+    sources[name] = WS_RAW + urllib.parse.quote(f"Page:Egyptian Literature (1901).djvu/{n}")
+    pg = next(iter(json.loads(fetch(name))["query"]["pages"].values()))
+    return json.dumps(re.sub(r"<noinclude>.*?</noinclude>", "", pg["revisions"][0]["slots"]["main"]["*"], flags=re.S))
+
+
+def clean_ws(t):
+    """Wikisource page markup to plain text: footnotes, headings and templates out, inline formatting flattened."""
+    t = re.sub(r"<ref[^>]*>.*?</ref>|<ref[^>]*/>|<section[^>]*/>", "", t, flags=re.S)
+    t = re.sub(r"\{\{(?:h|rvh|c|center|larger|smaller)\|.*?\}\}", "", t)
+    t = re.sub(r"\{\{(?:sc|sh|sm|small-caps|smallcaps|i|em)\|([^{}]*)\}\}", r"\1", t)
+    t = t.replace("{{…}}", "…")
+    for _ in range(2):
+        t = re.sub(r"\{\{[^{}]*\}\}", "", t)
+    t = re.sub(r"\[\[(?:[^|\]]*\|)?([^\]]*)\]\]", r"\1", t)
+    t = re.sub(r"<[^>]+>|'{2,}", "", t)
+    return " ".join(html.unescape(t).split())
 
 def build_tao(fetch):
     t = gutenberg_body(fetch("lib/tao.txt"))
@@ -215,6 +290,13 @@ def find(passages, needle, label=None):
 # Book of Mormon (book, chapter, verse); 1 Enoch (chapter, "verse"); Thomas saying number; other texts a label
 # ("Law 196") or a phrase in the passage. Every anchor is resolved and checked at build time.
 PARALLELS = [
+    (("bod", "I have not slain man or woman"), ("kjv", "Exod.20.13"), "law", "Before the judges of the dead, the soul denies 42 sins. The first of the Ten Commandments' moral laws is the same."),
+    (("bod", "I have not committed theft"), ("kjv", "Exod.20.15"), "law", "No stealing, in the Negative Confession and the Ten Commandments."),
+    (("bod", "I have not uttered falsehood"), ("kjv", "Exod.20.16"), "law", "No lying, and no false witness."),
+    (("bod", "I have not made light the bushel"), ("kjv", "Lev.19.36"), "law", "Honest measures: the dead swear they never cheated on the grain measure; Leviticus demands just weights."),
+    (("bod", "May naught stand up to oppose me at"), ("kjv", "Dan.5.27"), "idea", "The heart is weighed at the judgment. The writing on Belshazzar's wall: weighed in the balances, and found wanting."),
+    (("bod", "May naught stand up to oppose me at"), ("kjv", "Prov.21.2"), "idea", "The god weighs the heart, in Egypt and in Proverbs."),
+    (("bod", "thou Disk, thou lord of rays"), ("kjv", "Ps.104.22"), "idea", "Hymns to the rising sun. Psalm 104 is closest of all to Akhenaten's Hymn to the Aten."),
     (("gilgamesh", "fashion a vessel"), ("kjv", "Gen.6.14"), "story", "A god warns one man to build a boat before the flood."),
     (("gilgamesh", "Pitch did the children"), ("kjv", "Gen.6.14"), "story", "The boat is sealed with pitch, in both."),
     (("gilgamesh", "seed of all living"), ("kjv", "Gen.6.19"), "story", "The hero takes aboard his family and the seed of every living thing."),
@@ -272,9 +354,10 @@ PARALLELS = [
 KINDS = {"quote": "Quotes", "story": "Same story", "law": "Same law", "saying": "Same saying", "idea": "Similar idea"}
 
 
-def build_library(fetch, kjv_text, kjv_index, world, extra):
+def build_library(fetch, kjv_text, kjv_index, world, extra, sources):
     texts = {k: getattr(sys.modules[__name__], "build_" + b)(fetch) for k, b in
              [("apoc", "apocrypha"), ("gilgamesh", "gilgamesh"), ("hammurabi", "hammurabi"), ("tao", "tao"), ("dhamma", "dhamma"), ("gita", "gita")]}
+    texts["bod"] = build_bod(fetch, sources)
     qstart, n = [], 0
     for s in world["quran"]:
         qstart.append(n)

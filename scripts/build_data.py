@@ -140,7 +140,7 @@ def main():
 
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "world.json").write_text(json.dumps(world, separators=(",", ":")))
-    library = build_library.build_library(fetch, text, index, world, extra)
+    library = build_library.build_library(fetch, text, index, world, extra, SOURCES)
     (OUT / "library.json").write_text(json.dumps(library, separators=(",", ":"), ensure_ascii=False))
     (OUT / "places.json").write_text(json.dumps(places, separators=(",", ":")))
     (OUT / "land.json").write_text(json.dumps(land, separators=(",", ":")))
