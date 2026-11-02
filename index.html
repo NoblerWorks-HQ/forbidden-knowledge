@@ -281,6 +281,7 @@ dialog.search::backdrop { background: rgba(0,0,0,.45); -webkit-backdrop-filter: 
 
 /* ---- per-view tools: on-this-page chips, verdict filter, card links, pager ---- */
 .onpage { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: -4px 0 18px; }
+.onpage.vbar { margin: 18px 0 4px; position: sticky; top: 58px; z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); padding: 6px 0; }
 .onpage .lab { font: 600 11px var(--ui); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
 .chip { font: 500 13px var(--ui); color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
 .chip:hover { border-color: var(--muted); }
@@ -347,6 +348,35 @@ section[id^="v-"]:not([hidden]) { animation: viewin .25s ease-out; }
 .game .ans { display: grid; gap: 8px; }
 .game .ans p { margin: 0; max-width: 75ch; }
 .game .score { margin-left: auto; font-size: 13px; color: var(--muted); }
+/* ---- popes: a scroll timeline with a sticky panel ---- */
+.ptl { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); gap: 28px; align-items: start; }
+.ptl-steps { display: grid; gap: 10px; }
+.ptl-stage { position: sticky; top: 64px; }
+.ptl-box { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 20px 22px; display: grid; gap: 10px; }
+.ptl-year { font: 400 46px/1 var(--display); }
+.ptl-era { font: 600 12px var(--ui); letter-spacing: .08em; text-transform: uppercase; color: var(--rubric); }
+.ptl-now { font-size: 15px; }
+.ptl-strip .lab { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+.ptl-strip .bar { position: relative; height: 20px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+.ptl-strip .bar a { position: absolute; top: 2px; bottom: 2px; background: var(--muted); opacity: .45; border-right: 1px solid var(--surface); }
+.ptl-strip .bar a:hover { opacity: .8; }
+.ptl-strip .bar a.on { background: var(--accent); opacity: 1; }
+.ptl-ctx { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
+.ptl-rail { display: grid; grid-template-columns: repeat(21, 1fr); gap: 2px; }
+.ptl-rail span { height: 6px; background: var(--rule); border-radius: 2px; }
+.ptl-rail span.on { background: var(--accent); }
+.pp { opacity: .6; transition: opacity .25s, border-color .25s; }
+.pp.on { opacity: 1; border-color: var(--accent); }
+.pp .when { font: 600 12px var(--ui); color: var(--rubric); }
+.pp.anti { border-style: dashed; }
+.pp p { font-size: 14px; }
+.pp .src { font-size: 12px; color: var(--muted); justify-self: start; }
+.pp-era { padding: 26px 0 6px; display: grid; gap: 4px; }
+.pp-era:first-child { padding-top: 0; }
+.pp-era h2.sub { margin: 0; }
+.pp-era .when { font: 600 12px var(--ui); color: var(--rubric); }
+.pp-era p { margin: 0; color: var(--muted); max-width: 62ch; }
+@media (max-width: 820px) { .ptl { grid-template-columns: minmax(0, 1fr); gap: 12px; } .ptl-stage { order: -1; top: 56px; z-index: 2; } .ptl-box { padding: 12px 14px; gap: 6px; } .ptl-ctx, .ptl-rail { display: none; } .ptl-year { font-size: 30px; } }
 [hidden] { display: none !important; }
 .card > h4 { padding-right: 26px; }
 </style>
@@ -684,10 +714,21 @@ section[id^="v-"]:not([hidden]) { animation: viewin .25s ease-out; }
 
   <section id="v-history" hidden>
     <h2>The line of popes</h2>
-    <p class="lede">Every entry in the official list of popes, from Peter to Leo XIV, one row per century. Each bar is one reign; click one for details. Coloured bars under a row are antipopes, rival claimants the Church does not recognize; the cluster in the 1300s and 1400s is the Western Schism, when up to three men claimed the title at once. White gaps are vacancies between popes. Dates come from Wikidata, and those before about AD 200 are traditional rather than recorded.</p>
-    <div class="canvasbox"><canvas id="popes" aria-label="Timeline of papal reigns by century"></canvas><div class="tip" id="pope-tip" hidden></div></div>
-    <div class="legend"><span><span class="swatch" style="background:var(--gold)"></span><span class="swatch" style="background:var(--violet)"></span>Reigns, alternating colors</span><span><span class="swatch" style="background:var(--rubric)"></span>Antipopes before 1500</span></div>
-    <div class="panel" id="pope-panel" style="margin-top:14px"></div>
+    <p class="lede">Every pope from Peter to Leo XIV, and the antipopes before 1500, in order, with what was happening around them. Scroll, and the panel follows: the era, its history, and this century's reigns as one bar. Each summary is the opening of the pope's Wikipedia article (CC BY-SA 4.0); dates come from Wikidata, and those before about AD 200 are traditional rather than recorded.</p>
+    <div class="ptl">
+      <div class="ptl-steps" id="pope-steps"></div>
+      <aside class="ptl-stage" id="pope-stage" aria-label="Where you are in papal history">
+        <div class="ptl-box">
+          <div class="ptl-year" id="pope-year"></div>
+          <div class="ptl-era" id="pope-era"></div>
+          <div class="ptl-now" id="pope-now"></div>
+          <div class="ptl-strip" id="pope-strip"></div>
+          <p class="ptl-ctx" id="pope-ctx"></p>
+          <div class="ptl-rail" id="pope-rail" aria-hidden="true"></div>
+        </div>
+      </aside>
+    </div>
+    <h2 class="sub">Records</h2>
     <div class="grid2">
       <div><h3>Longest reigns</h3><ol class="rank" id="pope-long"></ol></div>
       <div><h3>Most-used papal names</h3><ol class="rank" id="pope-names"></ol><p class="status" id="pope-names-note"></p></div>
@@ -930,7 +971,7 @@ function applyFilter(sec, f) {
   // Hide a heading and its intro when the filter empties every card under it
   sec.querySelectorAll("h2.sub").forEach((h) => {
     const group = []; for (let e = h.nextElementSibling; e && !e.matches("h2.sub"); e = e.nextElementSibling) group.push(e);
-    const own = group.flatMap((e) => (e.matches(".cards") ? [...e.children] : [])), onlyCards = group.every((e) => e.matches(".cards, p.lede, p.status"));
+    const own = group.flatMap((e) => (e.matches(".cards") ? [...e.children] : [])), onlyCards = group.every((e) => e.matches(".cards, p.lede, p.status, .onpage"));
     const empty = f !== "all" && onlyCards && own.length > 0 && own.every((c) => c.hidden);
     [h, ...group].forEach((e) => { e.hidden = empty; });
   });
@@ -947,16 +988,24 @@ function enhance(name) {
   });
   const subs = [...sec.querySelectorAll("h2.sub")], judged = cards.filter(verdictOf);
   subs.forEach((h) => { if (!h.id) h.id = `${name}-${slug(h.textContent)}`; });
-  let bar = sec.querySelector(".onpage");
-  if (subs.length >= 2 || judged.length >= 8) {
-    if (!bar) { bar = document.createElement("div"); bar.className = "onpage"; (sec.querySelector(":scope > p.lede") || sec.querySelector(":scope > h2")).after(bar); }
+  // "Jump to" sits under the intro; the verdict filter sits right above the first cards it filters
+  let bar = sec.querySelector(".onpage.jump");
+  if (subs.length >= 2) {
+    if (!bar) { bar = document.createElement("div"); bar.className = "onpage jump"; (sec.querySelector(":scope > p.lede") || sec.querySelector(":scope > h2")).after(bar); }
+    bar.innerHTML = `<span class="lab">Jump to</span>${subs.map((h) => `<button type="button" class="chip" data-to="${h.id}">${esc(h.textContent)}</button>`).join("")}`;
+  }
+  let vbar = sec.querySelector(".onpage.vbar");
+  if (judged.length >= 8) {
+    if (!vbar) {
+      vbar = document.createElement("div"); vbar.className = "onpage vbar";
+      const grid = judged[0].parentElement, head = grid.previousElementSibling && grid.previousElementSibling.matches("p.lede") ? grid.previousElementSibling : grid;
+      const h = head.previousElementSibling && head.previousElementSibling.matches("h2.sub") ? head.previousElementSibling : head;
+      h.before(vbar);
+    }
     const f = filters[name] || "all", cnt = { true: 0, part: 0, myth: 0 };
     judged.forEach((c) => cnt[verdictOf(c)]++);
-    const chips = judged.length >= 8 ? [["all", "All", judged.length], ["true", "Real", cnt.true], ["part", "Disputed", cnt.part], ["myth", "Myth", cnt.myth]].filter(([k, , n]) => k === "all" || n) : [];
-    bar.innerHTML = (chips.length ? `<span class="vfilter" role="group" aria-label="Show cards by verdict">${chips.map(([k, l, n]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${f === k}">${l}<span class="n">${n}</span></button>`).join("")}</span>` : "")
-      + (chips.length && subs.length >= 2 ? '<span class="sep" aria-hidden="true"></span>' : "")
-      + (subs.length >= 2 ? `<span class="lab">Jump to</span>${subs.map((h) => `<button type="button" class="chip" data-to="${h.id}">${esc(h.textContent)}</button>`).join("")}` : "");
-    if (judged.length) applyFilter(sec, f);
+    vbar.innerHTML = `<span class="lab">Show</span><span class="vfilter" role="group" aria-label="Show cards by verdict">${[["all", "All", judged.length], ["true", "Real", cnt.true], ["part", "Disputed", cnt.part], ["myth", "Myth", cnt.myth]].filter(([k, , n]) => k === "all" || n).map(([k, l, n]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${f === k}">${l}<span class="n">${n}</span></button>`).join("")}</span><span class="status">${f === "all" ? "" : `Showing ${f === "true" ? "real" : f === "part" ? "disputed" : "myth"} cards only`}</span>`;
+    applyFilter(sec, f);
   }
   if (!sec.querySelector(":scope > .pager")) {
     const i = NAV_ORDER.indexOf(name), prev = NAV_ORDER[i - 1], next = NAV_ORDER[i + 1];
@@ -976,8 +1025,7 @@ document.addEventListener("click", (ev) => {
     $(t.dataset.to).scrollIntoView({ behavior: "smooth", block: "start" });
   } else {
     filters[curView] = t.dataset.f;
-    t.parentNode.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-pressed", String(c === t)));
-    applyFilter($("v-" + curView), t.dataset.f);
+    enhance(curView);
   }
 });
 function focusTarget(id) {
@@ -2531,77 +2579,84 @@ const LEGENDS = [
   { c: "Noah's Ark has been found", v: ["Myth", "myth"], b: "Genesis gives the ark as 300 × 50 × 30 cubits: about 137 × 23 × 14 m at an 18-inch cubit. It comes to rest on “the mountains of Ararat”, a region (ancient Urartu), not a single peak. The best-known claim, the boat-shaped Durupınar formation near Mount Ararat, is a natural rock formation according to geologists, and no expedition has produced verified remains. Kentucky's Ark Encounter (2016) is a replica built 510 feet long using a longer cubit.", r: [["Gen", 6, 15], ["Gen", 8, 4]] },
   { c: "The Ark of the Covenant", v: ["Lost since 586 BC", "part"], b: "A gold-covered chest, 2½ × 1½ × 1½ cubits (about 1.1 × 0.7 × 0.7 m), that held the tablets of the law. The Bible never says what happened to it after the Babylonians destroyed the Temple in 586 BC, and Jeremiah says it will not be missed. The Ethiopian Orthodox Church says it rests in a chapel at Aksum, guarded by one monk who alone may see it, so the claim cannot be tested. 2 Maccabees, in Catholic and Orthodox Bibles, says Jeremiah hid it in a cave on Mount Nebo.", r: [["Exod", 25, 10], ["Jer", 3, 16]], e: ["“ark of the covenant” in the KJV", /ark of the covenant/gi] },
 ];
-const POPE = { segs: [], sel: null, rows: 21, list: null };
+// The papacy in sixteen eras: [from year, name, what the world around the popes looked like]
+const PAPAL_ERAS = [
+  [33, "The persecuted church", "Christians are a small, illegal minority in the Roman Empire. Nero blames them for the fire of Rome in 64, and Decius (250) and Diocletian (303) order empire-wide persecutions. The bishop of Rome is one leader among many, alongside Antioch and Alexandria. The list of names before about 200 comes from Irenaeus, writing around 180, and the dates are tradition rather than record."],
+  [313, "The empire turns Christian", "Constantine legalises Christianity in 313, builds the Lateran and Old St Peter's, and calls the Council of Nicaea in 325. By 380 Christianity is the state religion. Damasus commissions Jerome's Latin Bible. The western empire crumbles: Rome is sacked in 410 and 455, Leo I meets Attila in 452, and the last western emperor falls in 476."],
+  [476, "Rome after Rome", "Gothic kings rule Italy, then Justinian's armies spend twenty years reconquering it for Constantinople and leave it ruined. The emperor expects to approve each new pope and can arrest one who disagrees: Vigilius is held in Constantinople for eight years. In 568 the Lombards invade."],
+  [590, "The Byzantine papacy", "Gregory the Great feeds Rome from the Church's estates, sends missionaries to England in 597 and acts as the city's real ruler. Islam's armies take Jerusalem (638) and Alexandria (641). From 678 to 752 most popes are Greek or Syrian, and the emperor still confirms their election, until a quarrel over icons from the 720s pushes Rome away from Constantinople."],
+  [752, "Popes and Franks", "Threatened by the Lombards, the popes turn to the Franks. Pepin gives them land in central Italy in 756, the start of the Papal States, and on Christmas Day 800 Leo III crowns Charlemagne emperor in St Peter's. The forged Donation of Constantine, claiming the first Christian emperor gave the West to the pope, dates from this era."],
+  [882, "The dark age of the papacy", "Roman noble families make and unmake popes, several of whom are murdered. In 897 Stephen VI puts the exhumed corpse of his predecessor Formosus on trial, the Cadaver Synod. The family of Theophylact and his daughter Marozia controls the office for decades, and German emperors later install and depose popes at will. In 1046 a synod at Sutri removes three rival claimants at once."],
+  [1046, "Reform and crusade", "Reforming popes fight to free the Church from lay control: from 1059 only cardinals elect the pope, and in 1077 Emperor Henry IV stands barefoot in the snow at Canossa to beg Gregory VII's forgiveness. The split with the Eastern Church becomes permanent in 1054. In 1095 Urban II preaches the First Crusade."],
+  [1198, "The height of papal power", "Innocent III claims authority over kings, calls the crusade against the Cathars and the Fourth Lateran Council (1215); the Fourth Crusade sacks Christian Constantinople in 1204. The Inquisition appears in the 1230s. After a vacancy of almost three years (1268–71), the townspeople of Viterbo lock the cardinals in, and the conclave is born. Boniface VIII declares in 1302 that every human must submit to the pope, and is seized by French agents at Anagni a year later."],
+  [1305, "The popes in Avignon", "For seventy years seven popes, all French, live at Avignon under the shadow of the French crown. Clement V suppresses the Templars in 1312. The Black Death kills perhaps a third of Europe in 1347–51. Petrarch calls it the Babylonian captivity of the Church."],
+  [1378, "The Western Schism", "A disputed election leaves two popes, one in Rome and one in Avignon, each with his own cardinals and kingdoms behind him. A council at Pisa in 1409 tries to fix it and produces a third. The Council of Constance deposes or accepts the resignations of all three, burns the reformer Jan Hus in 1415, and elects Martin V in 1417."],
+  [1417, "The Renaissance popes", "The popes rebuild Rome as a showcase: Sixtus IV builds the Sistine Chapel, Julius II hires Michelangelo and Raphael and lays the first stone of the new St Peter's in 1506. Constantinople falls to the Ottomans in 1453. Papal families like the Borgias trade in offices, and the sale of indulgences pays for the building."],
+  [1517, "Reformation and Counter-Reformation", "Luther's protest in 1517 splits western Christianity; England breaks away in 1534. The Church answers with the Jesuits (1540), the Council of Trent (1545–63), a Roman Inquisition and the Index of Forbidden Books (1559), which lasted until 1966. Gregory XIII reforms the calendar in 1582, and Galileo is condemned in 1633."],
+  [1648, "Kings and the Enlightenment", "The Peace of Westphalia (1648) ignores papal protests, and Catholic kings treat the popes as minor princes. Clement XII bans Freemasonry in 1738. Under pressure from Portugal, Spain and France, Clement XIV dissolves the Jesuits in 1773."],
+  [1775, "Revolution and the end of the Papal States", "French revolutionaries seize the Papal States and Pius VI dies their prisoner in 1799. Pius VII watches Napoleon crown himself in 1804 and is held captive from 1809 to 1814. Pius IX, the longest-reigning pope after Peter, defines the Immaculate Conception (1854), condemns modern errors (1864) and has the First Vatican Council declare papal infallibility in 1870, weeks before Italian troops take Rome."],
+  [1878, "Prisoners of the Vatican", "Without a state, the popes refuse to leave the Vatican. Leo XIII writes on workers' rights in 1891. In 1929 Mussolini's Lateran Treaty creates Vatican City, a state of 44 hectares. Pius XII's public silence about the Holocaust during the Second World War is still argued over."],
+  [1958, "The modern papacy", "The Second Vatican Council (1962–65) brings Mass in local languages and a new attitude to other faiths. John Paul II, the first non-Italian since 1523, is shot in 1981 and helps bring down communism in Poland. Benedict XVI resigns in 2013, the first since 1415. Francis is the first from the Americas, and Leo XIV, elected in 2025, the first from the United States."],
+];
+const POPE = { list: null, steps: [], act: -1, raf: 0 };
 const ydate = (s) => { const [y, m, d] = s.split("-").map(Number); return y + ((m - 1) * 30.44 + (d - 1)) / 365.25; };
 function reignDays(p) { const end = p[3] ? new Date(p[3] + "T00:00:00Z") : new Date(); const st = new Date(p[2].padStart(10, "0") + "T00:00:00Z"); return Math.max(0, Math.round((end - st) / 864e5)); }
-const reignLen = (d) => d < 365 ? `${d} days` : `${(d / 365.25).toFixed(1)} years`;
+const reignLen = (d) => d < 365 ? `${d} days` : `${(d / 365.25).toFixed(d < 3650 ? 1 : 0)} years`;
 const yr = (s) => s ? String(+s.slice(0, 4)) : "present";
+const eraOf = (y) => { let k = 0; while (k + 1 < PAPAL_ERAS.length && PAPAL_ERAS[k + 1][0] <= y) k++; return k; };
+const ordinal = (n) => n + (n % 100 >= 11 && n % 100 <= 13 ? "th" : ["th", "st", "nd", "rd"][n % 10] || "th");
 function initHistory() {
   POPE.list = D.popes.filter((p) => !p[4] || +p[2].slice(0, 4) < 1500);
-  const cv = $("popes"), tip = $("pope-tip");
-  const hit = (ev) => { const r = cv.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top; return POPE.segs.find((s) => x >= s.x - 1 && x <= s.x + s.w + 1 && y >= s.y - 2 && y <= s.y + s.h + 2); };
-  cv.onmousemove = (ev) => {
-    const s = hit(ev), r = cv.getBoundingClientRect();
-    if (!s) { tip.hidden = true; cv.style.cursor = ""; return; }
-    cv.style.cursor = "pointer";
-    tip.textContent = `${s.p[4] ? "Antipope " : "No. " + s.p[0] + " "}${s.p[1]} · ${yr(s.p[2])}–${yr(s.p[3])}`; tip.hidden = false;
-    tip.style.left = Math.max(4, Math.min(ev.clientX - r.left + 12, r.width - tip.offsetWidth - 4)) + "px"; tip.style.top = Math.max(4, ev.clientY - r.top - 28) + "px";
-  };
-  cv.onmouseleave = () => { tip.hidden = true; };
-  cv.onclick = (ev) => { const s = hit(ev); if (s) { POPE.sel = s.p; drawPopes(); renderPopePanel(); } };
-  let t; window.addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => { if (!$("v-history").hidden) drawPopes(); }, 150); });
-  const rerender = () => { if (!$("v-history").hidden) drawPopes(); };
-  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rerender);
-  new MutationObserver(rerender).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  const wiki = (t) => `https://en.wikipedia.org/wiki/${encodeURIComponent(t.replace(/ /g, "_"))}`;
+  let html = "", last = -1;
+  POPE.list.forEach((p) => {
+    const y = +p[2].slice(0, 4), e = eraOf(y);
+    if (e !== last) {
+      last = e;
+      const [from, name, ctx] = PAPAL_ERAS[e], to = PAPAL_ERAS[e + 1] ? PAPAL_ERAS[e + 1][0] : null;
+      html += `<div class="pp-era" data-era="${e}"><h2 class="sub" id="era-${e}">${name}</h2><span class="when">${from}–${to || "today"}</span><p>${ctx}</p></div>`;
+    }
+    const d = reignDays(p);
+    html += `<div class="card pp${p[4] ? " anti" : ""}" id="${p[4] ? "anti" : "pope"}-${p[4] ? slug(p[1]) + "-" + y : p[0]}" data-y="${ydate(p[2])}" data-era="${e}"><span class="when">${p[4] ? "Antipope" : `No. ${p[0]}`} · ${yr(p[2])}–${yr(p[3])}${y < 200 ? " (traditional)" : ""} · ${p[3] ? reignLen(d) : `${reignLen(d)} so far`}</span><h4>${esc(p[1])}</h4>${p[7] ? `<p>${esc(p[7])}</p>` : ""}${p[6] ? `<a class="src" href="${wiki(p[6])}" target="_blank" rel="noopener">Wikipedia</a>` : ""}</div>`;
+  });
+  $("pope-steps").innerHTML = html;
+  POPE.steps = [...$("pope-steps").querySelectorAll(".pp")];
+  // A strip of the 21 centuries, each split into its reigns, for the panel
+  $("pope-rail").innerHTML = Array.from({ length: 21 }, (_, c) => `<span data-c="${c}" title="${ordinal(c + 1)} century"></span>`).join("");
+  const tick = () => { if (!POPE.raf && !$("v-history").hidden) POPE.raf = requestAnimationFrame(() => { POPE.raf = 0; drawPopes(); }); };
+  window.addEventListener("scroll", tick, { passive: true });
+  window.addEventListener("resize", tick);
   const popes = D.popes.filter((p) => !p[4]);
-  POPE.sel = popes[popes.length - 1];
-  drawPopes(); renderPopePanel();
   const long = popes.map((p) => [p, reignDays(p)]).sort((a, b) => b[1] - a[1]).slice(0, 8);
-  $("pope-long").innerHTML = long.map(([p, d], i) => `<li><span class="i">${i + 1}</span><span class="t"><button class="ref" data-pope="${p[0]}">${esc(p[1])}</button> <span class="status">${yr(p[2])}–${yr(p[3])}${+p[2].slice(0, 4) < 200 ? " (traditional dates)" : ""}</span></span><span class="num status">${reignLen(d)}</span></li>`).join("");
+  $("pope-long").innerHTML = long.map(([p, d], i) => `<li><span class="i">${i + 1}</span><span class="t"><a class="ref" href="#history/pope-${p[0]}">${esc(p[1])}</a> <span class="status">${yr(p[2])}–${yr(p[3])}${+p[2].slice(0, 4) < 200 ? " (traditional)" : ""}</span></span><span class="num status">${reignLen(d)}</span></li>`).join("");
   const base = new Map();
   new Set(popes.map((p) => p[1])).forEach((n) => { const b = n.replace(/ [IVXL]+$/, ""); base.set(b, (base.get(b) || 0) + 1); });
   const names = [...base].sort((a, b) => b[1] - a[1]).slice(0, 8);
   $("pope-names").innerHTML = names.map(([n, c], i) => `<li><span class="i">${i + 1}</span><span class="t">${esc(n)}</span><span class="num status">${c}</span></li>`).join("");
   const johns = base.get("John");
-  $("pope-names-note").textContent = `Counted by distinct pope, so Benedict IX's three separate terms count once. There are ${johns} Johns, but the numbering reaches John XXIII: medieval lists skipped "John XX" by mistake, and John XVI was an antipope.`;
-  document.querySelectorAll("#pope-long button[data-pope]").forEach((b) => { b.onclick = () => { POPE.sel = popes.find((p) => p[0] === +b.dataset.pope); drawPopes(); renderPopePanel(); $("popes").scrollIntoView({ block: "center", behavior: "smooth" }); }; });
+  $("pope-names-note").textContent = `Counted by distinct pope, so Benedict IX's three separate terms count once. There are ${johns} Johns, but the numbering reaches John XXIII: medieval lists skipped "John XX" by mistake, and some Johns are antipopes.`;
   $("legend-cards").innerHTML = LEGENDS.map(card).join("");
+  drawPopes();
 }
+// Called on scroll and when the tab is shown: find the card at the reading line and update the panel
 function drawPopes() {
-  const cv = $("popes"), dpr = window.devicePixelRatio || 1, W = cv.parentElement.clientWidth, labW = 64, cntW = 40, rowH = 30, H = POPE.rows * rowH + 10;
-  cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + "px";
-  const ctx = cv.getContext("2d"); ctx.scale(dpr, dpr);
-  ctx.fillStyle = token("--surface"); ctx.fillRect(0, 0, W, H);
-  const w = W - labW - cntW, X = (y) => labW + (y % 100) / 100 * w;
-  const ord = (n) => n + (n % 100 >= 11 && n % 100 <= 13 ? "th" : ["th", "st", "nd", "rd"][n % 10] || "th");
-  ctx.font = "11px 'IBM Plex Sans', system-ui, sans-serif"; ctx.textBaseline = "middle";
-  const counts = new Array(POPE.rows).fill(0);
-  POPE.segs = [];
-  let alt = 0;
-  POPE.list.forEach((p) => {
-    const a = ydate(p[2]), b = Math.max(a + 0.02, p[3] ? ydate(p[3]) : 2026 + (new Date().getMonth()) / 12), anti = p[4];
-    if (!anti) { counts[Math.min(POPE.rows - 1, Math.floor(a / 100))]++; alt ^= 1; }
-    for (let row = Math.floor(a / 100); row <= Math.min(POPE.rows - 1, Math.floor((b - 1e-9) / 100)); row++) {
-      const s = Math.max(a, row * 100), e = Math.min(b, row * 100 + 100), x = X(s), x2 = row * 100 + 100 <= e ? labW + w : X(e);
-      const y = row * rowH + (anti ? 22 : 5), h = anti ? 4 : 15;
-      ctx.fillStyle = p === POPE.sel ? token("--rubric") : anti ? token("--rubric") : alt ? token("--gold") : token("--violet");
-      ctx.globalAlpha = anti && p !== POPE.sel ? 0.75 : 1;
-      ctx.fillRect(x, y, Math.max(1.5, x2 - x - 0.5), h); ctx.globalAlpha = 1;
-      if (p === POPE.sel && !anti) { ctx.strokeStyle = token("--ink"); ctx.lineWidth = 1.5; ctx.strokeRect(x - 1, y - 1, Math.max(1.5, x2 - x - 0.5) + 2, h + 2); }
-      if (!anti && x2 - x > ctx.measureText(p[1]).width + 6) { ctx.fillStyle = token("--surface"); ctx.textAlign = "left"; ctx.fillText(p[1], x + 3, y + h / 2 + 0.5); }
-      POPE.segs.push({ x, y, w: Math.max(2, x2 - x), h, p });
-    }
-  });
-  for (let r = 0; r < POPE.rows; r++) {
-    ctx.fillStyle = token("--muted"); ctx.textAlign = "left"; ctx.fillText(`${ord(r + 1)} c.`, 4, r * rowH + 12);
-    ctx.textAlign = "right"; ctx.fillText(String(counts[r]), W - 4, r * rowH + 12);
-    ctx.strokeStyle = token("--rule"); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(labW, r * rowH + rowH - 2.5); ctx.lineTo(labW + w, r * rowH + rowH - 2.5); ctx.stroke();
-  }
-}
-function renderPopePanel() {
-  const p = POPE.sel; if (!p) return;
-  const d = reignDays(p), early = +p[2].slice(0, 4) < 200;
-  $("pope-panel").innerHTML = `<h4>${esc(p[1])}</h4><p class="status">${p[4] ? "Antipope: a rival claimant not recognized by the Church" : `No. ${p[0]} in the official list`} · ${yr(p[2])}–${yr(p[3])} · ${p[3] ? reignLen(d) : reignLen(d) + " so far"}${early ? " · traditional dates" : ""}</p><a class="ref" href="https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent((p[4] ? "Antipope " : "Pope ") + p[1])}" target="_blank" rel="noopener" style="justify-self:start">Read more on Wikipedia</a>`;
+  if (!POPE.steps.length) return;
+  const narrow = matchMedia("(max-width: 820px)").matches, stage = $("pope-stage").getBoundingClientRect(), top = narrow ? Math.max(0, stage.bottom) : 0, f = top + (innerHeight - top) * 0.45;
+  let lo = 0, hi = POPE.steps.length - 1;
+  while (lo < hi) { const m = (lo + hi + 1) >> 1; if (POPE.steps[m].getBoundingClientRect().top <= f) lo = m; else hi = m - 1; }
+  if (lo === POPE.act) return;
+  if (POPE.act >= 0) POPE.steps[POPE.act].classList.remove("on");
+  POPE.act = lo;
+  const el = POPE.steps[lo], y = +el.dataset.y, e = +el.dataset.era, c = Math.min(20, Math.floor(y / 100));
+  el.classList.add("on");
+  $("pope-year").textContent = y < 1 ? "AD 33" : `AD ${Math.floor(y)}`;
+  $("pope-era").textContent = PAPAL_ERAS[e][1];
+  $("pope-ctx").textContent = PAPAL_ERAS[e][2];
+  $("pope-now").innerHTML = `${el.querySelector(".when").textContent.split(" · ")[0]}: <b>${esc(el.querySelector("h4").textContent)}</b>`;
+  $("pope-rail").querySelectorAll("span").forEach((s) => s.classList.toggle("on", +s.dataset.c === c));
+  // This century's reigns as one bar, the current one highlighted
+  const inC = POPE.list.filter((p) => !p[4] && ydate(p[2]) < c * 100 + 100 && (p[3] ? ydate(p[3]) : 2026) > c * 100);
+  $("pope-strip").innerHTML = `<div class="lab">${ordinal(c + 1)} century · ${inC.length} popes</div><div class="bar">${inC.map((p) => { const a = Math.max(c * 100, ydate(p[2])), b = Math.min(c * 100 + 100, p[3] ? ydate(p[3]) : 2026); return `<a href="#history/pope-${p[0]}" title="${esc(p[1])}" style="left:${a - c * 100}%;width:${Math.max(0.4, b - a)}%"${"pope-" + p[0] === el.id ? ' class="on"' : ""}></a>`; }).join("")}</div>`;
 }
 
 // ---------- mysteries ----------
