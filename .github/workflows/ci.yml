@@ -27,7 +27,7 @@ jobs:
       # Source texts (~100 MB) download once per change to the build scripts.
       - uses: actions/cache@v4
         with:
-          path: ~/.cache/versegraph
+          path: ~/.cache/forbidden-knowledge
           key: sources-${{ hashFiles('scripts/build_*.py') }}
           restore-keys: sources-
       - name: Build data (fails loudly on unresolved cross-references)

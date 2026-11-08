@@ -24,7 +24,7 @@ remote=$(git remote get-url origin)
 rev=$(git rev-parse --short HEAD)
 # A throwaway clone outside this checkout, so no hook or GIT_DIR from this repo applies.
 # Each deploy is a normal commit on top of gh-pages (no force push).
-tmp=$(mktemp -d "${HOME}/.cache/versegraph-pages.XXXXXX")
+tmp=$(mktemp -d "${HOME}/.cache/forbidden-knowledge-pages.XXXXXX")
 trap 'rm -rf "$tmp"' EXIT
 if git ls-remote --exit-code --heads "$remote" gh-pages >/dev/null; then
   git clone -q --depth 1 --branch gh-pages "$remote" "$tmp"

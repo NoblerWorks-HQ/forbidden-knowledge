@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Download the source texts and write the compact data files site/index.html loads.
 
-Sources (cached in ~/.cache/versegraph):
+Sources (cached in ~/.cache/forbidden-knowledge):
   - OpenBible.info cross-references (CC BY): https://www.openbible.info/labs/cross-references/
   - KJV text (public domain) via scrollmapper/bible_databases
   - Moby Dick (public domain) via Project Gutenberg, header/footer stripped
@@ -23,7 +23,7 @@ import build_world
 import build_library
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-CACHE = pathlib.Path.home() / ".cache" / "versegraph"
+CACHE = pathlib.Path.home() / ".cache" / "forbidden-knowledge"
 OUT = ROOT / "site" / "data"
 
 SOURCES = {

@@ -1,4 +1,4 @@
-# Forbidden Knowledge (repo `forbidden-knowledge`, was `versegraph` until 2026-11-02)
+# Forbidden Knowledge (repo and folder `forbidden-knowledge`; was `versegraph`: GitHub renamed 2026-11-02, folder 2026-11-07)
 
 Nobler Works open-source demo, branded "Forbidden Knowledge" since 2026-11-01: lost civilizations, secret societies, banned books and Bible codes, each claim checked against sources (cross-refs, scroll timeline, ladder + daily quiz, myths, theories, map, extra-canonical texts + readers, papal timeline and legends, Egypt/Masons/Rosicrucians, Secret Traditions lineage chart, Dante's afterlife, honest ELS search). Prototype; no cloud.
 

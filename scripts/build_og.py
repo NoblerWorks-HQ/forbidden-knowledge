@@ -3,7 +3,7 @@
 
 Each card is the section's public-domain image under the site's wordmark, title and blurb. Needs Pillow
 (`~/.cache/motion-studio-venv/bin/python scripts/build_og.py`); fonts are IM Fell English (OFL), fetched once
-into ~/.cache/versegraph/fonts. Re-run after adding a section or changing a VIEW_INFO title or blurb; the
+into ~/.cache/forbidden-knowledge/fonts. Re-run after adding a section or changing a VIEW_INFO title or blurb; the
 output is committed, so build_site.py needs no Pillow.
 """
 import json
@@ -16,7 +16,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE, OUT = ROOT / "site", ROOT / "site" / "og"
-FONTS = pathlib.Path.home() / ".cache" / "versegraph" / "fonts"
+FONTS = pathlib.Path.home() / ".cache" / "forbidden-knowledge" / "fonts"
 FONT_URLS = {"sc": "imfellenglishsc/IMFeENsc28P.ttf", "rm": "imfellenglish/IMFeENrm28P.ttf"}
 W, H = 1200, 630
 NIGHT, GOLD, RED, PAPER, MUTED = (13, 18, 32), (217, 180, 90), (224, 102, 76), (244, 238, 226), (176, 168, 152)
