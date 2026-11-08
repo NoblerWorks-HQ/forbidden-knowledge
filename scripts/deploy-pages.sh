@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Build the public site and publish it to the gh-pages branch (GitHub Pages serves it at
-# forbidden.noblerworks.com). No CI: dist/ is built here and committed on top of gh-pages,
+# forbidden.noblerworks.com). CI (.github/workflows/ci.yml) only checks; dist/ is built here and committed on top of gh-pages,
 # replacing the previous site's files.
 #
 # Usage: scripts/deploy-pages.sh            # build + publish

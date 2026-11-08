@@ -10,3 +10,4 @@ Nobler Works open-source demo, branded "Forbidden Knowledge" since 2026-11-01: l
   Exception: `site/img/app-*.jpg` are our own products' social images (the home page app strip).
 - Myth and canon cards are factual claims: verify against the text (or a cited source) before adding; evidence counts are computed live.
 - Public site: `scripts/deploy-pages.sh` -> gh-pages -> forbidden.noblerworks.com (Route 53 CNAME in NW, since 2026-11-02). The old versegraph. record is deleted.
+- CI: `.github/workflows/ci.yml` on free Actions (public repo) builds data + site and checks the inline JS; it never deploys.

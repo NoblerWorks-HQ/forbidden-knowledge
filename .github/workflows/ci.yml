@@ -1,0 +1,50 @@
+# CI on GitHub Actions (free: this repo is public). Builds the data and the site the way
+# scripts/deploy-pages.sh does, so a broken source, an unresolved cross-reference or a JS
+# syntax error fails here instead of on forbidden.noblerworks.com. Deploy stays local.
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      # Source texts (~100 MB) download once per change to the build scripts.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/versegraph
+          key: sources-${{ hashFiles('scripts/build_*.py') }}
+          restore-keys: sources-
+      - name: Build data (fails loudly on unresolved cross-references)
+        run: python3 scripts/build_data.py
+      - name: Build site
+        run: python3 scripts/build_site.py
+      - name: JS syntax check of the app's inline script
+        run: |
+          python3 - <<'PY'
+          import pathlib, re
+          s = pathlib.Path("site/index.html").read_text()
+          m = re.findall(r"<script>(.*?)</script>", s, re.S)
+          assert m, "no inline <script> found in site/index.html"
+          pathlib.Path("/tmp/app.js").write_text("\n".join(m))
+          PY
+          node --check /tmp/app.js
+      - name: dist/ has the pages the deploy publishes
+        run: |
+          test -f dist/index.html && test -f dist/sitemap.xml && test -f dist/CNAME
+          n=$(grep -c '<loc>' dist/sitemap.xml); echo "sitemap URLs: $n"; test "$n" -ge 1000
