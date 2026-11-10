@@ -7,7 +7,6 @@ Working task list for **forbidden-knowledge**. Read this at the start of a work 
 ## Prototype (2026-11-01)
 - [x] 2026-11-02 Who Copied Whom chart (Faiths & Texts): 8 texts, 18 nodes, 16 links (solid = documented, dashed = parallel/claimed) with click-through detail; app strip now uses each product's social image (site/img/app-*.jpg). Left: republish the claude.ai artifact (140 images)
 - [x] 2026-11-10 fact-check: 437 cards checked, 92 fixes + 28 calls applied (docs/FACT-CHECK-2026-11.md), live on forbidden.noblerworks.com 2026-11-10
-- [ ] Republish the claude.ai artifact (DfW1Z7Bpsi1CB5m8SgeTXn), behind since 11-02: site/index.html + 17 site/data + 140 site/img; or retire it, since the public site is the real home
 - [ ] Pat, when free: look again at the 7 ★ close calls in docs/FACT-CHECK-2026-11.md (Budge, Enheduanna, White Sands, Roswell, Bogomils, Paracelsus link, Syriac lore)
 - [ ] Next chart idea (agreed): claimed age vs dated age bars for Giza, Sphinx, Göbekli Tepe, Puma Punku, Antikythera, Nazca, Baalbek
 - [x] 2026-11-02 UFOs & UAP tab (20 cases from ufoexplorer.xyz data, each linking its case file) + "More from Nobler Works" app strip on home + footer line. Left: republish the claude.ai artifact (now 132 images)
