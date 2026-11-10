@@ -19,7 +19,7 @@ Working task list for **forbidden-knowledge**. Read this at the start of a work 
 - [x] 2026-11-01 v3 published: History tab (papal timeline, legends) + Enoch/Thomas/Mary readers and Enoch-Bible parallels
 - [x] 2026-11-01 v4 published: People, Translations, Numbers tabs; fulfilment quotes; mood by book; Thomas/Mary now match against the WEB
 - [x] 2026-11-01 history scrubbed (pat@ removed, force-pushed); repo public; LIVE https://versegraph.noblerworks.com (gh-pages, Route 53 CNAME, HTTPS enforced)
-- [ ] 2026-11-02 Pat: Search Console `sc-domain:noblerworks.com` -> submit https://forbidden.noblerworks.com/sitemap.xml (moved from versegraph. on 2026-11-02; old name deleted, no redirect)
+- [x] 2026-11-10 forbidden.noblerworks.com/sitemap.xml is in Search Console (`sc-domain:noblerworks.com` sitemaps API: submitted 2026-11-08 16:02Z, 1,191 URLs, not pending).
 - [x] 2026-11-01 v5/v6: Mysteries tab, scroll Timeline, daily quiz, book heatmap, verse links, hell words, 666/616, Kings vs Chronicles, Dead Sea Scrolls (site + artifact)
 - [x] 2026-11-01 v8: Religions, Philosophy, Lost Worlds, Conspiracies tabs; Tim Hogan claims; timeline to 9500 BC with world steps; whole-world coastline
 - [x] 2026-11-01 Secret Traditions tab (alchemy, metalworking, Hermetica, Gnostics, Templars, Rosicrucians, Masons, Illuminati: lineage chart, 56 cards, metals grid, 18 PD images) + 7 timeline steps
