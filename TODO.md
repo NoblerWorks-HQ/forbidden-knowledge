@@ -29,7 +29,7 @@ Working task list for **forbidden-knowledge**. Read this at the start of a work 
 - [x] 2026-11-02 Dante tab (afterlife map, 13 cards, Doré/Botticelli/Blake gallery, timeline step) + Divine Comedy (Longfellow) as the Library's 13th text, 7 Bible parallels
 - [x] 2026-11-02 Social previews: 32 OG images (site/og), og:/twitter: tags on every page, /<section>/ share links; card "copy link" hands those out
 - [x] 2026-11-02 Meta Sharing Debugger shows the /dante/ card correctly (fb:app_id warning is ignorable)
-- [ ] 2026-11-02 Pat: same check in LinkedIn Post Inspector (linkedin.com/post-inspector) and an X draft
+- [x] 2026-11-02 Pat: same check in LinkedIn Post Inspector (linkedin.com/post-inspector) and an X draft ✅ 2026-11-14 dropped: `/dante/` serves og:title, og:image and twitter:card=summary_large_image; og/dante.jpg 200 image/jpeg; LinkedIn and X read the same tags
 - [x] 2026-11-02 Popes as a scroll timeline with era context + Wikipedia summaries; verdict filter moved above its cards (sticky)
 - [x] 2026-11-01 UX pass: home page (tiles, Real-or-myth game, live stats), sticky nav with More/Scripture menus, site-wide search (/ or Ctrl+K, verses too), verdict filters + jump chips, shareable card links, prev/next, back-to-top
 - [x] 2026-11-02 Moved to forbidden.noblerworks.com (repo name unchanged)
