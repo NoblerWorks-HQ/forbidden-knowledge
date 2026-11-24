@@ -1,8 +1,7 @@
 # Forbidden Knowledge
 
 Lost civilizations, secret societies, banned books and Bible codes: every claim checked against the
-sources. Live at https://forbidden.noblerworks.com. (It began as Versegraph, a Bible data explorer;
-the data cache under `~/.cache/versegraph` keeps that name.)
+sources. Live at https://forbidden.noblerworks.com. (It began as Versegraph, a Bible data explorer.)
 
 Underneath is real data work: 341,282 reader-voted cross-references between the 31,102 verses of the
 King James Bible, the Quran and the Book of Mormon aligned against the KJV, and an honest "Bible code"
@@ -45,7 +44,7 @@ One static page (`site/index.html`), no build step, no backend.
 ## Build the data
 
 ```bash
-python3 scripts/build_data.py   # downloads sources to ~/.cache/versegraph, writes site/data/
+python3 scripts/build_data.py   # downloads sources to ~/.cache/forbidden-knowledge, writes site/data/
 python3 -m http.server -d site  # then open http://localhost:8000
 ```
 
